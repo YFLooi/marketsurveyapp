@@ -11,11 +11,11 @@ import {
 } from "@material-ui/core";
 
 /**Component imports */
-import Chatbot from "./components/Chatbot/Chatbot.jsx"
-import MainPage from "./components/MainPage/MainPage.jsx"
-import MarketeerPage from "./components/MarketeerPage/MarketeerPage.jsx"
-import RespondentPage from "./components/RespondentPage/RespondentPage.jsx"
-import GoogleSignIn from "./components/GoogleSignIn/GoogleSignIn.jsx"
+import Chatbot from "./components/Chatbot/Chatbot.js";
+import MainPage from "./components/MainPage/MainPage.js";
+import MarketeerPage from "./components/MarketeerPage/MarketeerPage.js";
+import RespondentPage from "./components/RespondentPage/RespondentPage.js";
+import { GoogleSignIn } from "./components/GoogleSignIn/GoogleSignIn.js";
 
 const useStyles = makeStyles(theme => ({ 
   buttonBox:{

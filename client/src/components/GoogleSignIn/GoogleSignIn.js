@@ -13,7 +13,21 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function GoogleSignIn() {
+//For testing Jest
+export function productTestFunction(a, b){
+    return a*b
+}
+export function arrayTestFunction(a){
+    let testArray = new Array(a.length)
+
+    testArray = a.map(function (currVal, index) {
+        return `${index}: ${currVal}`;
+    })
+    console.log(testArray) //Outputs to Jest test console
+    return testArray
+}
+
+export function GoogleSignIn(props) {
     const classes = useStyles();
 
     //getBasicProfile() is a method to get info from GId that signed in
@@ -55,7 +69,7 @@ function GoogleSignIn() {
     }
 
   return (
-    <div className="App">
+    <div>
         <h1>Login/logout tester</h1>
         <GoogleLogin
             clientId="264618720481-jsdkhtj62lvt1agk3ejk1qec1vmtkp3b.apps.googleusercontent.com"
@@ -80,4 +94,3 @@ function GoogleSignIn() {
   );
 }
 
-export default GoogleSignIn;
