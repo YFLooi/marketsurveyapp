@@ -48,8 +48,8 @@ jobs:
                 name: Build and push Docker image to Heroku
                 command: |
                     sudo curl https://cli-assets.heroku.com/install.sh | sh #installs heroku cli
-                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku stack:set container -a circlecitest #Sets stack of Heroku app to container
+                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku stack:set container -a marketsurveyapp #Sets stack of Heroku app to container
                     HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login 
-                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push -a circlecitest web
-                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a circlecitest web
+                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push -a marketsurveyapp web
+                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a marketsurveyapp web
 
