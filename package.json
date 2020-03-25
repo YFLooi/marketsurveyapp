@@ -19,6 +19,7 @@
   "devDependencies": {},
   "scripts": {
     "start": "node index.js",
+    "test": "cd client && npm run test",
     "heroku-postbuild": "npm install && cd client && npm install && npm run build"
   },
   "repository": {
