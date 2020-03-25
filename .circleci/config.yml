@@ -12,11 +12,11 @@ workflows: #Defined set of rules for defining a collection of jobs and their run
         jobs:
             - build
             - heroku/deploy-via-git: # Use the pre-configured job, deploy-via-git
-            requires:
-                - build
-            filters:
-            branches:
-                only: sequential-branch-filter
+                requires:
+                    - build
+                filters:
+                    branches:
+                        only: sequential-branch-filter
 
 #github requires both 'build-and-test' and 'build' run before approving pull requests
 jobs:
