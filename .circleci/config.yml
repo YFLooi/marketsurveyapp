@@ -13,24 +13,14 @@ workflows: #Defined set of rules for defining a collection of jobs and their run
             - build
             - heroku/deploy-via-git: # Use the pre-configured job, deploy-via-git
                 requires:
-                    - build
+                    - build-and-test
                 filters:
                     branches:
                         only: sequential-branch-filter
 
 #github requires both 'build-and-test' and 'build' run before approving pull requests
 jobs:
-    build-and-test: #runs with build-and-test workflow
-        working_directory: ~/marketsurveyapp # name of root directory where steps will run
-        docker: #steps to run with Docker
-            - image: circleci/node:9.9.0 # This image as the primary container; this is where all `steps` will run
-        steps: #collection of executable commands
-            - checkout
-            - run: npm install
-            - run: 
-                name: Run tests
-                command: npm test
-    build: #runs with heroku_deploy workflow.
+    build-and-test: #runs with heroku_deploy workflow.
         working_directory: ~/marketsurveyapp # name of root directory where steps will run
         docker: #steps to run with Docker
             - image: circleci/node:9.9.0 # This image as the primary container; this is where all `steps` will run
