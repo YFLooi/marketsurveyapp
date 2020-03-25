@@ -12,7 +12,7 @@ import {
 
 /**Component imports */
 import Chatbot from "./components/Chatbot/Chatbot.js";
-import MainPage from "./components/MainPage/MainPage.js";
+import { MainPage } from "./components/MainPage/MainPage.js";
 import MarketeerPage from "./components/MarketeerPage/MarketeerPage.js";
 import RespondentPage from "./components/RespondentPage/RespondentPage.js";
 import { GoogleSignIn } from "./components/GoogleSignIn/GoogleSignIn.js";

@@ -5,7 +5,7 @@ const pgp = require('pg-promise')(); // https://www.npmjs.com/package/pg-promise
 const dbaseURL = process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_DATABASE : process.env.DEVELOPMENT_DATABASE
 const dbase = pgp(dbaseURL); // Connect to database at URL defined in .env file
 
-function testFunction (request, response) {
+async function testFunction (request, response) {
     console.log('Request for data received by testFunction');
     response.status(200).json("Request for data received by testFunction");
 }

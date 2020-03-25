@@ -13,20 +13,6 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-//For testing Jest
-export function productTestFunction(a, b){
-    return a*b
-}
-export function arrayTestFunction(a){
-    let testArray = new Array(a.length)
-
-    testArray = a.map(function (currVal, index) {
-        return `${index}: ${currVal}`;
-    })
-    console.log(testArray) //Outputs to Jest test console
-    return testArray
-}
-
 export function GoogleSignIn(props) {
     const classes = useStyles();
 

@@ -3,8 +3,10 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const path = require('path');
+require('dotenv').config(); //Allows retriving variables from the .env file
+
 //Defined in .env file
-const port = process.env.SERVER_PORT || 5000; 
+const port = process.env.PORT || 5000; 
 
 //To get all the exported functions from queries.js, we'll 'require' the file and assign it to a variable.
 const db = require('./db/queries.js')
@@ -21,7 +23,7 @@ app.get("/", (request, response) => {
     if (error) {
         throw error
     }
-    response.sendFile(__dirname + '/public/index.html');
+    response.sendFile(__dirname + '/client/public/index.html');
     //response.send("Server running on Node.js, Express, and Postgres API")
     //response.json({ info: "Server running on Node.js, Express, and Postgres API" });
 })
