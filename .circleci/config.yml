@@ -18,7 +18,7 @@ workflows: #Defined set of rules for defining a collection of jobs and their run
                     branches:
                         only: sequential-branch-filter
 
-#github requires both 'build-and-test' and 'build' run before approving pull requests
+#github requires both 'build-and-test' and 'build' run before approving pull requests...
 jobs:
     build-and-test: #runs with heroku_deploy workflow.
         working_directory: ~/marketsurveyapp # name of root directory where steps will run
