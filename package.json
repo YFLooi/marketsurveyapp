@@ -1,5 +1,5 @@
 {
-  "name": "marketsurveyapp",
+  "name": "market-survey-app",
   "version": "1.0.0",
   "description": "app to collect and display survey data",
   "main": "index.js",

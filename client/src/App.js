@@ -32,6 +32,14 @@ function App() {
       <div className="App">
         <div className="App-Header">
           <img src={logo} style={{ width:90 }} className="App-logo" alt="logo" />
+          <a
+            className="App-link"
+            href="https://reactjs.org"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Learn React
+          </a>
           <GoogleSignIn/>
         </div>
         <Chatbot/>
