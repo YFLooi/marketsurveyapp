@@ -24,8 +24,6 @@ jobs:
         working_directory: ~/marketsurveyapp # name of root directory where steps will run
         docker: #steps to run with Docker
             - image: circleci/node:9.9.0 # This image as the primary container; this is where all `steps` will run
-                environment:
-                    TEST_DATABASE_URL: HEROKU_POSTGRES_URI 
             - image: circleci/postgres:9.6.5-alpine # and this image is the secondary service container
                 environment:
                     POSTGRES_USER: HEROKU_POSTGRES_USER
