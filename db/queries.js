@@ -15,7 +15,6 @@ const pool = new Pool({
   ssl: true
 });
 
-
 async function testFunction (request, response) {
     console.log('Request for data received by testFunction');
     response.status(200).json("Request for data received by testFunction");
