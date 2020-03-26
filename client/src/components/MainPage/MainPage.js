@@ -10,7 +10,9 @@ import {
 
 const useStyles = makeStyles(theme => ({ 
   buttonBox:{
-    border: "1px solid black"
+    border: "1px solid black",
+    minWidth: "200px",
+    minHeight: "200px"
   }
 }))
 
@@ -38,6 +40,7 @@ function MainPage() {
           .then(function(data){
               console.log("Results of test:");
               console.log(data);
+              document.getElementById("outputBox").innerHTML = data;
           })
       })  
       .catch(function(error){
@@ -51,6 +54,7 @@ function MainPage() {
           .then(function(data){
               console.log("Results of test:");
               console.log(data);
+              document.getElementById("outputBox").innerHTML = data;
           })
       })  
       .catch(function(error){
@@ -64,6 +68,9 @@ function MainPage() {
           .then(function(data){
               console.log("Results of test:");
               console.log(data);
+
+              let resultsArray = data["results"]
+              document.getElementById("outputBox").innerHTML = `Retrived id=${resultsArray[0].id}, name=${resultsArray[0].name}`;
           })
       })  
       .catch(function(error){
@@ -87,7 +94,11 @@ function MainPage() {
         <Button variant="contained" color="primary" onClick={() => {testFunction()}}>Test function</Button>
         <Button variant="contained" color="secondary" onClick={() => {testGet()}}>Test Get</Button>
         <Button variant="contained" color="secondary" onClick={() => {testHerokuPg()}}>Test Heroku Pg</Button>
+
+        <div>Output:</div>
+        <div id="outputBox">*Initial value*</div>
         </Box>
+        
       </Grid>
     </div>
   );
