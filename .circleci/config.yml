@@ -1,0 +1,45 @@
+#Source: https://circleci.com/docs/2.0/deployment-examples/#heroku
+version: 2.1 #allows CircleCI to point out version-specific errors
+
+orbs:
+  heroku: circleci/heroku@1.0.1 # Invoke the Heroku orb
+
+workflows: #Defined set of rules for defining a collection of jobs and their run order
+    build-and-test:
+        jobs:
+            - build-and-test
+    heroku_deploy:
+        jobs:
+            - build-and-test
+            - heroku/deploy-via-git: # Use the pre-configured job, deploy-via-git
+                requires:
+                    - build-and-test
+                filters:
+                    branches:
+                        only: sequential-branch-filter
+
+#github requires both 'build-and-test' and 'build' run before approving pull requests...
+jobs:
+    build-and-test: #runs with heroku_deploy workflow.
+        working_directory: ~/marketsurveyapp # name of root directory where steps will run
+        docker: #steps to run with Docker
+            - image: circleci/node:9.9.0 # This image as the primary container; this is where all `steps` will run
+            # - image: mongo:4.2.0 # and this image is the secondary service container
+        steps: #collection of executable commands.
+            - checkout
+            - run: 
+                name: Install packages #literally the name of this step. Useful to indicate point in build
+                command: npm install 
+            - run: 
+                name: Run tests
+                command: npm test
+            - setup_remote_docker #Removes need for Docker daemon. Prevents error on CircleCI build process: Cannot connect to the Docker daemon at unix:///var
+            - run: # From https://medium.com/nexton/deploying-docker-images-to-heroku-with-circleci-713c764e248d
+                name: Build and push Docker image to Heroku
+                command: |
+                    sudo curl https://cli-assets.heroku.com/install.sh | sh #installs heroku cli
+                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku stack:set container -a marketsurveyapp #Sets stack of Heroku app to container
+                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login 
+                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push -a marketsurveyapp web
+                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a marketsurveyapp web
+
