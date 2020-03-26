@@ -48,6 +48,7 @@ async function testHerokuPg (request, response) {
         response.status(400).json('SERVER RESP: Error retrieving userrecords. Log:'+error)
         console.error(err);
         res.send("Error " + err);
+      
     }
 }
 
