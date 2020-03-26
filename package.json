@@ -20,7 +20,7 @@
   "scripts": {
     "start": "node server.js",
     "heroku-postbuild": "npm install && cd client && npm install && npm run build",
-    "test": ""
+    "test": "cd client && npm install && npm run test"
   },
   "repository": {
     "type": "git",
