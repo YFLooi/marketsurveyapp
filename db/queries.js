@@ -44,13 +44,12 @@ async function testHerokuPg (request, response) {
     try{
         const result = await dbase.query('SELECT * FROM test_table');
         const results = { 'results': (result) ? result.rows : null};
-        res.render('pages/db', results );
+        response.render('pages/db', results ); //renders a new page at appURL/db
         client.release();
     } catch (error){
         response.status(400).json('SERVER RESP: Error retrieving userrecords. Log:'+error)
         console.error(err);
-        res.send("Error " + err);
-      
+        response.send("Error " + err);
     }
 }
 
