@@ -13,13 +13,14 @@
     "pg-promise": "^8.7.5"
   },
   "engines": {
-    "npm": "6.4.1",
-    "node": "10.15.3"
+    "npm": "^6.4.1",
+    "node": "^10.15.3"
   },
   "devDependencies": {},
   "scripts": {
     "start": "node server.js",
     "test": "cd client && npm install && npm run test",
+    "install": "npm install && cd client && npm install && npm run build",
     "heroku-postbuild": "npm install && cd client && npm install && npm run build"
   },
   "repository": {
