@@ -57,6 +57,20 @@ function MainPage() {
           console.log('Request failed', error)
       })
   }
+  function testHerokuPg(){
+    fetch("/testHerokuPg/", {method: "GET"})  
+      .then(function(response){
+        return response.json()
+          .then(function(data){
+              console.log("Results of test:");
+              console.log(data);
+          })
+      })  
+      .catch(function(error){
+          console.log('Request failed', error)
+      })
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -72,6 +86,7 @@ function MainPage() {
         <Box classes={{root: classes.buttonBox}}>
         <Button variant="contained" color="primary" onClick={() => {testFunction()}}>Test function</Button>
         <Button variant="contained" color="secondary" onClick={() => {testGet()}}>Test Get</Button>
+        <Button variant="contained" color="secondary" onClick={() => {testHerokuPg()}}>Test Heroku Pg</Button>
         </Box>
       </Grid>
     </div>

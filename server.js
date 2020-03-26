@@ -30,6 +30,7 @@ app.get("/", (request, response) => {
 
 app.get("/testFunction", db.testFunction)
 app.get("/testGet", db.testGet)
+app.get("/testHerokuPg", db.testHerokuPg)
 
 //Put this last among all routes. Otherwise, it will return HTML to all fetch requests and trip up CORS. They interrupt each other
 // For any request that doesn't match, this sends the index.html file from the client. This is used for all of our React code.
