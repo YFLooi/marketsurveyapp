@@ -25,9 +25,9 @@ jobs:
         docker: #steps to run with Docker
             - image: circleci/node:9.9.0 # This image as the primary container; this is where all `steps` will run
             - image: circleci/postgres:9.6.5-alpine # and this image is the secondary service container
-                environment:
-                    POSTGRES_USER: HEROKU_POSTGRES_USER
-                    POSTGRES_DB: HEROKU_POSTGRES_DB
+              environment:
+                POSTGRES_USER: HEROKU_POSTGRES_USER
+                POSTGRES_DB: HEROKU_POSTGRES_DB
         
         environment: # environment variables for the build itself
             TEST_RESULTS: /tmp/test-results # path to where test results will be saved
