@@ -5,8 +5,11 @@ const pgp = require('pg-promise')(); // https://www.npmjs.com/package/pg-promise
 
 //Selects db to use based on value in the .env file's NODE_ENV parameter
 const dbaseURL = process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_DATABASE : process.env.DEVELOPMENT_DATABASE
-const dbase = pgp(dbaseURL); // Connect to database at URL defined in .env file
-
+const connectionSettings = {
+    connectionString: dbaseURL,
+    ssl: true
+}
+const dbase = pgp(connectionSettings); // Connect to database at URL defined in .env file
 
 /** 
 //For Heroku postgres
