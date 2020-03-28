@@ -38,10 +38,10 @@ jobs:
                   sudo mv ~/docker-compose /usr/local/bin/docker-compose
             - setup_remote_docker #Removes need for Docker daemon. Prevents error on CircleCI build process: Cannot connect to the Docker daemon at unix:///var
             - run:
-                name: Start containers and verify it is working. Must do before heroku container:push web.
+                name: Builds containers and verify it is working. Must do before heroku container:push web.
                 command: |
                   set -x
-                  docker-compose up -d
+                  docker-compose build
                   docker run --network container:api \
                     appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:5000/
                   docker run --network container:client \
