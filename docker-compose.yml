@@ -1,38 +1,31 @@
 #Configuration ref: https://docs.docker.com/compose/compose-file/#reference-and-guidelines
+#No need to create network. Docker v2 and above creates marketsurveyapp_default on run.
 version: "2"
-networks: #Creates shared app network for container. 
-  webappnetwork:        
-    driver: bridge
-services:    
-  client:
-    build: 
-      context: .
-      dockerfile: Dockerfile
-    container_name: client #Needed for docker-compose to find this container under "docker run --network container:container_name \"
-    image: node:6.11.5  #New image.Settings defined in Dockerfile in /client
-    restart: always
-    entrypoint: ["npm", "start"]
-    ports:
-      - "3000:3000" #As defined in Dockerfile
-    volumes: #specifies directory to be shared with another service as a volume
-      - ./client:/client 
-      - /client/node_modules
-    links:
-      - api #hooks up the "client" image to "api" image
-    #Each container in this service joins to this network. 
-    #Containers on the network are both reachable by other containers on that network, 
-    #and discoverable by them at a hostname identical to the container name.
-    networks: webappnetwork 
-  api:
-    build: 
-      context: .
-      dockerfile: Dockerfile
-    image: webapp-api #New image. Settings defined in Dockerfile in /api
-    container_name: api
-    restart: always
-    ports:
-      - "5000:5000" #As defined in Dockerfile
-    volumes: #specifies directory to be shared with another service as a volume
-      - ./api:/api 
-      - /api/node_modules
-    networks: webappnetwork
+services:     
+    api:
+        build: 
+            context: .
+            dockerfile: api/Dockerfile
+        image: webapp-api #New image. Settings defined in Dockerfile in /api
+        container_name: api
+        restart: always
+        ports:
+            - "5000:5000" #As defined in Dockerfile
+        volumes: #specifies directory to be shared with another service as a volume
+            - ./api:/api 
+            - /api/node_modules
+    client:
+        build: 
+            context: .
+            dockerfile: client/Dockerfile
+        container_name: client #Needed for docker-compose to find this container under "docker run --network container:container_name \"
+        image: webapp-client  #New image. Settings defined in Dockerfile in /client
+        restart: always
+        entrypoint: ["npm", "start"]
+        ports:
+            - "3000:3000" #As defined in Dockerfile
+        volumes: #specifies directory to be shared with another service as a volume
+            - ./client:/client 
+            - /client/node_modules
+        links:
+            - api #hooks up the "client" image to "api" image
