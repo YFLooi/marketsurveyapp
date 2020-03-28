@@ -43,14 +43,6 @@ jobs:
             - run: 
                 name: Install client packages  
                 command: cd client && npm install 
-            - run: #install dockerize to wait for dependencies to load
-                name: install dockerize
-                command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-                environment:
-                  DOCKERIZE_VERSION: v0.3.0
-            - run: #use dockerize to wait for psql to be ready
-                name: Wait for Heroku PSQL db
-                command: cd api && dockerize -wait tcp://${HEROKU_POSTGRES_URI} -timeout 1m
             - run: 
                 name: Run tests
                 command: cd client && npm test
