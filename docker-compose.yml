@@ -26,6 +26,4 @@ services:
     volumes: #specifies directory to be shared with another service as a volume
       - ./api:/api 
       - /api/node_modules
-    depends_on: #specifies dependencies. Dependencies are always loaded first, shut down last
-      - mongodb
     networks: webappnetwork

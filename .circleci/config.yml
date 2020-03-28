@@ -24,17 +24,30 @@ jobs:
         working_directory: ~/marketsurveyapp # name of root directory where steps will run
         docker: #steps to run with Docker
             - image: circleci/node:9.9.0 # This image as the primary container; this is where all `steps` will run
-            - image: circleci/postgres:9.6.5-alpine # and this image is the secondary service container
-              environment:
-                POSTGRES_USER: HEROKU_POSTGRES_USER
-                POSTGRES_DB: HEROKU_POSTGRES_DB
-        
         environment: # environment variables for the build itself
-            TEST_RESULTS: /tmp/test-results # path to where test results will be saved
-                
+            TEST_RESULTS: /tmp/test-results # path to where test results will be saved      
         steps: #collection of executable commands.
             - checkout #check out source code to working directory
             - run: mkdir -p $TEST_RESULTS # create the test results directory
+            - run:
+                name: Install Docker Compose
+                command: |
+                  set -x
+                  curl -L https://github.com/docker/compose/releases/download/1.25.3/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+                  chmod +x /usr/local/bin/docker-compose
+            - run:
+                name: Build service
+                command: make
+            - setup_remote_docker #Removes need for Docker daemon. Prevents error on CircleCI build process: Cannot connect to the Docker daemon at unix:///var
+            - run:
+                name: Start containers and verify it is working. Must do before heroku container:push web.
+                command: |
+                  set -x
+                  docker-compose up -d
+                  docker run --network container:api \
+                    appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:5000/
+                  docker run --network container:client \
+                  appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:3000/
             - run: 
                 name: Install api packages  #literally the name of this step. Useful to indicate point in build
                 command: cd api && npm install 
@@ -52,12 +65,13 @@ jobs:
             - run: 
                 name: Run tests
                 command: cd client && npm test
-            - setup_remote_docker #Removes need for Docker daemon. Prevents error on CircleCI build process: Cannot connect to the Docker daemon at unix:///var
             - run: # From https://medium.com/nexton/deploying-docker-images-to-heroku-with-circleci-713c764e248d
                 name: Build and push Docker image to Heroku
+                #"sudo curl ~~install.sh" installs Heroku cli
+                #"heroku stack:set container" sets stack of Heroku app to container
                 command: |
-                    sudo curl https://cli-assets.heroku.com/install.sh | sh #installs heroku cli
-                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku stack:set container -a marketsurveyapp #Sets stack of Heroku app to container
+                    sudo curl https://cli-assets.heroku.com/install.sh | sh 
+                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku stack:set container -a marketsurveyapp 
                     HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login 
                     HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push -a marketsurveyapp web
                     HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a marketsurveyapp web
