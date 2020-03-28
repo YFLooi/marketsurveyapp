@@ -50,7 +50,7 @@ jobs:
                   DOCKERIZE_VERSION: v0.3.0
             - run: #use dockerize to wait for psql to be ready
                 name: Wait for Heroku PSQL db
-                command: cd api && dockerize -wait tcp://localhost:5432 -timeout 1m
+                command: cd api && dockerize -wait tcp://${HEROKU_POSTGRES_URI} -timeout 1m
             - run: 
                 name: Run tests
                 command: cd client && npm test
