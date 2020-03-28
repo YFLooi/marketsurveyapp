@@ -1,16 +1,41 @@
-#Start from the pre-existing official Docker Node image (v6.11.5)
-#MANDATORY!
-FROM node:6.11.5
+#Start from the pre-existing official Docker Node image (v6.11.5) or use the lighter mhart/alpine-node:8.11.4
+FROM node:6.11.5 
 #Specifies directory for all subsequent actions in image filesystem (never host's filesystem)
+WORKDIR /client
+#Copies package.json from host into image filesystem. Docker caches this step so that 
+#subsequent builds with the same package.json are faster
+COPY package.json /client/
+#Run 'npm install' builds the package in the image's filesystem. 
+RUN npm install
+#Copies the rest of the app's source code into the image's filesystem
+COPY . /client/
+# Make port 3000 available to the world outside this container
+EXPOSE 3000
+#Runs the app when container launches. Same as running in console
+CMD ["npm", "start"]
+
+#Start from the pre-existing official Docker Node image (v6.11.5)
+FROM node:6.11.5 
+#Specifies directory for all subsequent actions in image filesystem (never host's filesystem)
+<<<<<<< HEAD
 WORKDIR /src
 ADD . /src
 #Does what it says: Copies package.json from host into image filesystem
 COPY package.json .
 #Run 'npm install' builds the package in the image's filesystem
+=======
+WORKDIR /api
+#Copies package.json from host into image filesystem. Docker caches this step so that 
+#subsequent builds with the same package.json are faster
+COPY package.json /api/
+#Run 'npm install' builds the package in the image's filesystem. 
+>>>>>>> 22db57741b999aacfc7b76ab671fabf3eba5bdc2
 RUN npm install
 #Copies the rest of the app's source code into the image's filesystem
-COPY . .
-#Metadata that specifies how to run a container based on this image
-#Here, that is by using 'npm start' in the console!
-CMD [ "npm", "start" ]
+COPY . /api/
+#opens port 5000 for the React front end
+EXPOSE 5000
+#Same as running in console
+CMD ["npm", "start"]
+
 
