@@ -5,6 +5,8 @@ networks: #Creates shared app network for container.
     driver: bridge
 services:    
   client:
+    build: .
+    container_name: client #Needed for docker-compose to find this container under "docker run --network container:container_name \"
     image: webapp-client #New image.Settings defined in Dockerfile in /client
     restart: always
     ports:
@@ -19,6 +21,8 @@ services:
     #and discoverable by them at a hostname identical to the container name.
     networks: webappnetwork 
   api:
+    build: .
+    container_name: api
     image: webapp-api #New image. Settings defined in Dockerfile in /api
     restart: always
     ports:
