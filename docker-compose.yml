@@ -1,0 +1,19 @@
+version: '2'
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000" #must match Express port specified
+    env_file: .env
+    depends_on:
+      - db #links the web app to the PSQL backend
+    volumes:
+      - ./webapp:/opt/webapp
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432" #Default PSQL port
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
