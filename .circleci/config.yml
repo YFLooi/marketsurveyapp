@@ -37,16 +37,6 @@ jobs:
                   chmod +x ~/docker-compose
                   sudo mv ~/docker-compose /usr/local/bin/docker-compose
             - setup_remote_docker #Removes need for Docker daemon. Prevents error on CircleCI build process: Cannot connect to the Docker daemon at unix:///var
-            - run:
-                name: Builds containers and verify it is working. Must do before heroku container:push web.
-                command: |
-                  set -x
-                  docker-compose build 
-                  docker-compose up
-                  docker run --network container:api \
-                    appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:5000/
-                  docker run --network container:client \
-                  appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:3000/
             - run: 
                 name: Install api packages  #literally the name of this step. Useful to indicate point in build
                 command: cd api && npm install 
@@ -64,6 +54,15 @@ jobs:
             - run: 
                 name: Run tests
                 command: cd client && npm test
+            - run:
+                name: Builds containers and verify it is working. Must do before heroku container:push web.
+                command: |
+                  set -x
+                  docker-compose up -d
+                  docker run --network container:api \
+                    appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:5000/
+                  docker run --network container:client \
+                  appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:3000/
             - run: # From https://medium.com/nexton/deploying-docker-images-to-heroku-with-circleci-713c764e248d
                 name: Build and push Docker image to Heroku
                 #"sudo curl ~~install.sh" installs Heroku cli
