@@ -9,7 +9,7 @@ services:
       context: .
       dockerfile: client/Dockerfile
     container_name: client #Needed for docker-compose to find this container under "docker run --network container:container_name \"
-    image: mhart/alpine-node: 6.8.0 #New image.Settings defined in Dockerfile in /client
+    image: node:6.11.5  #New image.Settings defined in Dockerfile in /client
     restart: always
     entrypoint: ["npm", "start"]
     ports:
