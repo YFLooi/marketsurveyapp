@@ -36,19 +36,22 @@ jobs:
             - checkout #check out source code to working directory
             - run: mkdir -p $TEST_RESULTS # create the test results directory
             - run: 
-                name: Install packages #literally the name of this step. Useful to indicate point in build
-                command: npm install 
+                name: Install api packages  #literally the name of this step. Useful to indicate point in build
+                command: cd api && npm install 
+            - run: 
+                name: Install client packages  
+                command: cd client && npm install 
             - run: #install dockerize to wait for dependencies to load
                 name: install dockerize
                 command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
                 environment:
                   DOCKERIZE_VERSION: v0.3.0
             - run: #use dockerize to wait for psql to be ready
-                name: Wait for db
+                name: Wait for Heroku PSQL db
                 command: dockerize -wait tcp://localhost:5432 -timeout 1m
             - run: 
                 name: Run tests
-                command: npm test
+                command: cd client && npm test
             - setup_remote_docker #Removes need for Docker daemon. Prevents error on CircleCI build process: Cannot connect to the Docker daemon at unix:///var
             - run: # From https://medium.com/nexton/deploying-docker-images-to-heroku-with-circleci-713c764e248d
                 name: Build and push Docker image to Heroku
