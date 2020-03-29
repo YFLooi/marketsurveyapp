@@ -4,7 +4,7 @@ FROM node:6.11.5
 WORKDIR /client
 #Copies package.json from host into image filesystem. Docker caches this step so that 
 #subsequent builds with the same package.json are faster
-COPY . /client/package.json 
+COPY package*.json /client/
 #Run 'npm install' builds the package in the image's filesystem. 
 RUN npm install
 #Copies the rest of the app's source code into the image's filesystem
