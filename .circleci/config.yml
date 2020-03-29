@@ -50,7 +50,8 @@ jobs:
                 name: Builds containers and verify it is working. Must do before heroku container:push web.
                 command: |
                   set -x
-                  docker-compose up --build
+                  docker-compose up -d
+                  docker ps -a
                   docker network ls
                   docker run --network container:api \
                     appropriate/curl --keepalive-time 60 --retry 10 --retry-delay 1 --retry-connrefused http://localhost:5000/
