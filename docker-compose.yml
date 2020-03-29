@@ -19,7 +19,6 @@ services:
             context: ./client
             dockerfile: Dockerfile
         image: webapp-client:client #Needed for docker-compose to find this container under "docker run --network container:container_name \"
-        container_name: client
         restart: "no"
         ports:
             - "3000:3000" #Host port on the left, container port on the right. 
