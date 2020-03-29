@@ -29,15 +29,15 @@ jobs:
         steps: #collection of executable commands.
             - checkout #check out source code to working directory
             - run: mkdir -p $TEST_RESULTS # create the test results directory
-            - run: 
-                name: Run tests
-                command: cd client && npm test
             #- run: 
                 #name: Install api packages  #literally the name of this step. Useful to indicate point in build
                 #command: cd api && npm install 
-            #- run: 
-                #name: Install client packages  
-                #command: cd client && npm install 
+            - run: #Required to run tests
+                name: Install client packages  
+                command: cd client && npm install 
+            - run: 
+                name: Run tests
+                command: cd client && npm test
             - run:
                 name: Install Docker client
                 command: |
