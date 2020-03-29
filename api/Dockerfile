@@ -9,8 +9,8 @@ COPY . /api/package.json
 RUN npm install
 #Copies the rest of the app's source code into the image's filesystem
 COPY . /api/
-#opens port 5000 for the React front end
-EXPOSE 5000
+#opens port 5000 on tcp for the React front end. Link to connect: tcp://localhost:5000/
+EXPOSE 5000/tcp
 #Same as running in console
 CMD ["npm", "start"]
 

@@ -52,9 +52,9 @@ jobs:
                   set -x
                   docker-compose up --build
                   docker run --network container:api \
-                    appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:5000/
+                    appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused tcp://localhost:5000/
                   docker run --network container:client \
-                  appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:3000/
+                  appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused tcp://localhost:3000/
             - run: # From https://medium.com/nexton/deploying-docker-images-to-heroku-with-circleci-713c764e248d
                 name: Build and push Docker image to Heroku
                 #"sudo curl ~~install.sh" installs Heroku cli

@@ -9,8 +9,8 @@ COPY . /client/package.json
 RUN npm install
 #Copies the rest of the app's source code into the image's filesystem
 COPY . /client/
-# Make port 3000 available to the world outside this container
-EXPOSE 3000
+# Make port 3000 available to the world outside this container. Connection link is tcp://localhost:5000/
+EXPOSE 3000/tcp
 #Runs the app when container launches. Same as running in console
 CMD ["npm", "start"]
 
