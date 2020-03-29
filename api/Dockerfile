@@ -9,8 +9,9 @@ COPY package*.json /api/
 RUN npm install
 #Copies the rest of the app's source code into the image's filesystem
 COPY . /api/
-#opens port 5000 on tcp for the React front end. Link to connect: tcp://localhost:5000/
+# Make port 5000 available to the world outside this container through both tcp and udp. Default if unspecified is TCP
 EXPOSE 5000/tcp
+EXPOSE 5000/udp
 #Same as running in console
 CMD ["npm", "start"]
 

@@ -3,28 +3,36 @@
 version: "2"
 services:     
     api:
-        build: 
+        build: #Specifies Dockerfile to use to build image
             context: ./api
             dockerfile: Dockerfile
-        image: api #Specifies image to start container from. Also name of image generated from Dockerfile.
         container_name: api
-        restart: always
+        restart: on-failure
         ports:
-            - "5000:5000" #As defined in Dockerfile
+            - "5000:5000" #Host port on the left, container port on the right. Network uses container port. Ref: https://docs.docker.com/compose/networking/
         volumes: #specifies directory to be shared with another service as a volume
             - ./api:/api 
             - /api/node_modules
+        networks:
+            new:
+                aliases: 
+                    -api
     client:
-        build: 
+        build: #Specifies Dockerfile to use to build image
             context: ./client
             dockerfile: Dockerfile
-        image: client #Specifies image to start container from. Also name of image generated from Dockerfile.
         container_name: client #Needed for docker-compose to find this container under "docker run --network container:container_name \"
-        restart: always
+        restart: on-failure
         ports:
-            - "3000:3000" #As defined in Dockerfile
+            - "3000:3000" #Host port on the left, container port on the right. 
         volumes: #specifies directory to be shared with another service as a volume
             - ./client:/client 
             - /client/node_modules
-        links:
-            - api #hooks up the "client" image to "api" image
+        networks:
+            new:
+                aliases: 
+                    -client
+networks:
+    new:
+        # Use a custom driver
+        driver: custom-driver-1
