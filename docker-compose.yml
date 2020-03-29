@@ -5,7 +5,7 @@ services:
     api:
         build: 
             context: ./api
-            dockerfile: api/Dockerfile
+            dockerfile: Dockerfile
         image: api #Specifies image to start container from. Also name of image generated from Dockerfile.
         container_name: api
         restart: always
@@ -17,7 +17,7 @@ services:
     client:
         build: 
             context: ./client
-            dockerfile: client/Dockerfile
+            dockerfile: Dockerfile
         image: client #Specifies image to start container from. Also name of image generated from Dockerfile.
         container_name: client #Needed for docker-compose to find this container under "docker run --network container:container_name \"
         restart: always
