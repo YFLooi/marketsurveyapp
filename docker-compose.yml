@@ -6,7 +6,8 @@ services:
         build: #Specifies Dockerfile to use to build image
             context: ./api
             dockerfile: Dockerfile
-        image: api:api
+        image: webapp-api:api
+        container_name: api
         restart: on-failure
         ports:
             - "5000:5000" #Host port on the left, container port on the right. Network uses container port. Ref: https://docs.docker.com/compose/networking/
@@ -17,7 +18,7 @@ services:
         build: #Specifies Dockerfile to use to build image
             context: ./client
             dockerfile: Dockerfile
-        image: client:client #Needed for docker-compose to find this container under "docker run --network container:container_name \"
+        image: webapp-client:client #Needed for docker-compose to find this container under "docker run --network container:container_name \"
         restart: on-failure
         ports:
             - "3000:3000" #Host port on the left, container port on the right. 
