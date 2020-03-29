@@ -13,10 +13,6 @@ services:
         volumes: #specifies directory to be shared with another service as a volume
             - ./api:/api 
             - /api/node_modules
-        networks:
-            new:
-                aliases: 
-                    -api
     client:
         build: #Specifies Dockerfile to use to build image
             context: ./client
@@ -28,11 +24,3 @@ services:
         volumes: #specifies directory to be shared with another service as a volume
             - ./client:/client 
             - /client/node_modules
-        networks:
-            new:
-                aliases: 
-                    -client
-networks:
-    new:
-        # Use a custom driver
-        driver: custom-driver-1
