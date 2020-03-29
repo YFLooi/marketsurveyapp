@@ -6,7 +6,7 @@ services:
         build: #Specifies Dockerfile to use to build image
             context: ./api
             dockerfile: Dockerfile
-        image: webapp-api:api
+        image: webapp-api
         container_name: api
         restart: "no"
         ports:
@@ -18,7 +18,7 @@ services:
         build: #Specifies Dockerfile to use to build image
             context: ./client
             dockerfile: Dockerfile
-        image: webapp-client:client #Needed for docker-compose to find this container under "docker run --network container:container_name \"
+        image: webapp-client #Needed for docker-compose to find this container under "docker run --network container:container_name \"
         restart: "no"
         ports:
             - "3000:3000" #Host port on the left, container port on the right. 
