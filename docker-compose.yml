@@ -8,7 +8,7 @@ services:
             dockerfile: Dockerfile
         image: webapp-api
         container_name: api
-        restart: "no"
+        restart: always
         ports:
             - "5000:5000" #Host port on the left, container port on the right. Network uses container port. Ref: https://docs.docker.com/compose/networking/
         volumes: #specifies directory to be shared with another service as a volume
@@ -19,7 +19,7 @@ services:
             context: ./client
             dockerfile: Dockerfile
         image: webapp-client #Needed for docker-compose to find this container under "docker run --network container:container_name \"
-        restart: "no"
+        restart: always
         ports:
             - "3000:3000" #Host port on the left, container port on the right. 
         volumes: #specifies directory to be shared with another service as a volume
