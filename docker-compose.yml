@@ -4,9 +4,9 @@ version: "2"
 services:     
     api:
         build: 
-            context: .
+            context: ./api
             dockerfile: api/Dockerfile
-        image: webapp-api #New image. Settings defined in Dockerfile in /api
+        image: api #Specifies image to start container from. Also name of image generated from Dockerfile.
         container_name: api
         restart: always
         ports:
@@ -16,12 +16,11 @@ services:
             - /api/node_modules
     client:
         build: 
-            context: .
+            context: ./client
             dockerfile: client/Dockerfile
+        image: client #Specifies image to start container from. Also name of image generated from Dockerfile.
         container_name: client #Needed for docker-compose to find this container under "docker run --network container:container_name \"
-        image: webapp-client  #New image. Settings defined in Dockerfile in /client
         restart: always
-        entrypoint: ["npm", "start"]
         ports:
             - "3000:3000" #As defined in Dockerfile
         volumes: #specifies directory to be shared with another service as a volume
