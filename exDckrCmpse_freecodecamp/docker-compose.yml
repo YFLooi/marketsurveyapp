@@ -1,0 +1,30 @@
+version: "2"
+services:    
+    client:        
+        image: webapp-client        
+        restart: always        
+        ports:            
+            - "3000:3000"        
+        volumes:            
+            - ./client:/client            
+            - /client/node_modules        
+        links: #deprecated. Define "networks" instead
+            - api        
+        networks: webappnetwork #Plain wrong! It's more complicated than this: https://docs.docker.com/compose/compose-file/#networks
+    api:        
+        image: webapp-api        
+        restart: always        
+        ports:            
+            - "9000:9000" #why not same as port 80 specified in api's Dockerfile?
+        volumes:            
+            - ./api:/api            
+            - /api/node_modules        
+        depends_on:            
+            - mongodb        
+        networks: webappnetwork
+
+config.yml stuff:
+    docker run --network container:webapp-api \
+        appropriate/curl --keepalive-time 60 --retry 10 --retry-delay 1 --retry-connrefused http://localhost:5000/
+    docker run --network container:webapp-client \
+        appropriate/curl --keepalive-time 60 --retry 10 --retry-delay 1 --retry-connrefused httpp://localhost:3000/
