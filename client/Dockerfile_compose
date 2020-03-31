@@ -12,7 +12,6 @@ COPY /client .
 RUN npm build
 # Make port 3000 available to the world outside this container through both tcp and udp. Default if unspecified is TCP
 EXPOSE 3000
-ENV http_proxy http://localhost:5000/
 #Runs the app when container launches. Same as running in console
 CMD ["npm", "start"]
 
