@@ -46,5 +46,7 @@ useful config.yml jobs:
           docker-compose up -d
           docker run --network container:api \
             appropriate/curl --keepalive-time 60 --retry 10 --retry-delay 1 --retry-connrefused http://localhost:5000/
+          docker run --network container:client \
+            appropriate/curl --keepalive-time 60 --retry 10 --retry-delay 1 --retry-connrefused http://localhost:3000/
           docker ps -a
           docker network ls

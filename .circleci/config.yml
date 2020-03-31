@@ -5,49 +5,61 @@ orbs:
   heroku: circleci/heroku@1.0.1 # Invoke the Heroku orb
 
 workflows: #Defined set of rules for defining a collection of jobs and their run order
-    build-and-test: #Condition for Github to accept push
-        jobs:
-            - build-and-test
-    heroku_deploy:
-        jobs:
-            - build-and-test
-            - heroku/deploy-via-git: # Use the pre-configured job, deploy-via-git
-                requires:
-                    - build-and-test
-                filters:
-                    branches:
-                        only: sequential-branch-filter
+  build-and-test: #Condition for Github to accept push
+    jobs:
+      - build-and-test
+  heroku_deploy:
+    jobs:
+      - build-and-test
+      - heroku/deploy-via-git: # Use the pre-configured job, deploy-via-git
+        requires:
+          - build-and-test
+        filters:
+          branches:
+            only: sequential-branch-filter
 
 #github requires both 'build-and-test' and 'build' run before approving pull requests...
 jobs:
-    build-and-test: #runs with all workflows
-        working_directory: ~/marketsurveyapp # name of root directory where steps will run
-        docker: #steps to run with Docker
-            - image: circleci/node:9.9.0 # This image as the primary container; this is where all `steps` will run
-        environment: # environment variables for the build itself
-            TEST_RESULTS: /tmp/test-results # path to where test results will be saved      
-        steps: #collection of executable commands.
-            - checkout #check out source code to working directory
-            - run: mkdir -p $TEST_RESULTS # create the test results directory
-            #- run: 
-                #name: Install api packages  #literally the name of this step. Useful to indicate point in build
-                #command: cd api && npm install 
-            - run: #Required to run tests
-                name: Install client packages  
-                command: cd client && npm install 
-            - run: 
-                name: Run tests
-                command: cd client && npm test
-            - setup_remote_docker #Removes need for Docker daemon. Prevents error on CircleCI build process: Cannot connect to the Docker daemon at unix:///var
-            - run: # From https://medium.com/nexton/deploying-docker-images-to-heroku-with-circleci-713c764e248d
-                name: Build and push Docker image to Heroku
-                #"sudo curl ~~install.sh" installs Heroku cli
-                #"heroku stack:set container" sets stack of Heroku app to container
-                #"heroku container:push" looks for the Dockerfiles.processType from the root folder to build images of them
-                command: |
-                    sudo curl https://cli-assets.heroku.com/install.sh | sh 
-                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku stack:set container -a marketsurveyapp 
-                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login 
-                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push --recursive -a marketsurveyapp web
-                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a marketsurveyapp web
+  build-and-test: #runs with all workflows
+    working_directory: ~/marketsurveyapp # name of root directory where steps will run
+    docker: #steps to run with Docker
+      - image: circleci/node:9.9.0 # This image as the primary container; this is where all `steps` will run
+    environment: # environment variables for the build itself
+      TEST_RESULTS: /tmp/test-results # path to where test results will be saved      
+    steps: #collection of executable commands.
+      - checkout #check out source code to working directory
+      - run: mkdir -p $TEST_RESULTS # create the test results directory
+      - run: 
+          name: Install api packages  #literally the name of this step. Useful to indicate point in build
+          command: cd api && npm install 
+      - run: #Required to run tests
+          name: Install client packages  
+          command: cd client && npm install 
+      - run: 
+          name: Run tests
+          command: cd client && npm test
+      - setup_remote_docker #Removes need for Docker daemon. Prevents error on CircleCI build process: Cannot connect to the Docker daemon at unix:///var
+      - run:
+          name: Builds containers and verify it is working. Must do before heroku container:push web.
+          command: |
+            set -x
+            docker-compose build
+            docker-compose up 
+            docker run --network container:api \
+              appropriate/curl --keepalive-time 60 --retry 10 --retry-delay 1 --retry-connrefused http://localhost:5000/
+            docker run --network container:client \
+              appropriate/curl --keepalive-time 60 --retry 10 --retry-delay 1 --retry-connrefused http://localhost:3000/
+            docker ps -a
+            docker network ls
+      - run: # From https://medium.com/nexton/deploying-docker-images-to-heroku-with-circleci-713c764e248d
+        name: Build and push Docker image to Heroku
+        #"sudo curl ~~install.sh" installs Heroku cli
+        #"heroku stack:set container" sets stack of Heroku app to container
+        #"heroku container:push" looks for the Dockerfiles.processType from the root folder to build images of them
+        command: |
+          sudo curl https://cli-assets.heroku.com/install.sh | sh 
+          HEROKU_API_KEY=${HEROKU_TOKEN} heroku stack:set container -a marketsurveyapp 
+          HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login 
+          HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push --recursive -a marketsurveyapp web
+          HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a marketsurveyapp web
 
