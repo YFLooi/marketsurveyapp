@@ -16,14 +16,14 @@ app.use(bodyParser.json())
 
 //Static file declaration, which is the location of the React app
 //Used in deployment by React app to access index.js
-app.use(express.static(path.join(__dirname, 'client/'))); 
+app.use(express.static(path.join(__dirname, 'client/build'))); 
 
 //tell a route making a GET request on the root (/) URL to head to the HomePage
 app.get("/", (request, response) => {
     if (error) {
         throw error
     }
-    response.sendFile(__dirname + '/client/public/index.html');
+    response.sendFile(__dirname + '/client/build/index.html');
     //response.send("Server running on Node.js, Express, and Postgres API")
     //response.json({ info: "Server running on Node.js, Express, and Postgres API" });
 })
@@ -36,7 +36,7 @@ app.get("/testHerokuPg", db.testHerokuPg)
 // For any request that doesn't match, this sends the index.html file from the client. This is used for all of our React code.
 //Eliminates need to set redirect in package.json at start script with concurrently
 app.get('*', (req, res) => {  
-    res.sendFile(path.join(__dirname+'/client/public/index.html'));
+    res.sendFile(path.join(__dirname+'/client/build/index.html'));
 })
 
 /*set the app to listen on the port you set*/
