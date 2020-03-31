@@ -5,7 +5,7 @@ services:
     api:
         build: 
             context: .
-            dockerfile: api/Dockerfile
+            dockerfile: api/Dockerfile_compose
         image: webapp-api #New image. Settings defined in Dockerfile in /api
         container_name: api
         restart: "no"
@@ -17,7 +17,7 @@ services:
     client:
         build: 
             context: .
-            dockerfile: client/Dockerfile
+            dockerfile: client/Dockerfile_compose
         container_name: client #Needed for docker-compose to find this container under "docker run --network container:container_name \"
         image: webapp-client  #New image. Settings defined in Dockerfile in /client
         restart: "no"
