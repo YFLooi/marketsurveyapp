@@ -7,18 +7,17 @@ services:
       context: .
       dockerfile: api/Dockerfile_compose
     image: webapp-api #New image. Settings defined in Dockerfile in /api
-    container_name: api
     restart: "no"
     ports:
       - "5000:5000" #As defined in Dockerfile
     volumes: #specifies directory to be shared with another service as a volume
       - ./api:/api 
       - /api/node_modules
+    networks: app
   client:
     build: 
       context: .
       dockerfile: client/Dockerfile_compose
-    container_name: client #Needed for docker-compose to find this container under "docker run --network container:container_name \"
     image: webapp-client  #New image. Settings defined in Dockerfile in /client
     restart: "no"
     ports:
@@ -26,4 +25,6 @@ services:
     volumes: #specifies directory to be shared with another service as a volume
       - ./client:/client 
       - /client/node_modules
+    networks: app
     stdin_open: true #MUST to prevent React containers from crashing after "npm build". Ref: https://github.com/facebook/create-react-app/issues/8688
+networks: app
