@@ -32,7 +32,7 @@ services:
       app:
         aliases:
           - client
-    link:
+    links:
       -api
     stdin_open: true #MUST to prevent React containers from crashing after "npm build". Ref: https://github.com/facebook/create-react-app/issues/8688
 networks: 
