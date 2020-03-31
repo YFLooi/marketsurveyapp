@@ -61,6 +61,9 @@ jobs:
                     docker-compose build
                     docker-compose up -d
             - run:
+                # docker-compose will start 2 containers, the one with service will be named `contacts`
+                # we start another container with curl in the same network as `contacts`, this way we have
+                # all exposed ports from `contacts` available on `localhost` in this new container
                 name: Checks if containers are running
                 command: |
                     docker run --network container:api \
