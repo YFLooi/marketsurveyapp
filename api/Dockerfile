@@ -4,7 +4,7 @@ FROM mhart/alpine-node:8.11.4
 WORKDIR /api
 #Copies package.json from host into "WORKDIR/api". Docker caches this step so that 
 #subsequent builds with the same package.json are faster
-COPY package.json /api/
+COPY package*.json /api/
 #Run 'npm install' builds the package in the image's filesystem. 
 RUN npm install
 #Copies the rest of the app's source code into the image's filesystem
