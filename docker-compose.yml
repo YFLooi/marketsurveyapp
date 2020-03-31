@@ -18,10 +18,8 @@ services:
         build: #Specifies Dockerfile to use to build image
             context: ./client
             dockerfile: Dockerfile
-        image: webapp-client #Needed for docker-compose to find this container under "docker run --network container:container_name \"
+        image: mhart/alpine-node:8.11.4 #Needed for docker-compose to find this container under "docker run --network container:container_name \"
         restart: always
-        ports:
-            - "3000:3000" #Host port on the left, container port on the right. 
         volumes: #specifies directory to be shared with another service as a volume
             - ./client:/client 
             - /client/node_modules
