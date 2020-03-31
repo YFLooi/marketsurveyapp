@@ -13,7 +13,10 @@ services:
     volumes: #specifies directory to be shared with another service as a volume
       - ./api:/api 
       - /api/node_modules
-    networks: app
+    networks: 
+      app:
+        aliases:
+          - api
   client:
     build: 
       context: .
@@ -25,6 +28,10 @@ services:
     volumes: #specifies directory to be shared with another service as a volume
       - ./client:/client 
       - /client/node_modules
-    networks: app
+    networks: 
+      app:
+        aliases:
+          - client
     stdin_open: true #MUST to prevent React containers from crashing after "npm build". Ref: https://github.com/facebook/create-react-app/issues/8688
-networks: app
+networks: 
+  app:
