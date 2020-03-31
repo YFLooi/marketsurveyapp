@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: api/Dockerfile_compose
     image: webapp-api #New image. Settings defined in Dockerfile in /api
-    restart: "no"
+    restart: always
     ports:
       - "5000:5000" #As defined in Dockerfile
     volumes: #specifies directory to be shared with another service as a volume
@@ -22,7 +22,7 @@ services:
       context: .
       dockerfile: client/Dockerfile_compose
     image: webapp-client  #New image. Settings defined in Dockerfile in /client
-    restart: "no"
+    restart: always
     ports:
       - "3000:3000" #As defined in Dockerfile
     volumes: #specifies directory to be shared with another service as a volume
@@ -32,6 +32,8 @@ services:
       app:
         aliases:
           - client
+    link:
+      -api
     stdin_open: true #MUST to prevent React containers from crashing after "npm build". Ref: https://github.com/facebook/create-react-app/issues/8688
 networks: 
   app:
