@@ -7,13 +7,13 @@ COPY . .
 
 FROM base AS api
 COPY api app/api
-RUN /app/api -c npm install
+RUN /app/api npm install
 EXPOSE 5000/tcp
 EXPOSE 5000/udp
 
 FROM base AS client
 COPY client app/client/
-RUN /app/client -c npm install
+RUN /app/client npm install
 RUN npm test
 EXPOSE 3000/tcp
 EXPOSE 3000/udp
