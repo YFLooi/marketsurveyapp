@@ -4,4 +4,4 @@ build:
     client: client/Dockerfile
 run:
   api: npm start
-  client: npm start
+  client: npm build && npm start

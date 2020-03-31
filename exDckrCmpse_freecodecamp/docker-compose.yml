@@ -50,3 +50,11 @@ useful config.yml jobs:
             appropriate/curl --keepalive-time 60 --retry 10 --retry-delay 1 --retry-connrefused http://localhost:3000/
           docker ps -a
           docker network ls
+    - run:
+        name: Install Docker client
+        command: |
+          set -x
+          VER="17.03.0-ce"
+          curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
+          tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+          sudo mv /tmp/docker/* /usr/bin
