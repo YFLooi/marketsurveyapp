@@ -59,14 +59,14 @@ jobs:
             docker ps -a
             docker network ls
       - run: # From https://medium.com/nexton/deploying-docker-images-to-heroku-with-circleci-713c764e248d
-        name: Build and push Docker image to Heroku
-        #"sudo curl ~~install.sh" installs Heroku cli
-        #"heroku stack:set container" sets stack of Heroku app to container
-        #"heroku container:push" looks for the Dockerfiles.processType from the root folder to build images of them
-        command: |
-          sudo curl https://cli-assets.heroku.com/install.sh | sh 
-          HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login
-          HEROKU_API_KEY=${HEROKU_TOKEN} heroku stack:set container -a marketsurveyapp  
-          HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push api client --recursive 
-          HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a marketsurveyapp web
+          name: Build and push Docker image to Heroku
+          #"sudo curl ~~install.sh" installs Heroku cli
+          #"heroku stack:set container" sets stack of Heroku app to container
+          #"heroku container:push" looks for the Dockerfiles.processType from the root folder to build images of them
+          command: |
+            sudo curl https://cli-assets.heroku.com/install.sh | sh 
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku stack:set container -a marketsurveyapp  
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push api client --recursive 
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a marketsurveyapp web
 
