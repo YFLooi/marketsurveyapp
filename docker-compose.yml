@@ -3,23 +3,29 @@
 version: "2"
 services:     
     api:
-        build: #Specifies Dockerfile to use to build image
-            context: ./api
-            dockerfile: Dockerfile
-        image: webapp-api
+        build: 
+            context: .
+            dockerfile: api/Dockerfile
+        image: webapp-api #New image. Settings defined in Dockerfile in /api
         container_name: api
         restart: always
         ports:
-            - "5000:5000" #Host port on the left, container port on the right. Network uses container port. Ref: https://docs.docker.com/compose/networking/
+            - "5000:5000" #As defined in Dockerfile
         volumes: #specifies directory to be shared with another service as a volume
             - ./api:/api 
             - /api/node_modules
     client:
-        build: #Specifies Dockerfile to use to build image
-            context: ./client
-            dockerfile: Dockerfile
-        image: mhart/alpine-node:8.11.4 #Needed for docker-compose to find this container under "docker run --network container:container_name \"
+        build: 
+            context: .
+            dockerfile: client/Dockerfile
+        container_name: client #Needed for docker-compose to find this container under "docker run --network container:container_name \"
+        image: webapp-client  #New image. Settings defined in Dockerfile in /client
         restart: always
+        entrypoint: ["npm", "start"]
+        ports:
+            - "3000:3000" #As defined in Dockerfile
         volumes: #specifies directory to be shared with another service as a volume
             - ./client:/client 
             - /client/node_modules
+        links:
+            - api #hooks up the "client" image to "api" image
