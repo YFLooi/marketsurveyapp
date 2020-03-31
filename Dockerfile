@@ -6,13 +6,13 @@ WORKDIR /app
 COPY . .
 
 FROM base AS api
-COPY --from=dependencies api ./api  
+COPY api api/
 RUN npm install
 EXPOSE 5000/tcp
 EXPOSE 5000/udp
 
 FROM base AS client
-COPY --from=dependencies client ./client  
+COPY client client/
 RUN npm install
 RUN npm test
 EXPOSE 3000/tcp
