@@ -11,7 +11,7 @@ RUN npm install
 COPY . .
 # Make port 5000 available to the world outside this container through both tcp and udp. Default if unspecified is TCP
 EXPOSE 5000
-ENV HTTP_PROXY "http://localhost:5000"
+ENV HTTP_PROXY "http://127.0.0.1:5000"
 #Same as running in console
 CMD ["npm", "start"]
 
