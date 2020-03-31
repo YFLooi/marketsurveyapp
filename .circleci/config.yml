@@ -61,16 +61,6 @@ jobs:
                     docker-compose build
                     docker-compose up -d
             - run:
-                # docker-compose will start 2 containers, the one with service will be named `contacts`
-                # we start another container with curl in the same network as `contacts`, this way we have
-                # all exposed ports from `contacts` available on `localhost` in this new container
-                name: Checks if containers are running
-                command: |
-                    docker run --network container:api \
-                        appropriate/curl --keepalive-time 60 --retry 10 --retry-delay 1 --retry-connrefused http://localhost:5000/
-                    docker run --network container:client \
-                        appropriate/curl --keepalive-time 60 --retry 10 --retry-delay 1 --retry-connrefused http://localhost:3000/
-            - run:
                 name: Checks available containers and networks
                 command: |
                   docker ps -a
@@ -85,6 +75,6 @@ jobs:
                     sudo curl https://cli-assets.heroku.com/install.sh | sh 
                     HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login
                     HEROKU_API_KEY=${HEROKU_TOKEN} heroku stack:set container -a marketsurveyapp  
-                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push api client --recursive 
+                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push web
                     HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a marketsurveyapp web
 
