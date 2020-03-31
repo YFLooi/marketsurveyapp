@@ -16,7 +16,7 @@ app.use(bodyParser.json())
 
 //Static file declaration, which is the location of the React app
 //Used in deployment by React app to access index.js
-app.use(express.static(path.join(__dirname, 'client/build'))); 
+app.use(express.static(path.join(__dirname, 'public'))); 
 
 //tell a route making a GET request on the root (/) URL to head to the HomePage
 app.get("/", (request, response) => {
