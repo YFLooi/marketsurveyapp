@@ -26,5 +26,4 @@ services:
         volumes: #specifies directory to be shared with another service as a volume
             - ./client:/client 
             - /client/node_modules
-        links: #deprecated. Define "networks" instead
-            - api     
+        stdin_open: true    
