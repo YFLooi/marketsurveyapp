@@ -40,6 +40,14 @@ jobs:
                 command: cd client && npm test
             - setup_remote_docker #Removes need for Docker daemon. Prevents error on CircleCI build process: Cannot connect to the Docker daemon at unix:///var
             - run:
+                name: Install Docker client
+                command: |
+                    set -x
+                    VER="17.03.0-ce"
+                    curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
+                    tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+                    mv /tmp/docker/* /usr/bin
+            - run:
                 name: Install Docker Compose
                 command: |
                     set -x
@@ -47,17 +55,23 @@ jobs:
                     chmod +x ~/docker-compose
                     sudo mv ~/docker-compose /usr/local/bin/docker-compose
             - run:
-                name: Builds containers and verify it is working. Must do before heroku container:push web.
+                name: Builds and deploys containers
                 command: |
                     set -x
                     docker-compose build
-                    docker-compose up 
+                    docker-compose up -d
+            - run:
+                name: Checks if containers are running
+                command: |
                     docker run --network container:api \
                         appropriate/curl --keepalive-time 60 --retry 10 --retry-delay 1 --retry-connrefused http://localhost:5000/
                     docker run --network container:client \
                         appropriate/curl --keepalive-time 60 --retry 10 --retry-delay 1 --retry-connrefused http://localhost:3000/
-                    docker ps -a
-                    docker network ls
+            - run:
+                name: Checks available containers and networks
+                command: |
+                  docker ps -a
+                  docker network ls
             - run: # From https://medium.com/nexton/deploying-docker-images-to-heroku-with-circleci-713c764e248d
                 name: Build and push Docker image to Heroku
                 #"sudo curl ~~install.sh" installs Heroku cli
