@@ -30,14 +30,14 @@ jobs:
       - checkout #check out source code to working directory
       - run: mkdir -p $TEST_RESULTS # create the test results directory
       - run: 
-          name: Install api packages  #literally the name of this step. Useful to indicate point in build
-          command: cd api && npm install 
+        name: Install api packages  #literally the name of this step. Useful to indicate point in build
+        command: cd api && npm install 
       - run: #Required to run tests
-          name: Install client packages  
-          command: cd client && npm install 
+        name: Install client packages  
+        command: cd client && npm install 
       - run: 
-          name: Run tests
-          command: cd client && npm test
+        name: Run tests
+        command: cd client && npm test
       - setup_remote_docker #Removes need for Docker daemon. Prevents error on CircleCI build process: Cannot connect to the Docker daemon at unix:///var
       - run:
           name: Install Docker Compose
