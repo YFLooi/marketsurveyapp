@@ -9,7 +9,7 @@ COPY package.json .
 RUN npm install
 #Copies the rest of the app's source code into the image's filesystem
 COPY . .
-#Run 'npm install' builds the package in the image's filesystem. 
+#Run 'npm build' to simplify the deployed package
 RUN npm build
 # Make port 3000 available to the world outside this container through both tcp and udp. Default if unspecified is TCP
 EXPOSE 3000
