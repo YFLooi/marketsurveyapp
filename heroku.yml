@@ -1,6 +1,8 @@
 build:
   docker:
-    api: Dockerfile
+    api: api/Dockerfile
+    client: client/Dockerfile
 run:
   api: npm start
+  client: npm start
 
