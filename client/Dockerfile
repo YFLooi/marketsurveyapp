@@ -8,7 +8,7 @@ WORKDIR /client
 #Heroku will look in ROOT FOLDER instead of WORKDIR /client for it after deploying the image! (so DUMB!)
 COPY package*.json client/
 #Run 'npm install' builds the package in the image's filesystem. 
-RUN npm install
+RUN npm install --prefix client/ 
 #Copies the rest of the app's source code into the image's filesystem
 COPY . client/
 # Make port 3000 available to the world outside this container through both tcp and udp. Default if unspecified is TCP
