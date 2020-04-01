@@ -19,7 +19,7 @@ RUN npm install --prefix client/
 #Copies the rest of the app's source code into the image's filesystem
 COPY client/ client/
 
-CMD ["npm","start"]
+CMD ["npm start","npm start --prefix client/"]
 #Final file structure:
 # root (contains package.json with Heroku postbuild script, Express REST API)
 #  |- client (contains React app)
