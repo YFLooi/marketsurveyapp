@@ -2,4 +2,4 @@ build:
   docker:
     client: client/Dockerfile.client
 run:
-  client: npm build && npm start
+  client: npm start
