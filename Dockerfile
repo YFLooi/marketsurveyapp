@@ -10,7 +10,6 @@ RUN npm install
 COPY api .
 # Make port 5000 available to the world outside this container. tcp is default
 EXPOSE 5000
-RUN npm start
 
 #2nd FROM statement builds on 1st one
 #Copy into a client folder in WORKDIR
@@ -20,7 +19,7 @@ RUN npm install --prefix client/
 #Copies the rest of the app's source code into the image's filesystem
 COPY client/ client/
 RUN npm run build --prefix client/
-RUN npm start --prefix client/
+CMD ["npm","start"]
 #Final file structure:
 # root (contains package.json with Heroku postbuild script, Express REST API)
 #  |- client (contains React app)
