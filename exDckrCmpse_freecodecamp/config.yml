@@ -1,0 +1,6 @@
+config.yml stuff:
+    -run:
+        docker run --network container:webapp-api \
+            appropriate/curl --keepalive-time 60 --retry 10 --retry-delay 1 --retry-connrefused http://localhost:5000/
+        docker run --network container:webapp-client \
+            appropriate/curl --keepalive-time 60 --retry 10 --retry-delay 1 --retry-connrefused httpp://localhost:3000/
