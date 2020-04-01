@@ -1,8 +1,14 @@
 build:
   docker:
+<<<<<<< HEAD
     api: api/Dockerfile
     client: client/Dockerfile
 run:
   api: npm start
   client: npm start
 
+=======
+    app: Dockerfile
+run:
+  app: npm install && cd client && npm install && npm run build
+>>>>>>> e98415ffb619fdaa242499d1a8df2df771c7c86e
