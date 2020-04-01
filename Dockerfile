@@ -12,10 +12,9 @@ COPY api .
 EXPOSE 5000
 
 #2nd FROM statement builds on 1st one
-FROM node:6.11.5
 #Copy into a client folder in WORKDIR
 COPY client/package.json client/
 #Run 'npm install' builds the package in the image's filesystem. 
-RUN npm install
+RUN /client/npm install
 #Copies the rest of the app's source code into the image's filesystem
 COPY client/ client/
