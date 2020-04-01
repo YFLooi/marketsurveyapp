@@ -4,7 +4,9 @@ FROM node:6.11.5
 WORKDIR /api
 #Copies package.json from host into "WORKDIR/api". Docker caches this step so that 
 #subsequent builds with the same package.json are faster
-COPY package.json .
+#"*" is wildcard to match package.json wherever it is found. Necessary because
+#Heroku will look in ROOT FOLDER instead of WORKDIR /client for it after deploying the image! (so DUMB!)
+COPY package*.json .
 #Run 'npm install' builds the package in the image's filesystem. 
 RUN npm install
 #Copies the rest of the app's source code into the image's filesystem
