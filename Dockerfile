@@ -15,6 +15,6 @@ EXPOSE 5000
 #Copy into a client folder in WORKDIR
 COPY client/package.json client/
 #Run 'npm install' builds the package in the image's filesystem. 
-RUN /client/npm install
+RUN npm install --prefix client/
 #Copies the rest of the app's source code into the image's filesystem
 COPY client/ client/
