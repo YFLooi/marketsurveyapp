@@ -6,11 +6,11 @@ WORKDIR /client
 #subsequent builds with the same package.json are faster
 #"*" is wildcard to match package.json wherever it is found. Necessary because
 #Heroku will look in ROOT FOLDER instead of WORKDIR /client for it after deploying the image! (so DUMB!)
-COPY package*.json .
+COPY package*.json client/
 #Run 'npm install' builds the package in the image's filesystem. 
 RUN npm install
 #Copies the rest of the app's source code into the image's filesystem
-COPY . .
+COPY . client/
 # Make port 3000 available to the world outside this container through both tcp and udp. Default if unspecified is TCP
 EXPOSE 3000
 #Runs the app when container launches. Same as running in console
