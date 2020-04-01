@@ -1,7 +1,7 @@
 build:
   docker:
-    api: api/Dockerfile
-    client: client/Dockerfile
+    api: api/Dockerfile.api
+    client: client/Dockerfile.client
 run:
   api: npm start
   client: npm build && npm start
