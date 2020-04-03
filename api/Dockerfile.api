@@ -1,6 +1,7 @@
 #Start from the pre-existing official Docker Node image (v6.11.5)
 FROM node:6.11.5
 #Specifies directory for all subsequent actions in image filesystem (never host's filesystem)
+#Heroku specifically looks for package.json starting from the root folder "/usr/local/bin/"
 WORKDIR /usr/local/bin/api
 #Copies package.json from host into "WORKDIR/api". Docker caches this step so that 
 #subsequent builds with the same package.json are faster
