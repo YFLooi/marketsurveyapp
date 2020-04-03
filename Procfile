@@ -1,2 +1,2 @@
-api: npm start --prefix api/ 
-client: npm start --prefix client/
+api: npm start --prefix /usr/local/bin/api/ 
+client: npm start --prefix /usr/local/bin/client/
