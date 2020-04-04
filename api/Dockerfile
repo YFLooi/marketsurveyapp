@@ -1,5 +1,5 @@
 #Start from the pre-existing official Docker Node image (v6.11.5)
-FROM node:6.11.5
+FROM node:13.12.0
 #Specifies directory for all subsequent actions in image filesystem (never host's filesystem)
 WORKDIR /usr/local/bin/api
 #Copies package.json from host into "WORKDIR/api". Docker caches this step so that 
