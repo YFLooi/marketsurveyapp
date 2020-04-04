@@ -12,7 +12,7 @@ RUN npm install --prefix /usr/local/bin/app/
 #Run in client folder
 RUN npm install --prefix /usr/local/bin/app/client 
 #Run in client folder
-RUN npm build --prefix /usr/local/bin/app/client 
+RUN npm run build --prefix /usr/local/bin/app/client 
 
 #Same as running in console
 CMD ["npm", "start"]
