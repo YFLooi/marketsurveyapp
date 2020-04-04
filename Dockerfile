@@ -1,5 +1,5 @@
 #Start from the pre-existing official Docker Node image (v6.11.5)
-FROM node:6.11.5
+FROM node:10.19.0-alpine3.10
 #Specifies directory for all subsequent actions in image filesystem (never host's filesystem)
 WORKDIR /usr/local/bin/app
 
