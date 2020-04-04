@@ -7,17 +7,17 @@ const pool = new Pool({
   ssl: true,
 });
 
-async function testFunction (request, response) {
+function testFunction (request, response) {
     console.log('Request for data received by testFunction');
     response.status(200).json("Request for data received by testFunction");
 }
 
-async function testGet (request, response) {
+function testGet (request, response) {
     console.log('Request for data received by testGet');
  
     try{
-        const dbase = await pool.connect();
-        const rowList = await dbase.query('SELECT * FROM userrecords ORDER BY username ASC');
+        const dbase = pool.connect();
+        const rowList = dbase.query('SELECT * FROM userrecords ORDER BY username ASC');
         response.status(200).send(rowList);
     } catch (error){
         response.status(400).json('SERVER RESP: Error retrieving userrecords. Log:'+error)
@@ -26,12 +26,12 @@ async function testGet (request, response) {
     }
 }
 
-async function testHerokuPg (request, response) {
+function testHerokuPg (request, response) {
     console.log('Request for data received by testHerokuPg');
  
     try{
-        const dbase = await pool.connect();
-        const result = await dbase.query('SELECT * FROM test_table');
+        const dbase = pool.connect();
+        const result = dbase.query('SELECT * FROM test_table');
         const results = { 'results': (result) ? result.rows : null};
         response.status(200).send(results);
     } catch (error){
