@@ -12,12 +12,13 @@
     "pg": "^7.18.2"
   },
   "engines": {
-    "npm": "^6.4.1",
+    "npm": "6.11.5",
     "node": "9.9.0"
   },
   "devDependencies": {},
   "scripts": {
     "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "heroku-postbuild": "npm install && cd client && npm install && npm run build"
   },
   "repository": {
