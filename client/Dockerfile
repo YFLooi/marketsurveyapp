@@ -1,5 +1,5 @@
 #Start from the pre-existing official Docker Node image (v6.11.5) or use the lighter mhart/alpine-node:8.11.4
-FROM node:10.19.0-alpine3.10
+FROM node:13.12.0
 #Specifies directory for all subsequent actions in image filesystem (never host's filesystem)
 WORKDIR /usr/local/bin/client
 #Copies package.json from host into image filesystem. Docker caches this step so that 
