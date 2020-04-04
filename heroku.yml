@@ -1,3 +1,4 @@
+#Process (ps) containing front end container must be "web"
 build:
   docker:
     api: api/Dockerfile
