@@ -19,7 +19,7 @@ app.use(bodyParser.json())
 app.use(express.static(path.join(__dirname, 'build'))); 
 
 //tell a route making a GET request on the root (/) URL to head to the HomePage
-app.get("/", (request, response) => {
+app.get("/api/", (request, response) => {
     if (error) {
         throw error
     }
@@ -28,9 +28,9 @@ app.get("/", (request, response) => {
     //response.json({ info: "Server running on Node.js, Express, and Postgres API" });
 })
 
-app.get("/testFunction", db.testFunction)
-app.get("/testGet", db.testGet)
-app.get("/testHerokuPg", db.testHerokuPg)
+app.get("/api/testFunction", db.testFunction)
+app.get("/api/testGet", db.testGet)
+app.get("/api/testHerokuPg", db.testHerokuPg)
 
 //Put this last among all routes. Otherwise, it will return HTML to all fetch requests and trip up CORS. They interrupt each other
 // For any request that doesn't match, this sends the index.html file from the client. This is used for all of our React code.
