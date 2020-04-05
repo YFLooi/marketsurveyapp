@@ -1,5 +1,6 @@
 #Start from the latest pre-existing official Docker Node image
 FROM node:13.12.0
+
 #Specifies directory for all subsequent actions in image filesystem (never host's filesystem)
 #"/usr/local/bin/" is what Heroku takes as the "root" folder. Files MUST be added here
 #or they cannot be found!

@@ -1,9 +1,11 @@
 #Process (ps) containing front end container must be "web"
 build:
-  docker:
-    api: api/Dockerfile
-    web: web/Dockerfile
+    docker:
+        api: api/Dockerfile
+        web: web/Dockerfile
+    config: #available to build environment
+        PORT: 80
 run:
-  api: npm start
-  web: npm start
+    api: npm start
+    web: npm start
 
