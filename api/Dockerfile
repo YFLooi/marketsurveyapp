@@ -18,7 +18,7 @@ RUN npm install
 #Copies the rest of the app's source code into the image's filesystem
 COPY . /usr/local/bin/api/
 # Heroku's default port is 80?
-EXPOSE $PORT
+EXPOSE $PORT:80
 
 ENV HTTP_PROXY "http://localhost:$PORT"
 ENV HTTPS_PROXY "https://localhost:$PORT"

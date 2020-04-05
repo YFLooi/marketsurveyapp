@@ -6,7 +6,7 @@ const path = require('path');
 require('dotenv').config(); //Allows retriving variables from the .env file
 
 //Defined in .env file
-const port = 80; 
+const port = process.env.PORT || 80; 
 console.log(`PORT given to server: ${process.env.PORT}`)
 
 //To get all the exported functions from queries.js, we'll 'require' the file and assign it to a variable.

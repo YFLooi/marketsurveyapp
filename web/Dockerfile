@@ -1,11 +1,6 @@
 #Start from the latest pre-existing official Docker Node image
 FROM node:13.12.0
 
-#Fixes port, otherwise Heroku will assign its own
-#Value in ARG must match config specified in heroku.yml
-ARG PORT=80
-ENV PORT $PORT
-
 #Specifies directory for all subsequent actions in image filesystem (never host's filesystem)
 #"/usr/local/bin/" is what Heroku takes as the "root" folder. Files MUST be added here
 #or they cannot be found!
@@ -22,7 +17,7 @@ COPY . /usr/local/bin/web/
 #Builds the React app
 RUN npm run build 
 
-EXPOSE 3000
+EXPOSE 3000:3000
 
 ENV HTTP_PROXY "http://localhost:3000"
 ENV HTTPS_PROXY "https://localhost:3000"
