@@ -4,7 +4,7 @@ build:
         api: api/Dockerfile
         web: web/Dockerfile
     config: #available to build environment
-        PORT: 80
+        PORT: 6000
 run:
     api: npm start
     web: npm start

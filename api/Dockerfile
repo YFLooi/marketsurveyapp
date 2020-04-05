@@ -3,7 +3,7 @@ FROM node:13.12.0
 
 #Fixes port, otherwise Heroku will assign its own
 #Value in ARG must match config specified in heroku.yml
-ARG PORT=80
+ARG PORT=6000
 ENV PORT $PORT
 
 #Specifies directory for all subsequent actions in image filesystem (never host's filesystem)
@@ -17,8 +17,8 @@ COPY package*.json /usr/local/bin/api/
 RUN npm install 
 #Copies the rest of the app's source code into the image's filesystem
 COPY . /usr/local/bin/api/
-# Heroku's default port is 80?
-EXPOSE $PORT:80
+# Heroku does not allow non-admin users to use PORT <1024 https://stackoverflow.com/questions/9164915/node-js-eacces-error-when-listening-on-most-ports?noredirect=1
+EXPOSE $PORT:6000
 
 ENV HTTP_PROXY "http://localhost:$PORT"
 ENV HTTPS_PROXY "https://localhost:$PORT"
