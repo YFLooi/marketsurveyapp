@@ -11,9 +11,8 @@ COPY package*.json /usr/local/bin/api/
 RUN npm install 
 #Copies the rest of the app's source code into the image's filesystem
 COPY . /usr/local/bin/api/
-# Make port 5000 available to the world outside this container through both tcp and udp. Default if unspecified is TCP
+# Make port 6000. Default if unspecified is TCP
 EXPOSE 6000
-EXPOSE 80
 #Same as running in console
 CMD ["npm", "start"]
 
