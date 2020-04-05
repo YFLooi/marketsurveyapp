@@ -16,7 +16,7 @@ COPY . /usr/local/bin/web/
 #Builds the React app
 RUN npm run build 
 
-EXPOSE 3000
+EXPOSE 6000
 #Runs the app when container launches. Same as running in console
 CMD ["npm", "start"]
 
