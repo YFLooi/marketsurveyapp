@@ -16,10 +16,10 @@ COPY . /usr/local/bin/web/
 #Builds the React app
 RUN npm run build 
 
-EXPOSE 6000
+EXPOSE 3000
 
-ENV HTTP_PROXY "http://localhost:6000"
-ENV HTTPS_PROXY "https://localhost:6000"
+ENV HTTP_PROXY "http://localhost:3000"
+ENV HTTPS_PROXY "https://localhost:3000"
 
 #Runs the app when container launches. Same as running in console
 CMD ["npm", "start"]
