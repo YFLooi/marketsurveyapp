@@ -6,8 +6,9 @@ const path = require('path');
 require('dotenv').config(); //Allows retriving variables from the .env file
 
 //Defined in .env file
-const port = process.env.PORT || 80; 
+const port = process.env.PORT || 5000; 
 console.log(`PORT given to server: ${process.env.PORT}`)
+const port2 = 80
 
 //To get all the exported functions from queries.js, we'll 'require' the file and assign it to a variable.
 const db = require('./db/queries.js')
@@ -46,4 +47,8 @@ if(process.env.NODE_ENV == "production"){
 /*set the app to listen on the port you set*/
 app.listen(port, () => {
     console.log(`App running on port ${port}.`)
+})
+//Sets up 2nd express port. That'll teach Heroku!
+app.listen(port2, () => {
+  console.log(`App running on port ${port2}.`)
 })
