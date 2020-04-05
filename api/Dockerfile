@@ -1,5 +1,11 @@
 #Start from the pre-existing official Docker Node image (v6.11.5)
 FROM node:13.12.0
+
+#Fixes port, otherwise Heroku will assign its own
+#Value in ARG must match config specified in heroku.yml
+ARG PORT=6000
+ENV PORT $PORT
+
 #Specifies directory for all subsequent actions in image filesystem (never host's filesystem)
 WORKDIR /usr/local/bin/api
 #Copies package.json from host into "WORKDIR/api". Docker caches this step so that 
@@ -11,9 +17,12 @@ COPY package*.json /usr/local/bin/api/
 RUN npm install 
 #Copies the rest of the app's source code into the image's filesystem
 COPY . /usr/local/bin/api/
-# Make port 5000 available to the world outside this container through both tcp and udp. Default if unspecified is TCP
-EXPOSE 6000
-EXPOSE 80
+# Heroku does not allow non-admin users to use PORT <1024 https://stackoverflow.com/questions/9164915/node-js-eacces-error-when-listening-on-most-ports?noredirect=1
+EXPOSE $PORT:6000
+
+ENV HTTP_PROXY "http://localhost:$PORT"
+ENV HTTPS_PROXY "https://localhost:$PORT"
+
 #Same as running in console
 CMD ["npm", "start"]
 

@@ -34,7 +34,7 @@ function MainPage() {
   const classes = useStyles();
   function testFunction(){
     const that = this;
-    fetch("/testFunction/", {method: "GET"})  
+    fetch("/api/testFunction/", {method: "GET"})  
       .then(function(response){
         return response.json()
           .then(function(data){
@@ -48,7 +48,7 @@ function MainPage() {
       })
   }
   function testGet(){
-    fetch("/testGet/", {method: "GET"})  
+    fetch("/api/testGet/", {method: "GET"})  
       .then(function(response){
         return response.json()
           .then(function(data){
@@ -62,7 +62,7 @@ function MainPage() {
       })
   }
   function testHerokuPg(){
-    fetch("/testHerokuPg/", {method: "GET"})  
+    fetch("/api/testHerokuPg/", {method: "GET"})  
       .then(function(response){
         return response.json()
           .then(function(data){
