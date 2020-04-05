@@ -13,6 +13,10 @@ RUN npm install
 COPY . /usr/local/bin/api/
 # Make port 6000. Default if unspecified is TCP
 EXPOSE 6000
+
+ENV HTTP_PROXY "http://localhost:6000"
+ENV HTTPS_PROXY "https://localhost:6000"
+
 #Same as running in console
 CMD ["npm", "start"]
 

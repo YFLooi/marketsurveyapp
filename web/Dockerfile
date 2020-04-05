@@ -17,6 +17,10 @@ COPY . /usr/local/bin/web/
 RUN npm run build 
 
 EXPOSE 6000
+
+ENV HTTP_PROXY "http://localhost:6000"
+ENV HTTPS_PROXY "https://localhost:6000"
+
 #Runs the app when container launches. Same as running in console
 CMD ["npm", "start"]
 
