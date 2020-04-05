@@ -20,8 +20,8 @@ COPY . /usr/local/bin/api/
 # Heroku's default port is 80?
 EXPOSE $PORT
 
-ENV HTTP_PROXY "http://localhost:$PORT"
-ENV HTTPS_PROXY "https://localhost:$PORT"
+ENV HTTP_PROXY "http://localhost:80"
+ENV HTTPS_PROXY "https://localhost:80"
 
 #Same as running in console
 CMD ["npm", "start"]
