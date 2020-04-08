@@ -1,43 +1,33 @@
 {
-  "name": "market-survey-app-client",
-  "version": "0.1.0",
+  "name": "market-survey-app-api",
+  "version": "1.0.0",
+  "description": "PSQL-Express API to record survey and user data",
+  "main": "server.js",
   "dependencies": {
-    "@material-ui/core": "^4.1.3",
-    "@material-ui/icons": "^4.2.1",
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.5.0",
-    "@testing-library/user-event": "^7.2.1",
-    "http-proxy-middleware": "^1.0.3",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-google-login": "^5.1.2",
-    "react-router-dom": "^5.0.0",
-    "react-scripts": "2.1.8"
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "express-promise-router": "^3.0.3",
+    "path": "^0.12.7",
+    "pg": "^7.18.2"
   },
+  "engines": {
+    "npm": "^6.4.1",
+    "node": "9.9.0"
+  },
+  "devDependencies": {},
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "heroku-postbuild": "npm install && npm run build"
+    "start": "node server.js",
+    "heroku-postbuild": "npm install && cd client && npm install && npm run build"
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YFLooi/marketsurveyapp.git"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "author": "YFLooi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/YFLooi/marketsurveyapp/issues"
   },
-  "devDependencies": {
-    "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.2"
-  }
+  "homepage": "https://github.com/YFLooi/marketsurveyapp#readme"
 }
