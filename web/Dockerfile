@@ -13,7 +13,7 @@ RUN npm install
 #Installs packages for React app
 RUN npm install --prefix client
 #Builds React app
-RUN npm run build --prefix client
+RUN npm run --prefix client build
 
 #Runs the app when container launches. Same as running in console
 CMD ["npm", "start"]
