@@ -82,6 +82,7 @@ function MainPage() {
     <div className="App">
       <header className="App-header">
         <h1>Main Page</h1>
+        <div>Which are you?</div>
       </header>
       <Grid
         container
