@@ -7,7 +7,7 @@ orbs:
 workflows: #Defined set of rules for defining a collection of jobs and their run order
     build-and-test: #Condition for Github to accept push
         jobs:
-          - check
+          - build-test
     heroku_deploy:
         jobs:
             - build-test-deploy
@@ -20,10 +20,21 @@ workflows: #Defined set of rules for defining a collection of jobs and their run
 
 #github requires both 'build-and-test' and 'build' run before approving pull requests...
 jobs:
-    check: #This exists just to pass for commit to Github
+    build-test: #This exists just to pass commit to Github. Workflow must have min 1 test to pass CircleC
         working_directory: ~/marketsurveyapp # name of root directory where steps will run
         docker: #steps to run with Docker
             - image: circleci/node:13.12.0-stretch # This image as the primary container; this is where all `steps` will run   
+        steps: #collection of executable commands.
+            - checkout #check out source code to working directory
+            - run: 
+                name: Install Express packages  #literally the name of this step. Useful to indicate point in build
+                command: cd web && npm install 
+            - run: #Required to run tests
+                name: Install React app packages  
+                command: cd web && cd client && npm install 
+            - run: 
+                name: Run tests
+                command: cd web && cd client && npm test
     build-test-deploy: 
         working_directory: ~/marketsurveyapp # name of root directory where steps will run
         docker: #steps to run with Docker
