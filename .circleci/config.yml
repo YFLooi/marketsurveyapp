@@ -59,7 +59,6 @@ jobs:
                 #"-q" is a quiet push. No token of it will be shown in log
                 command: |
                     sudo curl https://cli-assets.heroku.com/install.sh | sh 
-                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku login
                     HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login
                     HEROKU_API_KEY=${HEROKU_TOKEN} heroku stack:set container -a marketsurveyapp  
                     HEROKU_API_KEY=${HEROKU_TOKEN} git config credential.helper 'cache --timeout=120'
