@@ -19,6 +19,7 @@ app.get("/server/testFunction", db.testFunction)
 app.get("/server/testGet", db.testGet)
 app.get("/server/testHerokuPg", db.testHerokuPg)
 
+//Used only in local development where there is no build step.
 if(process.env.NODE_ENV != "production"){
     //tell a route making a GET request on the root (/) URL to head to the HomePage
     app.get("/server/", (request, response) => {
