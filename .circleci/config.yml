@@ -61,7 +61,6 @@ jobs:
                     sudo curl https://cli-assets.heroku.com/install.sh | sh 
                     HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login
                     HEROKU_API_KEY=${HEROKU_TOKEN} heroku stack:set container -a marketsurveyapp  
-                    heroku auth:login
                     git config credential.helper 'cache --timeout=120'
                     git config user.email "yihfoo@gmail.com"
                     git config user.name "yihfoo@gmail.com"

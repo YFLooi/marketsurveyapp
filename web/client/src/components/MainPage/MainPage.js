@@ -34,7 +34,6 @@ function MainPage() {
   const classes = useStyles();
   function testFunction(){
     const that = this;
-    console.log(`PORT available to client: ${process.env.PORT}`)
     fetch("/server/testFunction/", {method: "GET"})  
       .then(function(response){
         return response.json()
