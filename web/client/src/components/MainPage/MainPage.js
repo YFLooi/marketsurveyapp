@@ -34,7 +34,8 @@ function MainPage() {
   const classes = useStyles();
   function testFunction(){
     const that = this;
-    fetch("/api/testFunction/", {method: "GET"})  
+    console.log(`PORT available to client: ${process.env.PORT}`)
+    fetch("/server/testFunction/", {method: "GET"})  
       .then(function(response){
         return response.json()
           .then(function(data){
@@ -48,7 +49,7 @@ function MainPage() {
       })
   }
   function testGet(){
-    fetch("/api/testGet/", {method: "GET"})  
+    fetch("/server/testGet/", {method: "GET"})  
       .then(function(response){
         return response.json()
           .then(function(data){
@@ -62,7 +63,7 @@ function MainPage() {
       })
   }
   function testHerokuPg(){
-    fetch("/api/testHerokuPg/", {method: "GET"})  
+    fetch("/server/testHerokuPg/", {method: "GET"})  
       .then(function(response){
         return response.json()
           .then(function(data){
