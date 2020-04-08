@@ -10,10 +10,10 @@ workflows: #Defined set of rules for defining a collection of jobs and their run
           - check
     heroku_deploy:
         jobs:
-            - build-and-test
+            - build-test-deploy
             - heroku/deploy-via-git: # Use the pre-configured job, deploy-via-git
                 requires:
-                    - build-and-test
+                    - build-test-deploy
                 filters:
                     branches:
                         only: sequential-branch-filter
@@ -21,17 +21,15 @@ workflows: #Defined set of rules for defining a collection of jobs and their run
 #github requires both 'build-and-test' and 'build' run before approving pull requests...
 jobs:
     check: #This exists just to pass for commit to Github
-        steps: 
-            - checkout #check out source code to working directory
-    build-and-test: 
         working_directory: ~/marketsurveyapp # name of root directory where steps will run
         docker: #steps to run with Docker
-            - image: circleci/node:13.12.0-stretch # This image as the primary container; this is where all `steps` will run
-        environment: # environment variables for the build itself
-            TEST_RESULTS: /tmp/test-results # path to where test results will be saved      
+            - image: circleci/node:13.12.0-stretch # This image as the primary container; this is where all `steps` will run   
+    build-test-deploy: 
+        working_directory: ~/marketsurveyapp # name of root directory where steps will run
+        docker: #steps to run with Docker
+            - image: circleci/node:13.12.0-stretch # This image as the primary container; this is where all `steps` will run   
         steps: #collection of executable commands.
             - checkout #check out source code to working directory
-            - run: mkdir -p $TEST_RESULTS # create the test results directory
             - run: 
                 name: Install Express packages  #literally the name of this step. Useful to indicate point in build
                 command: cd web && npm install 
