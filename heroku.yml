@@ -1,3 +1,4 @@
+#heroku.yml takes the place of the Procfile. No need to declare Procfile if heroku.yml present.
 #Process (ps) containing front end container must be "web"
 build:
     docker:
