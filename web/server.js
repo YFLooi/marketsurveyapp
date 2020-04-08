@@ -45,7 +45,7 @@ if(process.env.NODE_ENV != "production"){
 //Only used in production, since I do not build before running in development
 if(process.env.NODE_ENV == "production"){
     //tell a route making a GET request on the root (/) URL to head to the HomePage
-    app.get("/", (request, response) => {
+    app.get("/server/", (request, response) => {
         if (error) {
             throw error
         }
