@@ -2,11 +2,7 @@
 #Process (ps) containing front end container must be "web"
 build:
     docker:
-        api: api/Dockerfile
         web: web/Dockerfile
-    config: #available to build environment
-        PORT: 6000
-run:
-    api: npm start
+run: #Runs if CMD not specified in Dockerfile
     web: npm start
 
