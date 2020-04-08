@@ -52,7 +52,7 @@ jobs:
                 command: cd web && cd client && npm test
             - setup_remote_docker #Removes need for Docker daemon. Prevents error on CircleCI build process: Cannot connect to the Docker daemon at unix:///var
             - deploy: # From https://medium.com/nexton/deploying-docker-images-to-heroku-with-circleci-713c764e248d
-                name: Setup Heroku to receive push
+                name: Builds and pushes image to Heroku
                 #"sudo curl ~~install.sh" installs Heroku cli
                 #"heroku stack:set container" sets stack of Heroku app to container
                 #"heroku container:push" looks for the Dockerfiles.processType from the root folder to build images of them
@@ -60,7 +60,6 @@ jobs:
                 command: |
                     sudo curl https://cli-assets.heroku.com/install.sh | sh 
                     HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login
-                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku stack:set container -a marketsurveyapp  
-                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku git:remote --remote heroku -a marketsurveyapp 
-                    HEROKU_API_KEY=${HEROKU_TOKEN} git push heroku master                    
+                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push --recursive -a marketsurveyapp
+                    HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release web -a marketsurveyapp              
                 
