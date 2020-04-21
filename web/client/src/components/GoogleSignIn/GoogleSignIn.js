@@ -6,6 +6,7 @@ import {
     Typography 
 } from "@material-ui/core";
 import { GoogleLogin, GoogleLogout } from 'react-google-login'; //using a HTML <script> for GoogleOAuth does not work in React
+import "./GoogleSignIn.css"
 
 const useStyles = makeStyles(theme => ({ 
     buttonBox:{
@@ -37,16 +38,10 @@ export function GoogleSignIn(props) {
         var profileParameterNames = ["ID", "Name", "Image URL", "Email"];
         var renderedItems = [];
         var numberOfRenderedItems = parameters.length;
-        var renderTarget = document.getElementById("userDetails");
         
         for (let i=0; i<numberOfRenderedItems; ++i) {
-            var childDiv = document.createElement("div");
-            childDiv.appendChild(document.createTextNode(`${profileParameterNames[i]}: ${parameters[i]}`));
-            renderTarget.appendChild(childDiv);
-            renderedItems.splice(renderedItems.length, 0, childDiv)
+            console.log(`${profileParameterNames[i]}: ${parameters[i]}`)
         }
-
-        return renderedItems; //For testing only
     }
     function onSignOut() {
         console.log('User signed out.');
@@ -54,29 +49,31 @@ export function GoogleSignIn(props) {
         window.parent.location = window.parent.location.href;
     }
 
-  return (
-    <div>
-        <h1>Login/logout tester</h1>
-        <GoogleLogin
-            clientId="264618720481-jsdkhtj62lvt1agk3ejk1qec1vmtkp3b.apps.googleusercontent.com"
-            buttonText="Google Login"
-            onSuccess={onSignIn}
-            onFailure={onSignInFailure}
-            cookiePolicy={'single_host_origin'}
-            isSignedIn={true}
-        />
-        <GoogleLogout
-            clientId="264618720481-jsdkhtj62lvt1agk3ejk1qec1vmtkp3b.apps.googleusercontent.com"
-            buttonText="Logout"
-            onLogoutSuccess={onSignOut}
-            render={renderProps => (
-                /**Remove "render" to render the default Google sign in button*/
-                <button onClick={renderProps.onClick} disabled={renderProps.disabled}>Custom Google button</button>
-            )}
-        />
-        <h1>Details of signee</h1>
-        <div id="userDetails"></div>
-    </div>
-  );
+    return (
+        <React.Fragment>
+            <div className="signIn-button">X</div>
+            <div className="signIn-Popup">
+                <GoogleLogin
+                    clientId="264618720481-jsdkhtj62lvt1agk3ejk1qec1vmtkp3b.apps.googleusercontent.com"
+                    buttonText="Google Login"
+                    onSuccess={onSignIn}
+                    onFailure={onSignInFailure}
+                    cookiePolicy={'single_host_origin'}
+                    isSignedIn={true}
+                />
+                {/** 
+                <GoogleLogout
+                    clientId="264618720481-jsdkhtj62lvt1agk3ejk1qec1vmtkp3b.apps.googleusercontent.com"
+                    buttonText="Logout"
+                    onLogoutSuccess={onSignOut}
+                    render={renderProps => (
+                        //Remove "render" to render the default Google sign in button
+                        <button onClick={renderProps.onClick} disabled={renderProps.disabled}>Custom Google button</button>
+                    )}
+                />
+                */}
+            </div>
+        </React.Fragment>
+    );
 }
 

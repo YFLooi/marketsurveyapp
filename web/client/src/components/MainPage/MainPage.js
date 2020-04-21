@@ -31,78 +31,76 @@ function arrayTestFunction(a){
 }
 
 function MainPage() {
-  const classes = useStyles();
-  function testFunction(){
-    const that = this;
-    fetch("/server/testFunction/", {method: "GET"})  
-      .then(function(response){
-        return response.json()
-          .then(function(data){
-              console.log("Results of test:");
-              console.log(data);
-              document.getElementById("outputBox").innerHTML = data;
-          })
-      })  
-      .catch(function(error){
-          console.log("Request failed", error)
-      })
-  }
-  function testGet(){
-    fetch("/server/testGet/", {method: "GET"})  
-      .then(function(response){
-        return response.json()
-          .then(function(data){
-              console.log("Results of test:");
-              console.log(data);
-              document.getElementById("outputBox").innerHTML = data;
-          })
-      })  
-      .catch(function(error){
-          console.log('Request failed', error)
-      })
-  }
-  function testHerokuPg(){
-    fetch("/server/testHerokuPg/", {method: "GET"})  
-      .then(function(response){
-        return response.json()
-          .then(function(data){
-              console.log("Results of test:");
-              console.log(data);
+    const classes = useStyles();
+    function testFunction(){
+        fetch("/server/testFunction/", {method: "GET"})  
+        .then(function(response){
+            return response.json()
+            .then(function(data){
+                console.log("Results of test:");
+                console.log(data);
+                document.getElementById("outputBox").innerHTML = data;
+            })
+        })  
+        .catch(function(error){
+            console.log("Request failed", error)
+        })
+    }
+    function testGet(){
+        fetch("/server/testGet/", {method: "GET"})  
+        .then(function(response){
+            return response.json()
+            .then(function(data){
+                console.log("Results of test:");
+                console.log(data);
+                document.getElementById("outputBox").innerHTML = data;
+            })
+        })  
+        .catch(function(error){
+            console.log('Request failed', error)
+        })
+    }
+    function testHerokuPg(){
+        fetch("/server/testHerokuPg/", {method: "GET"})  
+        .then(function(response){
+            return response.json()
+            .then(function(data){
+                console.log("Results of test:");
+                console.log(data);
 
-              let resultsArray = data["results"]
-              document.getElementById("outputBox").innerHTML = `Retrived id=${resultsArray[0].id}, name=${resultsArray[0].name}`;
-          })
-      })  
-      .catch(function(error){
-          console.log('Request failed', error)
-      })
-  }
+                let resultsArray = data["results"]
+                document.getElementById("outputBox").innerHTML = `Retrived id=${resultsArray[0].id}, name=${resultsArray[0].name}`;
+            })
+        })  
+        .catch(function(error){
+            console.log('Request failed', error)
+        })
+    }
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Main Page</h1>
-        <div>Which are you?</div>
-      </header>
-      <Grid
-        container
-        direction="row"
-        justify="center"
-        alignItems="center"
-        spacing={1}
-      > 
-        <Box classes={{root: classes.buttonBox}}>
-        <Button variant="contained" color="primary" onClick={() => {testFunction()}}>Test function</Button>
-        <Button variant="contained" color="secondary" onClick={() => {testGet()}}>Test Get</Button>
-        <Button variant="contained" color="secondary" onClick={() => {testHerokuPg()}}>Test Heroku Pg</Button>
+    return (
+        <div className="MainPage">
+            <header className="MainPage-header">
+                <h1>Main Page</h1>
+                <div>Which are you?</div>
+            </header>
+            <Grid
+                container
+                direction="row"
+                justify="center"
+                alignItems="center"
+                spacing={1}
+            > 
+                <Box classes={{root: classes.buttonBox}}>
+                    <Button variant="contained" color="primary" onClick={() => {testFunction()}}>Test function</Button>
+                    <Button variant="contained" color="secondary" onClick={() => {testGet()}}>Test Get</Button>
+                    <Button variant="contained" color="secondary" onClick={() => {testHerokuPg()}}>Test Heroku Pg</Button>
 
-        <div>Output:</div>
-        <div id="outputBox">*Initial value*</div>
-        </Box>
-        
-      </Grid>
-    </div>
-  );
+                    <div>Output:</div>
+                    <div id="outputBox">*Initial value*</div>
+                </Box>
+            </Grid>
+        </div>
+    );
 }
 
 export { MainPage, productTestFunction, arrayTestFunction };
