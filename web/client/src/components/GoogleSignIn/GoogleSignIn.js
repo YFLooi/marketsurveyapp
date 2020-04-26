@@ -58,6 +58,8 @@ export function GoogleSignIn(props) {
     const classes = useStyles();
     const [signedIn, setSignedIn] = useState(false);
     const [signInPopupDisplay, setSignInPopupDisplay] = useState(false);
+
+    //Should set to clear on sucessful login
     const [emailEntered, setEmailEntered] = useState("");
     const [passwordEntered, setPasswordEntered] = useState("");
 

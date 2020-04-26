@@ -10,11 +10,13 @@ import {
     Grid,
 } from "@material-ui/core";
 const useStyles = makeStyles(theme => ({ 
-    header: {
+    messageBody: {
         display: "flex",
         width: "100%",
+        height: "70vh",
         flexDirection: "column",
-        alignItems: "center"
+        alignItems: "center",
+        justifyContent: "center"
     },
 }))
 
@@ -23,9 +25,11 @@ function ErrorPage(props) {
    
     return (
         <React.Fragment>
-            <div>!4-oh-4!</div>
-            <div>No page exists at this address</div>
-            <div onClick={() => {props.history.push('/')}}><u style={{color: "blue", cursor:"pointer"}}>Return to HomePage</u></div>
+            <div className={classes.messageBody}>
+                <div>!4-oh-4!</div>
+                <div>No page exists at this address</div>
+                <div onClick={() => {props.history.push('/')}}><u style={{color: "blue", cursor:"pointer"}}>Return to HomePage</u></div>
+            </div>
         </React.Fragment>
     );
 }

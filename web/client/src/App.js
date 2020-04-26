@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import logo from "./logo.png";
 import { makeStyles} from '@material-ui/core/styles';
 /** 
 import { 
@@ -11,12 +10,12 @@ import {
 } from "@material-ui/core",
 */
 /**Component imports */
+import AppHeader from "./components/AppHeader/AppHeader.js"
 import Chatbot from "./components/Chatbot/Chatbot.js";
 import { MainPage } from "./components/MainPage/MainPage.js";
 import { TestPage } from "./components/TestPage/TestPage.js";
 import MarketeerPage from "./components/MarketeerPage/MarketeerPage.js";
 import RespondentPage from "./components/RespondentPage/RespondentPage.js";
-import { GoogleSignIn } from "./components/GoogleSignIn/GoogleSignIn.js";
 import ErrorPage from "./components/ErrorPage/ErrorPage.js";
 
 const useStyles = makeStyles(theme => ({ 
@@ -24,60 +23,37 @@ const useStyles = makeStyles(theme => ({
         border: "1px solid black"
     },
     App: {
+        overflowX: "hidden", /*Prevents tiny white border on right of page that appears even at 100% page width*/
+        overflowY: "scroll",
         display: "flex", 
-        flexDirection: "column",
-        height: "100vh", /*100% of viewport height*/
-        width: "100vw", /*100% of viewport width*/
-        overflowX: "hidden"
-    },
-    AppHeader: {
-        width: "100%",    
-        height: 60,
-        background: "linear-gradient(to left, #00b7ff, #87d7f7)",
-        display: "flex",
-        justifyContent: "center"
-    },
-    /*left and right leaves extra space*/
-    AppHeaderLeft: {
-        width: "75%",
-        display: "flex",
-        justifyContent: "flex-start",
-        alignItems: "center",
-        padding: "10px"
-    },
-    AppHeaderRight: {
-        width: "15%",
-        display: "flex",
-        justifyContent: "flex-end",
-        alignItems: "center",
+        flexDirection: "column"
+
+        /** 
+        height: "100vh", 
+        width: "100vw", 
+        */
     },
     AppBody: {
         width: "100%",
-        flex: "1 1 auto" /*Fills up height not taken by App-header and App-footer*/
+        height: "85%",
+        flex: "4 0 auto" /*Fills up height not taken by App-header and App-footer*/
     },
     AppFooter: {
+        flex: "1 1 5%",
+        height: 20,
         width: "100%",
-        minHeight: 25,
         background: "linear-gradient(to left, #00b7ff, #87d7f7)"
     }
 }))
 
-function App() {
+function App(props) {
     const classes = useStyles();
  
     return (
         <BrowserRouter>
             {/**Bits to be shared across all pages */}
             <div className={classes.App}>
-                <div className={classes.AppHeader}>
-                    <div className={classes.AppHeaderLeft}>
-                        <img src={logo} style={{ width:90 }} className="AppLogo" alt="logo" />
-                        <span> Redefine Market Intelligence</span>
-                    </div>
-                    <div className={classes.AppHeaderRight}>
-                        <GoogleSignIn/>
-                    </div>
-                </div>
+                <AppHeader/>
 
                 <div className={classes.AppBody}>
                     <Switch>
