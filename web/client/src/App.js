@@ -24,10 +24,10 @@ const useStyles = makeStyles(theme => ({
     },
     App: {
         overflowX: "hidden", /*Prevents tiny white border on right of page that appears even at 100% page width*/
-        overflowY: "scroll",
         display: "flex", 
-        flexDirection: "column"
-
+        flexDirection: "column",
+        minHeight: "100vh",
+        width: "100%"
         /** 
         height: "100vh", 
         width: "100vw", 
@@ -35,14 +35,13 @@ const useStyles = makeStyles(theme => ({
     },
     AppBody: {
         width: "100%",
-        height: "85%",
-        flex: "4 0 auto" /*Fills up height not taken by App-header and App-footer*/
+        flex: "2 2 80%",
     },
     AppFooter: {
-        flex: "1 1 5%",
-        height: 20,
+        maxHeight: 20,
         width: "100%",
-        background: "linear-gradient(to left, #00b7ff, #87d7f7)"
+        background: "linear-gradient(to left, #00b7ff, #87d7f7)",
+        textAlign: "right"
     }
 }))
 

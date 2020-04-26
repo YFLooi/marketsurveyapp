@@ -8,7 +8,7 @@ import contentBodyRightBackground from "./icons/respondantImage2.jpg"
 
 const useStyles = makeStyles(theme => ({ 
     MainPage: {
-        height: "100%",
+        flex: "1 1 100%",
         display: "flex",
         flexDirection: "column",
         justifyContent: "flex-start"
@@ -16,30 +16,27 @@ const useStyles = makeStyles(theme => ({
     header: {
         display: "flex",
         width: "100%",
-        minheight: "20%",
+        height: "20%",
         flexDirection: "column",
         alignItems: "center"
     },
     contentBody: {
-        minheight: "60%",
         width: "100%",
+        height: "60%",
         display: "flex",
         flexWrap: "wrap",
         flexDirection: "row",
-        justifyContent: "space-evenly",
-        alignItems: "center",
-        flexWrap: "wrap" 
+        justifyContent: "center",
+        alignItems: "center", 
     },
     contentBodyLeft: {
-        minWidth: 360,
-        maxWidth: "50%",
-        minHeight: 360,
+        width: "50%",
+        height: "100%",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         transitionDuration: "0.4s",
-        border: "2px solid white",
 
         backgroundImage: `url(${contentBodyLeftBackground})`,
         backgroundPositionX: "50%",
@@ -51,6 +48,8 @@ const useStyles = makeStyles(theme => ({
         overflowY: "hidden",
     },
     contentBodyLeftContent: {
+        width: "75%",
+        height: "75%",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
@@ -59,23 +58,19 @@ const useStyles = makeStyles(theme => ({
         border: "4px solid white",
         padding: 10,
         color: "white",
-        height: 250,
-        width: 280,
         backgroundColor: "rgba(0,0,0, 0.4)", /* Black w/opacity/see-through */
         "&:hover": {
             backgroundColor: "rgba(0,0,0, 0.6)", /* Black w/opacity/see-through */
         }
     },
     contentBodyRight: {
-        minWidth: 360,
-        maxWidth: "50%",
-        minHeight: 360,
+        width: "50%",
+        height: "100%",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         transitionDuration: "0.4s",
-        border: "2px solid white",
 
         backgroundImage: `url(${contentBodyRightBackground})`,
         backgroundPositionX: "50%",
@@ -87,6 +82,8 @@ const useStyles = makeStyles(theme => ({
         overflowY: "hidden",
     },
     contentBodyRightContent: {
+        width: "75%",
+        height: "75%",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
@@ -95,15 +92,13 @@ const useStyles = makeStyles(theme => ({
         border: "4px solid white",
         padding: 10,
         color: "white",
-        height: 250,
-        width: 280,
         backgroundColor: "rgba(0,0,0, 0.4)", /* Black w/opacity/see-through */
         "&:hover": {
             backgroundColor: "rgba(0,0,0, 0.6)", /* Black w/opacity/see-through */
         }
     },
     mediaLinks: {
-        minheight: "20%",
+        height: "20%",
         width: "100%"
     }
 }))

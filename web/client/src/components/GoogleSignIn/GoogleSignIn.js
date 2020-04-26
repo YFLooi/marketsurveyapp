@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
     signInPopup: {
         display: "none",
         position: "absolute",
-        top: 60, /**Header height is 60px */
+        top: 80, /**Header height is 60px + 20 for padding*/
         right: 40,
         backgroundColor: "whitesmoke",
         padding: 10,
