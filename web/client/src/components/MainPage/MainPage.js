@@ -1,43 +1,31 @@
 import React from "react";
 import { makeStyles} from '@material-ui/core/styles';
 import { 
-    Button
+    Button, Grid, Paper, Typography, Container
 } from "@material-ui/core";
 import contentBodyLeftBackground from "./icons/marketeerImage4.jpg"
 import contentBodyRightBackground from "./icons/respondantImage2.jpg"
 
 const useStyles = makeStyles(theme => ({ 
     MainPage: {
-        flex: "1 1 100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start"
+        minHeight: "100%",
+        width: "100%",
+        flexGrow: 1
     },
     header: {
-        display: "flex",
-        width: "100%",
-        height: "20%",
-        flexDirection: "column",
-        alignItems: "center"
-    },
-    contentBody: {
-        width: "100%",
-        height: "60%",
-        display: "flex",
-        flexWrap: "wrap",
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center", 
+        textAlign: "center",
+        maxHeight: 100
     },
     contentBodyLeft: {
-        width: "50%",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
+        minHeight: 210,
         transitionDuration: "0.4s",
 
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "middle",
+        
         backgroundImage: `url(${contentBodyLeftBackground})`,
         backgroundPositionX: "50%",
         backgroundPositionY: "center",
@@ -48,13 +36,16 @@ const useStyles = makeStyles(theme => ({
         overflowY: "hidden",
     },
     contentBodyLeftContent: {
-        width: "75%",
-        height: "75%",
+        height: "90%",
+        width: "90%",
+        margin: "0 0", /**Container will attempt to horizontally center itself using margins*/
+        
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
         alignItems: "center",
+        justifyContent: "center",
         textAlign: "center",
+
         border: "4px solid white",
         padding: 10,
         color: "white",
@@ -64,31 +55,35 @@ const useStyles = makeStyles(theme => ({
         }
     },
     contentBodyRight: {
-        width: "50%",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
+        minHeight: 210,
         transitionDuration: "0.4s",
 
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        
         backgroundImage: `url(${contentBodyRightBackground})`,
         backgroundPositionX: "50%",
         backgroundPositionY: "center",
         backgroundRepeat: "no-repeat",
         backgroundAttachment: "scroll",
-        backgroundSize: "180%",
+        backgroundSize: "230%",
         overflowX: "hidden",
         overflowY: "hidden",
     },
     contentBodyRightContent: {
-        width: "75%",
-        height: "75%",
+        height: "90%",
+        width: "90%",
+        margin: "0 0", /**Container will attempt to horizontally center itself using margins*/
+
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
         alignItems: "center",
-        textAlign: "center",
+        justifyContent: "center",
+        textAlign: "middle",
+
         border: "4px solid white",
         padding: 10,
         color: "white",
@@ -98,8 +93,8 @@ const useStyles = makeStyles(theme => ({
         }
     },
     mediaLinks: {
-        height: "20%",
-        width: "100%"
+        width: "100%",
+        maxHeight: 100
     }
 }))
 
@@ -108,38 +103,44 @@ function MainPage() {
    
     return (
         <div className={classes.MainPage}>
-            <div className={classes.header}>
-                <div className="headerText">Know your audience</div>
-                <br/> {/**<br style={{clear:"both"}}/> */}
-                <div className="headerSubtext">SAVE.ai gets market data fast and at low cost</div>
-            </div>
-            <div className={classes.contentBody}>
-                <div className={classes.contentBodyLeft}>
-                    <div className={classes.contentBodyLeftContent}>
+            <Grid container spacing={0} className="contentHeader">
+                <Grid item xs={12}>
+                    <Container>
+                        <Typography variant="h3" align="center">Know your audience</Typography>
+                        <br/>
+                        <Typography variant="h5" align="center">SAVE.ai gets market data fast and at low cost</Typography>
+                    </Container>
+                </Grid>
+            </Grid>
+            <Grid container spacing={0} className="contentBody">
+                <Grid item xs={12} sm={6} classes={{root: classes.contentBodyLeft}}>
+                    {/**Items with Grid-item should be wrapped in Container*/}
+                    <Container classes={{root: classes.contentBodyLeftContent}}>
                         <div>About our services</div>
                         <div>Gain real market insights fast from a curated panel</div>
                         <br/>
-                        <Button variant="contained" colour="primary" id="contentButtonLeft">
+                        <Button variant="contained" color="primary" id="contentButtonLeft">
                             More..
                         </Button>
-                    </div>
-                </div>
-                <div className={classes.contentBodyRight}>
-                    <div className={classes.contentBodyRightContent}>
+                    </Container>
+                </Grid>
+                <Grid container xs={12} sm={6} classes={{root: classes.contentBodyRight}} >
+                    <Container classes={{root: classes.contentBodyRightContent}}>
                         <div>Participate and earn</div>
                         <div>We pay survey participants and more!</div>
                         <br/>
-                        <Button variant="contained" colour="secondary" id="contentButtonRight">
+                        <Button variant="contained" color="secondary" id="contentButtonRight">
                             More..
                         </Button>
-                    </div>
-                </div>
-            </div>
-            <div className={classes.mediaLinks}>
-                <div>
+                    </Container>
+                </Grid>
+            </Grid>
+            <Grid container spacing={0} className="contentMedia">
+                <Grid item xs={12}>
                     Follow us on: YT LN @Email
-                </div>
-            </div>
+                </Grid>
+            </Grid>
+            
             
         </div>
     );
