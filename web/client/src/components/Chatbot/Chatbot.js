@@ -1,28 +1,20 @@
 import React, { useEffect, useState }  from 'react';
 import { makeStyles} from '@material-ui/core/styles';
-import dialogflowIcon from "./icons/dialogflowIcon.jpg"
+import dialogflowIcon from "./icons/dialogflowIcon.png"
 import closeIcon from "./icons/closeIcon.png"
-import { 
-  Box, 
-  Button,
-  Card, 
-  CardHeader, 
-  CardActionArea, 
-  CardActions, 
-  CardContent, 
-  CardMedia, 
-  Grid, 
-  Typography 
-} from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({ 
     chatboxIcon:{
-        position: "absolute",
+        position: "fixed",
         width: 70,
         height: 70,
         bottom: 40,
         right: 40,
+        zIndex: 20,
+
         borderRadius: 70,
+        border: "1px solid lightgray",
+
         backgroundColor: "whitesmoke",
         backgroundImage: `url(${dialogflowIcon})`,
         backgroundPosition: "center",
@@ -30,14 +22,15 @@ const useStyles = makeStyles(theme => ({
         backgroundRepeat: "no-repeat", /* Do not repeat the image */
         display: "block",
         cursor: "pointer",
+        transitionDuration: "0.2s",
         "&:hover": {
             boxShadow: "0 0 2.5px 5px orange"
         }    
     },
     chatbox: {
         position: "absolute",
-        width: "350",
-        height: "470",
+        maxWidth: 350,
+        maxHeight: 370,
         bottom: 120,
         right: 40,
         display: "none",

@@ -1,108 +1,148 @@
 import React from "react";
-import ReactDOM from 'react-dom';
 import { makeStyles} from '@material-ui/core/styles';
 import { 
-    Box, 
-    Button,
-    Grid,
-    Typography 
+    Button
 } from "@material-ui/core";
+import contentBodyLeftBackground from "./icons/marketeerImage4.jpg"
+import contentBodyRightBackground from "./icons/respondantImage2.jpg"
 
 const useStyles = makeStyles(theme => ({ 
-    buttonBox:{
-        border: "1px solid black",
-        minWidth: "200px",
-        minHeight: "200px"
+    MainPage: {
+        flex: "1 1 100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-start"
+    },
+    header: {
+        display: "flex",
+        width: "100%",
+        height: "20%",
+        flexDirection: "column",
+        alignItems: "center"
+    },
+    contentBody: {
+        width: "100%",
+        height: "60%",
+        display: "flex",
+        flexWrap: "wrap",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center", 
+    },
+    contentBodyLeft: {
+        width: "50%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        transitionDuration: "0.4s",
+
+        backgroundImage: `url(${contentBodyLeftBackground})`,
+        backgroundPositionX: "50%",
+        backgroundPositionY: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "scroll",
+        backgroundSize: "150%",
+        overflowX: "hidden",
+        overflowY: "hidden",
+    },
+    contentBodyLeftContent: {
+        width: "75%",
+        height: "75%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        textAlign: "center",
+        border: "4px solid white",
+        padding: 10,
+        color: "white",
+        backgroundColor: "rgba(0,0,0, 0.4)", /* Black w/opacity/see-through */
+        "&:hover": {
+            backgroundColor: "rgba(0,0,0, 0.6)", /* Black w/opacity/see-through */
+        }
+    },
+    contentBodyRight: {
+        width: "50%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        transitionDuration: "0.4s",
+
+        backgroundImage: `url(${contentBodyRightBackground})`,
+        backgroundPositionX: "50%",
+        backgroundPositionY: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "scroll",
+        backgroundSize: "180%",
+        overflowX: "hidden",
+        overflowY: "hidden",
+    },
+    contentBodyRightContent: {
+        width: "75%",
+        height: "75%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        textAlign: "center",
+        border: "4px solid white",
+        padding: 10,
+        color: "white",
+        backgroundColor: "rgba(0,0,0, 0.4)", /* Black w/opacity/see-through */
+        "&:hover": {
+            backgroundColor: "rgba(0,0,0, 0.6)", /* Black w/opacity/see-through */
+        }
+    },
+    mediaLinks: {
+        height: "20%",
+        width: "100%"
     }
 }))
 
-//For testing Jest
-function productTestFunction(a, b){
-    return a*b
-}
-function arrayTestFunction(a){
-    let testArray = new Array(a.length)
-
-    testArray = a.map(function (currVal, index) {
-        return `${index}: ${currVal}`;
-    })
-    console.log(testArray) //Outputs to Jest test console
-    return testArray
-}
-
 function MainPage() {
     const classes = useStyles();
-    function testFunction(){
-        const that = this;
-        fetch("/server/testFunction/", {method: "GET"})  
-        .then(function(response){
-            return response.json()
-            .then(function(data){
-                console.log("Results of test:");
-                console.log(data);
-                document.getElementById("outputBox").innerHTML = data;
-            })
-        })  
-        .catch(function(error){
-            console.log("Request failed", error)
-        })
-    }
-    function testGet(){
-        fetch("/server/testGet/", {method: "GET"})  
-            .then(function(response){
-            return response.json()
-                .then(function(data){
-                    console.log("Results of test:");
-                    console.log(data);
-                    document.getElementById("outputBox").innerHTML = data;
-                })
-            })  
-            .catch(function(error){
-                console.log('Request failed', error)
-            })
-    }
-    function testHerokuPg(){
-        fetch("/server/testHerokuPg/", {method: "GET"})  
-            .then(function(response){
-            return response.json()
-                .then(function(data){
-                    console.log("Results of test:");
-                    console.log(data);
-
-                    let resultsArray = data["results"]
-                    document.getElementById("outputBox").innerHTML = `Retrived id=${resultsArray[0].id}, name=${resultsArray[0].name}`;
-                })
-            })  
-            .catch(function(error){
-                console.log('Request failed', error)
-            })
-    }
-
+   
     return (
-        <div className="App">
-            <header className="App-header">
-                <h1>Main Page</h1>
-                
-            </header>
-            <Grid
-                container
-                direction="row"
-                justify="center"
-                alignItems="center"
-                spacing={1}
-            > 
-                <Box classes={{root: classes.buttonBox}}>
-                <Button variant="contained" color="primary" onClick={() => {testFunction()}}>Test function</Button>
-                <Button variant="contained" color="secondary" onClick={() => {testGet()}}>Test Get</Button>
-                <Button variant="contained" color="secondary" onClick={() => {testHerokuPg()}}>Test Heroku Pg</Button>
-
-                <div>Output:</div>
-                <div id="outputBox">*Initial value*</div>
-                </Box>
-                
-            </Grid>
+        <div className={classes.MainPage}>
+            <div className={classes.header}>
+                <div className="headerText">Know your audience</div>
+                <br/> {/**<br style={{clear:"both"}}/> */}
+                <div className="headerSubtext">SAVE.ai gets market data fast and at low cost</div>
+            </div>
+            <div className={classes.contentBody}>
+                <div className={classes.contentBodyLeft}>
+                    <div className={classes.contentBodyLeftContent}>
+                        <div>About our services</div>
+                        <div>Gain real market insights fast from a curated panel</div>
+                        <br/>
+                        <Button variant="contained" colour="primary" id="contentButtonLeft">
+                            More..
+                        </Button>
+                    </div>
+                </div>
+                <div className={classes.contentBodyRight}>
+                    <div className={classes.contentBodyRightContent}>
+                        <div>Participate and earn</div>
+                        <div>We pay survey participants and more!</div>
+                        <br/>
+                        <Button variant="contained" colour="secondary" id="contentButtonRight">
+                            More..
+                        </Button>
+                    </div>
+                </div>
+            </div>
+            <div className={classes.mediaLinks}>
+                <div>
+                    Follow us on: YT LN @Email
+                </div>
+            </div>
+            
         </div>
     );
 }
 
-export { MainPage, productTestFunction, arrayTestFunction };
+export { MainPage };
