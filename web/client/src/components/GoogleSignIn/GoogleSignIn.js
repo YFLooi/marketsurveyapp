@@ -141,9 +141,8 @@ export function GoogleSignIn(props) {
                     <Button variant="contained" color="primary" type="submit" classes={{root: classes.signInPopUpForm}}>
                         Submit
                     </Button>
-                </form>
-                <br/>
-                <div><u>Alternate Sign In</u></div>
+                </form><br/>
+                <div style={{margin: 10}}><u>Alternate Sign In</u></div><br/>
                 <GoogleLogin
                     clientId="264618720481-jsdkhtj62lvt1agk3ejk1qec1vmtkp3b.apps.googleusercontent.com"
                     buttonText="Google Login"

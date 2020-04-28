@@ -1,14 +1,10 @@
 import React from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { makeStyles} from '@material-ui/core/styles';
-/** 
 import { 
-  Box, 
-  Button,
-  Grid, 
   Typography 
-} from "@material-ui/core",
-*/
+} from "@material-ui/core"
+
 /**Component imports */
 import AppHeader from "./components/AppHeader/AppHeader.js"
 import Chatbot from "./components/Chatbot/Chatbot.js";
@@ -31,14 +27,18 @@ const useStyles = makeStyles(theme => ({
     },
     AppBody: {
         width: "100%",
+        minHeight: "100vh",
         flex: "2 2 auto",
-        display: "flex",
     },
     AppFooter: {
-        maxHeight: 20,
+        maxHeight: 40,
+        padding: 5,
         width: "100%",
         background: "linear-gradient(to left, #00b7ff, #87d7f7)",
         textAlign: "right"
+    },
+    AppFooterText: {
+        paddingRight: 20
     }
 }))
 
@@ -77,9 +77,11 @@ function App(props) {
                     <Chatbot/>
                 </div>
                 <div className={classes.AppFooter}>
-                    <div className="footerText">
-                        A project by YFLooi. More on <span role="img" aria-label="point right">&#128073;</span> <a href="https://github.com/YFLooi/marketsurveyapp">Github</a>
-                    </div>
+                    <Typography variant="subtitle1" align="right" classes={{root: classes.AppFooterText}}>
+                        A project by YFLooi. More on 
+                        <span role="img" aria-label="point right">&#128073;</span> 
+                        <a href="https://github.com/YFLooi/marketsurveyapp">Github</a>                 
+                    </Typography>      
                 </div>
             </div>
             

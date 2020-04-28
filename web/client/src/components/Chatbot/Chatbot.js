@@ -8,8 +8,8 @@ const useStyles = makeStyles(theme => ({
         position: "fixed",
         width: 70,
         height: 70,
-        bottom: 40,
-        right: 40,
+        bottom: "4%",
+        right: "4%",
         zIndex: 20,
 
         borderRadius: 70,
@@ -28,11 +28,11 @@ const useStyles = makeStyles(theme => ({
         }    
     },
     chatbox: {
-        position: "absolute",
+        position: "fixed",
         maxWidth: 350,
         maxHeight: 370,
-        bottom: 120,
-        right: 40,
+        bottom: "16%",
+        right: "4%",
         display: "none",
         flexDirection: "column"
     },
