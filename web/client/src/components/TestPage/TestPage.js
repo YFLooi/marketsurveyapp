@@ -85,15 +85,18 @@ function TestPage() {
                 justify="center"
                 alignItems="center"
                 spacing={1}
-            > 
-                <Box classes={{root: classes.buttonBox}}>
-                    <Button variant="contained" color="primary" onClick={() => {testFunction()}}>Test function</Button>
-                    <Button variant="contained" color="secondary" onClick={() => {testGet()}}>Test Get</Button>
-                    <Button variant="contained" color="secondary" onClick={() => {testHerokuPg()}}>Test Heroku Pg</Button>
+            >   
+                <Grid item>
+                    <Box classes={{root: classes.buttonBox}}>
+                        <Button variant="contained" color="primary" onClick={() => {testFunction()}}>Test function</Button>
+                        <Button variant="contained" color="secondary" onClick={() => {testGet()}}>Test Get</Button>
+                        <Button variant="contained" color="secondary" onClick={() => {testHerokuPg()}}>Test Heroku Pg</Button>
 
-                    <div>Output:</div>
-                    <div id="outputBox">*Initial value*</div>
-                </Box>
+                        <div>Output:</div>
+                        <div id="outputBox">*Initial value*</div>
+                    </Box>
+                    <a href="#">learn react</a>
+                </Grid>
             </Grid>
         </div>
     );
