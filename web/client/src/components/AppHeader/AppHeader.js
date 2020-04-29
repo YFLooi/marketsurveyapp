@@ -2,7 +2,7 @@ import React from "react";
 import {
     //Allows us to connect to <Hashrouter/> from a child component
     withRouter
-  } from "react-router-dom";
+} from "react-router-dom";
 import logo from "./icons/logo.png";
 import { makeStyles} from '@material-ui/core/styles';
 import { GoogleSignIn } from "../GoogleSignIn/GoogleSignIn.js";
@@ -42,9 +42,10 @@ function AppHeader(props) {
         <React.Fragment>
             <div className={classes.AppHeader}>
                 <div className={classes.AppHeaderLeft} onClick={() => {props.history.push('/')}}>
-                    <img src={logo} className={classes.AppLogo  } alt="logo" />
-                    <span>Market Intelligence</span>
+                    <img src={logo} className={classes.AppLogo} alt="logo" />
                 </div>
+                <div onClick={() => {props.history.push('/RespondentPage')}}><u>RespPg</u></div>&nbsp;&nbsp;
+                <div onClick={() => {props.history.push('/MarketeerPage')}}><u>MrktPg</u></div>&nbsp;&nbsp;
                 <div className={classes.AppHeaderRight}>
                     <GoogleSignIn/>
                 </div>
