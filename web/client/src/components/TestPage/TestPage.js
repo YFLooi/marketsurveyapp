@@ -95,7 +95,7 @@ function TestPage() {
                         <div>Output:</div>
                         <div id="outputBox">*Initial value*</div>
                     </Box>
-                    <a href="#">learn react</a>
+                    <a href="www.9gag.com">learn react</a>
                 </Grid>
             </Grid>
         </div>

@@ -6,7 +6,6 @@ import {
 } from "@material-ui/core"
 
 /**Component imports */
-import AppHeader from "./components/AppHeader/AppHeader.js"
 import Chatbot from "./components/Chatbot/Chatbot.js";
 import { MainPage } from "./components/MainPage/MainPage.js";
 import { TestPage } from "./components/TestPage/TestPage.js";
@@ -27,7 +26,7 @@ const useStyles = makeStyles(theme => ({
     },
     AppBody: {
         width: "100%",
-        minHeight: "100vh",
+        minHeight: "90vh",
         flex: "2 2 auto",
     },
     AppFooter: {
@@ -49,8 +48,6 @@ function App(props) {
         <BrowserRouter>
             {/**Bits to be shared across all pages */}
             <div className={classes.App}>
-                <AppHeader/>
-
                 <div className={classes.AppBody}>
                     <Switch>
                         <Route 
@@ -78,8 +75,8 @@ function App(props) {
                 </div>
                 <div className={classes.AppFooter}>
                     <Typography variant="subtitle1" align="right" classes={{root: classes.AppFooterText}}>
-                        A project by YFLooi. More on 
-                        <span role="img" aria-label="point right">&#128073;</span> 
+                        A project by YFLooi <span role="img" aria-label="point right">&#128513;</span> . 
+                        More on <span role="img" aria-label="point right">&#128073;</span> 
                         <a href="https://github.com/YFLooi/marketsurveyapp">Github</a>                 
                     </Typography>      
                 </div>

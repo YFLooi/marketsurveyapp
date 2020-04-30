@@ -1,75 +1,89 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     //Allows us to connect to <Hashrouter/> from a child component
     withRouter
 } from "react-router-dom";
+import { GoogleSignIn } from "../GoogleSignIn/GoogleSignIn.js";
+
 import { makeStyles} from '@material-ui/core/styles';
-import { 
-  Box, 
-  Button,
-  Typography 
-} from "@material-ui/core";
-//Imports for the AppBar (menu bar)
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-
-//Allows side-swiping menus
-import Drawer from '@material-ui/core/Drawer';
-
-//The Material UI answer to <ul/>
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-//Boxes to display Icons and Text as part of a <List/>
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-
-import TypoGraphy from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton';
+import { Box, Button, Container, Grid, Typography } from "@material-ui/core";
+import { Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton } from "@material-ui/core";
+import { Card, CardHeader, CardActionArea, CardActions, CardContent, CardMedia } from "@material-ui/core/";
 
 //Material UI icon imports
-import { Menu, Home, Settings, AccountBox, ShoppingCart, Explore, FavoriteOutlined } from '@material-ui/icons'
+import { Menu, Home, Settings, AccountBox, ShoppingCart, Explore, FavoriteOutlined } from '@material-ui/icons';
+
+import logo from "../logo.png";
+import coverImgFile from "./icons/coverImg.jpg"
 
 //The MaterialUI way of modding styles
 const useStyles = makeStyles(theme => ({
-    AppBar: {
-        backgroundColor: 'gray',
-        width: '100%',
-        height: 56,
-        position: 'relative',
+    menuBar: {
+        width: "100%",    
+        maxHeight: 65,
+        background: "linear-gradient(to left, #00b7ff, #87d7f7)",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "10px 10px"
     },
-    //For menu drawer
-    list: {
-        width: 250,
+    menuBarLogo: {
+        width:90,
+        cursor:"pointer"
+    },
+    /*left and right leaves extra space*/
+    menuBarLeft: {
+        minWidth: "50%",
+        display: "flex",
+        justifyContent: "flex-start",
+        alignItems: "center",
+        paddingLeft: 20
+    },
+    menuList: {  //For Drawer
+        minWidth: 250,
         zIndex: 2,
-      },
-    //For menu drawer
-    fullList: {
-        width: 'auto',
     },
-    menuButton: {
+    drawerButton: {
         width: 48,
         height: 48,
 
-        top: '5%',
-        bottom: '5%',
-        left: '3.5%',
-        position: 'absolute',
     },
-    githubLink: {
-        color:'blue',
-        '&:hover': { 
-            color: 'purple', 
-        }, 
+    menuBarRight: {
+        minWidth: "30%",
+        display: "flex",
+        justifyContent: "flex-end",
+        alignItems: "center",
+        paddingRight: 20
+    },
+    header: {
+        minHeight: 70
+    },
+    bodyBox: {
+        minHeight: "40vh",
+        display: "flex",
+    },
+    body: {
+        flex: "2 2 auto",
     }
 }));
 
 function RespondentPage(props) {
     const classes = useStyles();
+    const surveys = [
+        { surveyId:"1", coverImg:coverImgFile, title:"survey1", issuer:"issuer1", dateIssued:"21 Jan 2020", description: "description1", disclosures:"disclosure1"},
+        { surveyId:"2", coverImg:coverImgFile, title:"survey2", issuer:"issuer2", dateIssued:"22 Jan 2020", description: "description2", disclosures:"disclosure2"},
+        { surveyId:"3", coverImg:coverImgFile, title:"survey3", issuer:"issuer3", dateIssued:"23 Jan 2020", description: "description3", disclosures:"disclosure3"},
+        { surveyId:"4", coverImg:coverImgFile, title:"survey4", issuer:"issuer4", dateIssued:"24 Jan 2020", description: "description4", disclosures:"disclosure4"},
+        { surveyId:"5", coverImg:coverImgFile, title:"survey5", issuer:"issuer5", dateIssued:"25 Jan 2020", description: "description5", disclosures:"disclosure5"}
+    ]
 
     //Code for Drawer
-    const [state, setState] = React.useState({
+    const [drawerToggle, setDrawerToggle] = React.useState({
         left: false,
     });
+    //Temporary store for details card generated on clicking Survey Card-s
+    const [detailsCard, setDetailsCard] = useState([])
+
     //The on/off switch that opens and closes <Drawer/>
     //Takes in 2 values: A string (side: left/right/etc) and a boolean (open)
     const toggleDrawer = (side, open) => event => {
@@ -78,12 +92,12 @@ function RespondentPage(props) {
             return;
         }
     
-        setState({ ...state, [side]: open });
+        setDrawerToggle({ ...drawerToggle, [side]: open });
     };
     //Triggered by <Drawer/>, possibly with a listener, when state.left === true
     const sideList = side => (
         <div
-            className={classes.list}
+            className={classes.menuList}
             role="presentation"
             //Closes drawer when the <Drawer/> or its overlay <div/> are clicked
             onClick={toggleDrawer(side, false)} 
@@ -94,37 +108,198 @@ function RespondentPage(props) {
                 <ListItem key='title'>
                     <ListItemText primary='Menu' />
                 </ListItem>
-                <ListItem button key='home' onClick={() => {props.history.push('/')}}>
+                <ListItem button key='homepage' onClick={() => {props.history.push('/')}}>
                     <ListItemIcon><Home/></ListItemIcon>
-                    <ListItemText primary='Home' />
+                    <ListItemText primary='Homepage' />
                 </ListItem>
-                <ListItem button key='advancedSearch' onClick={() => {props.history.push('/Account')}}>
+                <ListItem button key='accountSettings' onClick={() => {props.history.push('/RespondentAccount')}}>
                     <ListItemIcon><Settings/></ListItemIcon>
-                    <ListItemText primary='Advanced Search'/>
-                </ListItem>
-                <ListItem>
-                    <ListItemText key='feedback' primary='Feedback? 😁' secondary={
-                        <React.Fragment>
-                            <TypoGraphy component='span' variant='body1' align='left'>
-                                Find the author on <a className={classes.githubLink} href="https://github.com/YFLooi/libraryWebsite-React">Github</a>
-                            </TypoGraphy>
-                        </React.Fragment>
-                    }/>
+                    <ListItemText primary='Account Settings'/>
                 </ListItem>
             </List>
         </div>
     );
+    const renderDetailsCard = (surveyId) => {
+        let detailsOverlay = document.getElementById(`detailsOverlay`);
+        let targetIndex = surveys.findIndex(item => item.surveyId === surveyId);
+        console.log(`Array position containing target book details: ${targetIndex}`);
+        
+        let newDetailsCardArray = [
+            /**First element is the overview card*/
+            <Card key='survey details card' classes={{root: classes.detailsCard}}>
+                <div className={classes.detailsCardInfoBox}>
+                    <CardMedia
+                        component='img'
+                        alt={`survey image`}
+                        src={surveys[targetIndex].coverImg}
+                        classes= {{media: classes.detailsCardImage}}
+                    />
+                    <div className={classes.detailsCardDetails}>
+                        <CardHeader
+                            title = {surveys[targetIndex].title}
+                            subheader = {
+                                <React.Fragment>
+                                    {`By: ${surveys[targetIndex].issuer}`} <br/> 
+                                    {`Date created: ${surveys[targetIndex].dateIssued}`}
+                                </React.Fragment>
+                            }
+                            classes = {{root: classes.surveyCard, title: classes.detailsCardTitle, subheader: classes.detailsCardSubheader}}
+                        />
+                        <CardActions classes={{root: classes.detailsCardActions}}>
+                            <Button size="small" color="primary" onClick={() => {hideDetailsCard();}}>
+                                Close
+                            </Button>
+                        </CardActions>
+                    </div>
+                </div>
+                <CardContent>
+                    <Typography variant="h6" component="div" noWrap={true}>
+                        <u>Description</u>
+                    </Typography><br/>
+                    <Typography variant="body1" component="div" noWrap={false}>
+                        {surveys[targetIndex].description}
+                    </Typography><br/>
+                    <Typography variant="h6" component="div" noWrap={true}>
+                        <u>Disclosures</u>
+                    </Typography><br/>
+                    <Typography variant="body1" component="div" noWrap={false}>
+                        {surveys[targetIndex].disclosures}
+                    </Typography><br/>
+                </CardContent>
+            </Card>
+            ,
+            /**2nd element is the disclaimer card*/
+            <Card key='survey disclaimer card' classes={{root: classes.detailsCard}}>
+                <div className={classes.detailsCardDetails}>
+                    <CardHeader
+                        title = {surveys[targetIndex].title}
+                        classes = {{root: classes.surveyCard, title: classes.detailsCardTitle, subheader: classes.detailsCardSubheader}}
+                    />
+                    <CardActions classes={{root: classes.detailsCardActions}}>
+                        <Button size="small" color="primary" onClick={() => {hideDetailsCard();}}>
+                            Close
+                        </Button>
+                    </CardActions>
+                </div>    
+                <CardContent>
+                    <Container>
+                        <Typography variant="h6" component="div" noWrap={true}>
+                            PLEASE REVIEW THE TERMS OF YOUR PARTICIPATION BEFORE CONTINUING
+                        </Typography>
+                        <Typography variant="body1" component="div" noWrap={false}>
+                            By clicking "I ACCEPT", you consent to SAVE.ai's collection and processing of your responses
+                            for 3rd parties, including those specified in the disclosure.<br/>
+                            You also confirm your account details are valid. SAVE.ai reserves the right to
+                            forfeit rewards for accounts deemed fraudulent<br/>
+                            Your participation in this survey will be kept anonymous.<br/>
+                        </Typography>
+                        <Button>I ACCEPT</Button> <Button>I DECLINE</Button>
+                    </Container>
+                </CardContent>
+            </Card>
+        ]
+
+        let oldDetailsCard = detailsCard;
+        let newDetailsCard = oldDetailsCard.splice(0, oldDetailsCard.length);
+        setDetailsCard([...newDetailsCard, ...newDetailsCardArray]);
+        detailsOverlay.style.display= 'block'; 
+    }
+    const hideDetailsCard = () => {
+        //Need to do this mutably. Otherwise, buttons will be stuck on last state
+        setDetailsCard([]);
+                
+        //Should keep appended Details card. That way, there is no load time if 'Details' is clicked again
+        document.getElementById(`detailsOverlay`).style.display = 'none';
+    }
+
    
     return (
-        <div className="RespondentPage">
-            <Box>
-                <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="Menu" onClick={toggleDrawer('left', true)}>
-                    <Menu/>
-                </IconButton>
-            </Box>
-            <Drawer open={state.left} onClose={toggleDrawer('left', false)}>
-                {sideList('left')}
-            </Drawer>
+        <div className={classes.RespondentPage}>
+            <div className={classes.menuBar}>
+                <div className={classes.menuBarLeft}>
+                    <IconButton edge="start" className={classes.drawerButton} color="inherit" aria-label="Drawer" onClick={toggleDrawer('left', true)}>
+                        <Menu/>
+                    </IconButton>
+                    <img src={logo} className={classes.menuBarLogo} alt="logo" onClick={() => {props.history.push('/')}}/>
+                </div>
+                <div className={classes.menuBarRight}>
+                    <GoogleSignIn/>
+                </div>
+                {/**Drawer contains side-hidden menu */}
+                <Drawer open={drawerToggle.left} onClose={toggleDrawer('left', false)}>
+                    {sideList('left')}
+                </Drawer>
+            </div>
+           
+            <Container classes={{root: classes.header}}>
+                <Typography variant="h3" align="left">Welcome back user.id</Typography>
+            </Container>
+            <Container classes={{root: classes.bodyBox}}>
+                <div id='detailsOverlay' className={classes.detailsOverlay}>
+                    {detailsCard[0]} {/**Must use state here: When state updates, the update is pushed to all calls of that state*/}
+                </div>
+                <Grid container direction="column" justify="space-between" classes={{root: classes.body}}>
+                    <Grid item>
+                        <Typography variant="h4" align="left">Your rewards</Typography><br/>
+                        <Typography variant="body1" align="left">Cash earned: </Typography>
+                        <Typography variant="body1" align="left">Vouchers received: </Typography>
+                    </Grid>
+                    <Grid item> 
+                        <Typography variant="h4" align="left">Available surveys</Typography><br/>    
+                        <Grid container spacing={1} justify="center">
+                            {surveys.map(function(item,i) {
+                                return(
+                                    <Grid item key={`survey card ${i}`}>
+                                        <Card classes={{root: classes.card}}>
+                                            <CardActionArea>
+                                                <CardMedia
+                                                    component="img"
+                                                    alt={`survey card title`}
+                                                    height="210"
+                                                    src={item.coverImg}
+                                                    classes= {{media: classes.cardImage}}
+                                                    onClick={() => {renderDetailsCard(item.surveyId);}}
+                                                />
+                                                <CardContent>
+                                                    <Typography variant="body1" component="h2" noWrap={false}>
+                                                        <b>{item.title}</b>
+                                                    </Typography>
+                                                    <Typography variant="body1" component="div" noWrap={true}>
+                                                        {item.issuer}
+                                                    </Typography>
+                                                </CardContent>
+                                            </CardActionArea>
+                                            <CardActions>
+                                                {/**Need to wrap functions with property passed like this. 
+                                                Otherwise, it runs on ComponentDidMount*/}
+                                                <Button size="small" color="primary" onClick={() => {renderDetailsCard(item.surveyId);}}>
+                                                    Details
+                                                </Button>
+                                            </CardActions>
+                                        </Card>
+                                    </Grid>
+                                )
+                            })}
+                        </Grid>
+                    </Grid>
+                    <Grid item>
+                        <Typography variant="h4" align="left">Completed surveys</Typography><br/>
+                        <List>
+                            <ListItem key='title'>
+                                <ListItemText primary='Menu' />
+                            </ListItem>
+                            <ListItem button key='homepage'>
+                                <ListItemIcon><Home/></ListItemIcon>
+                                <ListItemText primary='Homepage' />
+                            </ListItem>
+                            <ListItem button key='accountSettings'>
+                                <ListItemIcon><Settings/></ListItemIcon>
+                                <ListItemText primary='Account Settings'/>
+                            </ListItem>
+                        </List>
+                    </Grid>
+                </Grid>
+            </Container>
         </div>
     );
 }

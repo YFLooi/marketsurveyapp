@@ -6,7 +6,12 @@ import {
 import contentHeaderBackground from "./icons/header5.jpg";
 import contentBodyLeftBackground from "./icons/marketeerImage4.jpg";
 import contentBodyRightBackground from "./icons/respondantImage2.jpg";
+
+/**For the social media icons */
 import "./MainPage.css";
+/**For the menuBar */
+import logo from "../logo.png";
+import { GoogleSignIn } from "../GoogleSignIn/GoogleSignIn.js";
 
 const useStyles = makeStyles(theme => ({ 
     MainPage: {
@@ -16,6 +21,34 @@ const useStyles = makeStyles(theme => ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "flex-start"
+    },
+    menuBar: {
+        width: "100%",    
+        maxHeight: 65,
+        background: "linear-gradient(to left, #00b7ff, #87d7f7)",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "10px 50px"
+    },
+    menuBarLogo: {
+        width:90,
+        cursor:"pointer"
+    },
+    /*left and right leaves extra space*/
+    menuBarLeft: {
+        minWidth: "50%",
+        display: "flex",
+        justifyContent: "flex-start",
+        alignItems: "center",
+        paddingLeft: 20
+    },
+    menuBarRight: {
+        minWidth: "30%",
+        display: "flex",
+        justifyContent: "flex-end",
+        alignItems: "center",
+        paddingRight: 20
     },
     header: {
         textAlign: "center",
@@ -153,11 +186,21 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function MainPage() {
+function MainPage(props) {
     const classes = useStyles();
-   
+    
     return (
         <div className={classes.MainPage}>
+            <div className={classes.menuBar}>
+                <div className={classes.menuBarLeft} onClick={() => {props.history.push('/')}}>
+                    <img src={logo} className={classes.menuBarLogo} alt="logo" />
+                </div>
+                <div onClick={() => {props.history.push('/RespondentPage')}}><u>RespPg</u></div>&nbsp;&nbsp;
+                <div onClick={() => {props.history.push('/MarketeerPage')}}><u>MrktPg</u></div>&nbsp;&nbsp;
+                <div className={classes.menuBarRight}>
+                    <GoogleSignIn/>
+                </div>
+            </div>
             <Grid container spacing={0} justify="center" alignItems="center" classes={{root: classes.header}}>
                 <Grid item xs={12}>
                     <Typography variant="h2" align="center"><b>Know your audience</b></Typography>
@@ -199,9 +242,9 @@ function MainPage() {
                     <Grid item xs={12}>
                         <Typography variant="h6" align="center">
                             Contact us today: <br/>
-                            <a href="#" className="fa fa-facebook"></a> 
-                            <a href="#" className="fa fa-linkedin"></a> 
-                            <a href="#" className="fa fa-envelope-o"></a>
+                            <div className="fa fa-facebook"></div> 
+                            <div className="fa fa-linkedin"></div> 
+                            <div className="fa fa-envelope-o"></div>
                         </Typography>                    
                     </Grid>
                 </Grid>
