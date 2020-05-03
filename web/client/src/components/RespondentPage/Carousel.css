@@ -1,0 +1,88 @@
+.Carousel {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    max-width: 100%;
+    min-height: 20vh;
+}
+.CarouselPlaceholder {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    
+    width: 100%;
+    min-height: 100px;
+
+    background-image: url('./icons/loadingimg.gif');
+   
+    /*0 for align left , 50% for align centre*/
+    background-position-x: 50%; /*0 for align left , 50% for align centre*/
+    background-position-y: center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-size: 70% 100%;
+}
+.CarouselBody {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+}
+.card {
+    background-color: blue;
+    margin-left: 5px;
+    margin-bottom: 5px;
+    border: 1.5px solid gray;
+    width: 150px;
+}
+.card:hover {
+    border: 1.5px solid black;
+}
+/*For the <ul> of dots below the carousel*/
+.alice-carousel__dots-item{
+    border: 1px solid rgb(95, 95, 95);
+}
+
+/*Hides navigation arrow buttons and card title+author on smartphone portrait mode*/
+/*### Smartphones (portrait and landscape)(small). Tablets taken as 768-1023px ### */
+@media screen and (min-width : 0px) and (max-width : 700px){
+    .prevButtonContainer{
+        display: none;
+    }
+    .nextButtonContainer{
+        display: none;
+    }
+}
+@media screen and (min-width: 701px){
+    .prevButtonContainer{
+        padding: 10px;
+        height: 100%;
+    
+        background-image: url('./icons/ArrowBackIos.svg');
+        background-position-x: 0%; /*0 for align left , 50% for align centre*/
+        background-position-y: center;
+        background-repeat: no-repeat;
+        background-attachment: scroll;
+        background-size: 48px;
+    }
+    .nextButtonContainer{
+        padding: 10px;
+        height: 100%;
+       
+        background-image: url('./icons/ArrowForwardIos.svg');
+        background-position-x: 50%; /*0 for align left , 50% for align centre*/
+        background-position-y: center;
+        background-repeat: no-repeat;
+        background-attachment: scroll;
+        background-size: 48px;
+    }
+    .prevButtonContainer:hover {
+        border: 3.5px solid black;
+    }
+    .nextButtonContainer:hover {
+        border: 3.5px solid black;
+    }
+}

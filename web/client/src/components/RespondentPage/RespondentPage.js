@@ -4,6 +4,8 @@ import {
     withRouter
 } from "react-router-dom";
 import { GoogleSignIn } from "../GoogleSignIn/GoogleSignIn.js";
+import CarouselRender from './Carousel.js';
+import cardCoverImg from "./icons/coverImg.jpg";
 
 import { makeStyles} from '@material-ui/core/styles';
 import { Box, Button, Container, Grid, Typography } from "@material-ui/core";
@@ -14,7 +16,6 @@ import { Card, CardHeader, CardActionArea, CardActions, CardContent, CardMedia }
 import { Menu, Home, Settings, AccountBox, ShoppingCart, Explore, FavoriteOutlined } from '@material-ui/icons';
 
 import logo from "../logo.png";
-import coverImgFile from "./icons/coverImg.jpg"
 
 //The MaterialUI way of modding styles
 const useStyles = makeStyles(theme => ({
@@ -70,17 +71,20 @@ const useStyles = makeStyles(theme => ({
 function RespondentPage(props) {
     const classes = useStyles();
     const surveys = [
-        { surveyId:"1", coverImg:coverImgFile, title:"survey1", issuer:"issuer1", dateIssued:"21 Jan 2020", description: "description1", disclosures:"disclosure1"},
-        { surveyId:"2", coverImg:coverImgFile, title:"survey2", issuer:"issuer2", dateIssued:"22 Jan 2020", description: "description2", disclosures:"disclosure2"},
-        { surveyId:"3", coverImg:coverImgFile, title:"survey3", issuer:"issuer3", dateIssued:"23 Jan 2020", description: "description3", disclosures:"disclosure3"},
-        { surveyId:"4", coverImg:coverImgFile, title:"survey4", issuer:"issuer4", dateIssued:"24 Jan 2020", description: "description4", disclosures:"disclosure4"},
-        { surveyId:"5", coverImg:coverImgFile, title:"survey5", issuer:"issuer5", dateIssued:"25 Jan 2020", description: "description5", disclosures:"disclosure5"}
+        { surveyId:"1", coverImg: cardCoverImg, title:"survey1", issuer:"issuer1", dateIssued:"21 Jan 2020", description: "description1", disclosures:"disclosure1"},
+        { surveyId:"2", coverImg: cardCoverImg, title:"survey2", issuer:"issuer2", dateIssued:"22 Jan 2020", description: "description2", disclosures:"disclosure2"},
+        { surveyId:"3", coverImg: cardCoverImg, title:"survey3", issuer:"issuer3", dateIssued:"23 Jan 2020", description: "description3", disclosures:"disclosure3"},
+        { surveyId:"4", coverImg: cardCoverImg, title:"survey4", issuer:"issuer4", dateIssued:"24 Jan 2020", description: "description4", disclosures:"disclosure4"},
+        { surveyId:"5", coverImg: cardCoverImg, title:"survey5", issuer:"issuer5", dateIssued:"25 Jan 2020", description: "description5", disclosures:"disclosure5"},
+        { surveyId:"6", coverImg: cardCoverImg, title:"survey6", issuer:"issuer6", dateIssued:"26 Jan 2020", description: "description6", disclosures:"disclosure6"},
+        { surveyId:"7", coverImg: cardCoverImg, title:"survey7", issuer:"issuer7", dateIssued:"27 Jan 2020", description: "description7", disclosures:"disclosure7"},
+        { surveyId:"8", coverImg: cardCoverImg, title:"survey8", issuer:"issuer8", dateIssued:"28 Jan 2020", description: "description8", disclosures:"disclosure8"},
+        { surveyId:"9", coverImg: cardCoverImg, title:"survey9", issuer:"issuer9", dateIssued:"29 Jan 2020", description: "description9", disclosures:"disclosure9"},
+        { surveyId:"10", coverImg: cardCoverImg, title:"survey10", issuer:"issuer10", dateIssued:"30 Jan 2020", description: "description10", disclosures:"disclosure10"},
     ]
 
     //Code for Drawer
-    const [drawerToggle, setDrawerToggle] = React.useState({
-        left: false,
-    });
+    const [drawerToggle, setDrawerToggle] = useState({ left: false });
     //Temporary store for details card generated on clicking Survey Card-s
     const [detailsCard, setDetailsCard] = useState([])
 
@@ -240,50 +244,16 @@ function RespondentPage(props) {
                 </div>
                 <Grid container direction="column" justify="space-between" classes={{root: classes.body}}>
                     <Grid item>
-                        <Typography variant="h4" align="left">Your rewards</Typography><br/>
+                        <Typography variant="h4" align="left">Your rewards</Typography>
                         <Typography variant="body1" align="left">Cash earned: </Typography>
                         <Typography variant="body1" align="left">Vouchers received: </Typography>
                     </Grid>
                     <Grid item> 
-                        <Typography variant="h4" align="left">Available surveys</Typography><br/>    
-                        <Grid container spacing={1} justify="center">
-                            {surveys.map(function(item,i) {
-                                return(
-                                    <Grid item key={`survey card ${i}`}>
-                                        <Card classes={{root: classes.card}}>
-                                            <CardActionArea>
-                                                <CardMedia
-                                                    component="img"
-                                                    alt={`survey card title`}
-                                                    height="210"
-                                                    src={item.coverImg}
-                                                    classes= {{media: classes.cardImage}}
-                                                    onClick={() => {renderDetailsCard(item.surveyId);}}
-                                                />
-                                                <CardContent>
-                                                    <Typography variant="body1" component="h2" noWrap={false}>
-                                                        <b>{item.title}</b>
-                                                    </Typography>
-                                                    <Typography variant="body1" component="div" noWrap={true}>
-                                                        {item.issuer}
-                                                    </Typography>
-                                                </CardContent>
-                                            </CardActionArea>
-                                            <CardActions>
-                                                {/**Need to wrap functions with property passed like this. 
-                                                Otherwise, it runs on ComponentDidMount*/}
-                                                <Button size="small" color="primary" onClick={() => {renderDetailsCard(item.surveyId);}}>
-                                                    Details
-                                                </Button>
-                                            </CardActions>
-                                        </Card>
-                                    </Grid>
-                                )
-                            })}
-                        </Grid>
+                        <Typography variant="h4" align="left">Available surveys</Typography>  
+                        <CarouselRender renderData={surveys} renderDetailsCard={renderDetailsCard}/>
                     </Grid>
                     <Grid item>
-                        <Typography variant="h4" align="left">Completed surveys</Typography><br/>
+                        <Typography variant="h4" align="left">Completed surveys</Typography>
                         <List>
                             <ListItem key='title'>
                                 <ListItemText primary='Menu' />
