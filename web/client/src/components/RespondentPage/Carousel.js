@@ -1,7 +1,7 @@
 import React, { Component, useState, useEffect } from 'react';
 import Carousel, { Dots } from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
-//import "./Carousel.css";
+import "./Carousel.css";
 import { Grid, Card, CardHeader, CardActionArea, CardActions, CardContent, CardMedia, Typography, Button } from "@material-ui/core/";
 
 import { makeStyles} from '@material-ui/core/styles';
@@ -16,22 +16,20 @@ function CarouselRender (props) {
     const classes = useStyles();
 
     const [renderData, setRenderData] = useState([]);
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [itemsInSlide, setItemsInSlide] = useState(1);
-    const [responsive, setResponsive] = useState({ 0: { items: 2 }}); //Property value = window.innerWidth
     const [galleryItems, setGalleryItems] = useState([]);
+    const [slidesToShow, setSlidesToShow] = useState(1);
 
     useEffect(() => {    
         //Runs on componentDidMount()
         setRenderData([...renderData, ...props.renderData]);
         
-        //Send data directly to rendering function. This skips delay from use of state for storage
-        generateGalleryItems(props.renderData);
-
         //Identifies viewport size
         //Component is remounted each time the window is resized. That's why this works in detecting viewport size!
-        window.addEventListener('resize', updateWindowDimensions);
-        updateWindowDimensions();
+        window.addEventListener('resize', calcSlidesToShow);
+        calcSlidesToShow();
+
+        //Send data directly to rendering function. This skips delay from use of state for storage
+        generateGalleryItems(props.renderData);
         
         return () => {      
             document.getElementsByClassName("CarouselPlaceholder")[0].style.display = "flex";  
@@ -70,27 +68,36 @@ function CarouselRender (props) {
 
         //For retrieval later to generate 'Details' overlay
         setGalleryItems([...itemsArray])
+        console.log(itemsArray)
         document.getElementsByClassName("CarouselPlaceholder")[0].style.display = "none";
     }
-    const updateWindowDimensions = () => {
-        //Sets number of items to display on carousel by screen size
-        let cardsToShow = Math.round(window.innerWidth/210); //Need to round else cards partially shown
-        setResponsive({ responsive: { 0: { items: cardsToShow }} });
+    const calcSlidesToShow = () => {
+        //Sets number of slides to display on carousel by screen size
+        let slidesToShow = Math.round(window.innerWidth/210); //Need to round else cards partially shown
+        console.log(`Slides to show: ${slidesToShow}`)
         console.log('New viewport dimensions: Width: '+window.innerWidth+' Height: '+ window.innerHeight)
+
+        if (slidesToShow >1) {
+            setSlidesToShow(slidesToShow);
+        } else {
+            setSlidesToShow(1)   //Ensures at least 1 slide visible
+        }
     }
     return (
-        <div className="Carousel"> 
+        <div className="CarouselRender"> 
             <div className="CarouselPlaceholder">
                 <Typography variant="h6" align="center">Loading</Typography>
             </div>
 
-         
-            <div className="CarouselBody" style={{maxWidth:"80vw", maxHeight:"100%"}}>
+            {/**Must limit dimensions of parent div to prevent Carousel from 
+             * stretching to infinity
+            */}
+            <div className="CarouselBody">
                 <Carousel 
                     slides={galleryItems}
                     arrows
                     clickToChange
-                    slidesPerPage={2}
+                    slidesPerPage={slidesToShow}
                     centered //Shows a bit of next slide
                     infinite //Scrolling to end scrolls back to 1st slide
                 />     

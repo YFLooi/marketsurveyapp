@@ -1,10 +1,10 @@
-.Carousel {
+.CarouselRender {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
 
-    max-width: 100%;
+    width: 100%;
     min-height: 20vh;
 }
 .CarouselPlaceholder {
@@ -25,25 +25,8 @@
     background-size: 70% 100%;
 }
 .CarouselBody {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    max-width: 100%;
-}
-.card {
-    background-color: blue;
-    margin-left: 5px;
-    margin-bottom: 5px;
-    border: 1.5px solid gray;
-    width: 150px;
-}
-.card:hover {
-    border: 1.5px solid black;
-}
-/*For the <ul> of dots below the carousel*/
-.alice-carousel__dots-item{
-    border: 1px solid rgb(95, 95, 95);
+    width: 85vw; 
+    max-height: 100%;
 }
 
 /*Hides navigation arrow buttons and card title+author on smartphone portrait mode*/
