@@ -28,44 +28,11 @@
     width: 85vw; 
     max-height: 100%;
 }
-
-/*Hides navigation arrow buttons and card title+author on smartphone portrait mode*/
-/*### Smartphones (portrait and landscape)(small). Tablets taken as 768-1023px ### */
-@media screen and (min-width : 0px) and (max-width : 700px){
-    .prevButtonContainer{
-        display: none;
-    }
-    .nextButtonContainer{
-        display: none;
-    }
+.BrainhubCarousel__arrows{
+    margin: 5px;
 }
-@media screen and (min-width: 701px){
-    .prevButtonContainer{
-        padding: 10px;
-        height: 100%;
-    
-        background-image: url('./icons/ArrowBackIos.svg');
-        background-position-x: 0%; /*0 for align left , 50% for align centre*/
-        background-position-y: center;
-        background-repeat: no-repeat;
-        background-attachment: scroll;
-        background-size: 48px;
-    }
-    .nextButtonContainer{
-        padding: 10px;
-        height: 100%;
-       
-        background-image: url('./icons/ArrowForwardIos.svg');
-        background-position-x: 50%; /*0 for align left , 50% for align centre*/
-        background-position-y: center;
-        background-repeat: no-repeat;
-        background-attachment: scroll;
-        background-size: 48px;
-    }
-    .prevButtonContainer:hover {
-        border: 3.5px solid black;
-    }
-    .nextButtonContainer:hover {
-        border: 3.5px solid black;
-    }
+
+/*Individual <li> in <ul> with the dots*/
+.BrainhubCarousel__dots {   
+    margin: 10px;
 }

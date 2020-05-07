@@ -6,6 +6,7 @@ import {
 import { GoogleSignIn } from "../GoogleSignIn/GoogleSignIn.js";
 import CarouselRender from './Carousel.js';
 import cardCoverImg from "./icons/coverImg.jpg";
+import EnhancedTable from "./MaterialTable.js"
 
 import { makeStyles} from '@material-ui/core/styles';
 import { Box, Button, Container, Grid, Typography } from "@material-ui/core";
@@ -85,8 +86,6 @@ function RespondentPage(props) {
 
     //Code for Drawer
     const [drawerToggle, setDrawerToggle] = useState({ left: false });
-    //Temporary store for details card generated on clicking Survey Card-s
-    const [detailsCard, setDetailsCard] = useState([])
 
     //The on/off switch that opens and closes <Drawer/>
     //Takes in 2 values: A string (side: left/right/etc) and a boolean (open)
@@ -122,101 +121,7 @@ function RespondentPage(props) {
                 </ListItem>
             </List>
         </div>
-    );
-    const renderDetailsCard = (surveyId) => {
-        let detailsOverlay = document.getElementById(`detailsOverlay`);
-        let targetIndex = surveys.findIndex(item => item.surveyId === surveyId);
-        console.log(`Array position containing target book details: ${targetIndex}`);
-        
-        let newDetailsCardArray = [
-            /**First element is the overview card*/
-            <Card key='survey details card' classes={{root: classes.detailsCard}}>
-                <div className={classes.detailsCardInfoBox}>
-                    <CardMedia
-                        component='img'
-                        alt={`survey image`}
-                        src={surveys[targetIndex].coverImg}
-                        classes= {{media: classes.detailsCardImage}}
-                    />
-                    <div className={classes.detailsCardDetails}>
-                        <CardHeader
-                            title = {surveys[targetIndex].title}
-                            subheader = {
-                                <React.Fragment>
-                                    {`By: ${surveys[targetIndex].issuer}`} <br/> 
-                                    {`Date created: ${surveys[targetIndex].dateIssued}`}
-                                </React.Fragment>
-                            }
-                            classes = {{root: classes.surveyCard, title: classes.detailsCardTitle, subheader: classes.detailsCardSubheader}}
-                        />
-                        <CardActions classes={{root: classes.detailsCardActions}}>
-                            <Button size="small" color="primary" onClick={() => {hideDetailsCard();}}>
-                                Close
-                            </Button>
-                        </CardActions>
-                    </div>
-                </div>
-                <CardContent>
-                    <Typography variant="h6" component="div" noWrap={true}>
-                        <u>Description</u>
-                    </Typography><br/>
-                    <Typography variant="body1" component="div" noWrap={false}>
-                        {surveys[targetIndex].description}
-                    </Typography><br/>
-                    <Typography variant="h6" component="div" noWrap={true}>
-                        <u>Disclosures</u>
-                    </Typography><br/>
-                    <Typography variant="body1" component="div" noWrap={false}>
-                        {surveys[targetIndex].disclosures}
-                    </Typography><br/>
-                </CardContent>
-            </Card>
-            ,
-            /**2nd element is the disclaimer card*/
-            <Card key='survey disclaimer card' classes={{root: classes.detailsCard}}>
-                <div className={classes.detailsCardDetails}>
-                    <CardHeader
-                        title = {surveys[targetIndex].title}
-                        classes = {{root: classes.surveyCard, title: classes.detailsCardTitle, subheader: classes.detailsCardSubheader}}
-                    />
-                    <CardActions classes={{root: classes.detailsCardActions}}>
-                        <Button size="small" color="primary" onClick={() => {hideDetailsCard();}}>
-                            Close
-                        </Button>
-                    </CardActions>
-                </div>    
-                <CardContent>
-                    <Container>
-                        <Typography variant="h6" component="div" noWrap={true}>
-                            PLEASE REVIEW THE TERMS OF YOUR PARTICIPATION BEFORE CONTINUING
-                        </Typography>
-                        <Typography variant="body1" component="div" noWrap={false}>
-                            By clicking "I ACCEPT", you consent to SAVE.ai's collection and processing of your responses
-                            for 3rd parties, including those specified in the disclosure.<br/>
-                            You also confirm your account details are valid. SAVE.ai reserves the right to
-                            forfeit rewards for accounts deemed fraudulent<br/>
-                            Your participation in this survey will be kept anonymous.<br/>
-                        </Typography>
-                        <Button>I ACCEPT</Button> <Button>I DECLINE</Button>
-                    </Container>
-                </CardContent>
-            </Card>
-        ]
-
-        let oldDetailsCard = detailsCard;
-        let newDetailsCard = oldDetailsCard.splice(0, oldDetailsCard.length);
-        setDetailsCard([...newDetailsCard, ...newDetailsCardArray]);
-        detailsOverlay.style.display= 'block'; 
-    }
-    const hideDetailsCard = () => {
-        //Need to do this mutably. Otherwise, buttons will be stuck on last state
-        setDetailsCard([]);
-                
-        //Should keep appended Details card. That way, there is no load time if 'Details' is clicked again
-        document.getElementById(`detailsOverlay`).style.display = 'none';
-    }
-
-   
+    );   
     return (
         <div className={classes.RespondentPage}>
             <div className={classes.menuBar}>
@@ -239,9 +144,6 @@ function RespondentPage(props) {
                 <Typography variant="h3" align="left">Welcome back user.id</Typography>
             </Container>
             <Container classes={{root: classes.bodyBox}}>
-                <div id='detailsOverlay' className={classes.detailsOverlay}>
-                    {detailsCard[0]} {/**Must use state here: When state updates, the update is pushed to all calls of that state*/}
-                </div>
                 <Grid container direction="column" justify="space-between" classes={{root: classes.body}}>
                     <Grid item>
                         <Typography variant="h4" align="left">Your rewards</Typography>
@@ -250,23 +152,11 @@ function RespondentPage(props) {
                     </Grid>
                     <Grid item> 
                         <Typography variant="h4" align="left">Available surveys</Typography>  
-                        <CarouselRender renderData={surveys} renderDetailsCard={renderDetailsCard}/>
+                        <CarouselRender renderData={surveys}/>
                     </Grid>
                     <Grid item>
                         <Typography variant="h4" align="left">Completed surveys</Typography>
-                        <List>
-                            <ListItem key='title'>
-                                <ListItemText primary='Menu' />
-                            </ListItem>
-                            <ListItem button key='homepage'>
-                                <ListItemIcon><Home/></ListItemIcon>
-                                <ListItemText primary='Homepage' />
-                            </ListItem>
-                            <ListItem button key='accountSettings'>
-                                <ListItemIcon><Settings/></ListItemIcon>
-                                <ListItemText primary='Account Settings'/>
-                            </ListItem>
-                        </List>
+                        <EnhancedTable renderData={surveys}/>
                     </Grid>
                 </Grid>
             </Container>

@@ -12,6 +12,7 @@ import { TestPage } from "./components/TestPage/TestPage.js";
 import MarketeerPage from "./components/MarketeerPage/MarketeerPage.js";
 import RespondentPage from "./components/RespondentPage/RespondentPage.js";
 import ErrorPage from "./components/ErrorPage/ErrorPage.js";
+import SurveyPage from "./components/SurveyPage/SurveyPage.js";
 
 const useStyles = makeStyles(theme => ({ 
     buttonBox: {
@@ -65,6 +66,10 @@ function App(props) {
                         <Route 
                             path="/RespondentPage"
                             component={RespondentPage}
+                        />
+                         <Route 
+                            path="/SurveyPage"
+                            component={SurveyPage}
                         />
                         <Route 
                             path="*"

@@ -62,7 +62,7 @@ const useStyles = makeStyles(theme => ({
         backgroundPositionY: "center",
         backgroundRepeat: "no-repeat",
         backgroundAttachment: "scroll",
-        backgroundSize: "360%",
+        backgroundSize: "430%",
         overflowX: "hidden",
         overflowY: "hidden"
     },
@@ -197,6 +197,7 @@ function MainPage(props) {
                 </div>
                 <div onClick={() => {props.history.push('/RespondentPage')}}><u>RespPg</u></div>&nbsp;&nbsp;
                 <div onClick={() => {props.history.push('/MarketeerPage')}}><u>MrktPg</u></div>&nbsp;&nbsp;
+                <div onClick={() => {props.history.push('/SurveyPage')}}><u>SvyPg</u></div>&nbsp;&nbsp;
                 <div className={classes.menuBarRight}>
                     <GoogleSignIn/>
                 </div>
