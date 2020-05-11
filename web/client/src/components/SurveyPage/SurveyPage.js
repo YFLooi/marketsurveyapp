@@ -7,7 +7,7 @@ import { GoogleSignIn } from "../GoogleSignIn/GoogleSignIn.js";
 
 import { makeStyles} from '@material-ui/core/styles';
 import { Box, Button, Container, Grid, Typography } from "@material-ui/core";
-import { RadioGroup, Radio, FormControlLabel,IconButton } from "@material-ui/core";
+import { RadioGroup, Radio, FormControl, FormLabel, FormGroup, FormControlLabel, Checkbox, IconButton } from "@material-ui/core";
 import { Card, CardHeader, CardActionArea, CardActions, CardContent, CardMedia } from "@material-ui/core/";
 //Material UI icon imports
 import { Menu, Home, Settings, AccountBox, ShoppingCart, Explore, FavoriteOutlined } from '@material-ui/icons';
@@ -17,21 +17,21 @@ import logo from "../logo.png";
 const questions = [
     { 
         originSurveyId: "survey1",
-        questionId: "survey1.question1",
+        questionId: "survey1_question0",
         questionType:"trueFalse", 
         questionText:"Do you know Nestle?", 
         responseCounter:{ true: 10, false: 5 } 
     },
     { 
         originSurveyId: "survey1",
-        questionId: "survey1.question2",
+        questionId: "survey1_question1",
         questionType:"trueFalse", 
         questionText:"Do you know KitKat?", 
         responseCounter:{ true: 5, false: 10 }
     },
     {   
         originSurveyId: "survey1",
-        questionId: "survey1.question3",
+        questionId: "survey1_question2",
         questionType:"oneAnsMultipleChoice", 
         questionText:"Which age group are you in?", 
         responseText: { resp_0: "10-18", resp_1: "19-30", resp_2: "31-50", resp_3: "50+" }, 
@@ -39,27 +39,28 @@ const questions = [
     },
     { 
         originSurveyId: "survey1",
-        questionId: "survey1.question4",
+        questionId: "survey1_question3",
         questionType:"manyAnsMultipleChoice", 
         questionText:"Which of the following flavours sound tasty to you?", 
-        userResponse:"" 
+        responseText: { resp_0: "Adzuki", resp_1: "Exotic Tokyo", resp_2: "Golden Citrus", resp_3: "Kobe Pudding", resp_4: "Passion Fruit", resp_5: "Soy Sauce", resp_6: "Wasabi" }, 
+        responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0, resp_6: 0 } 
     },
     { 
         originSurveyId: "survey1",
-        questionId: "survey1.question5",
+        questionId: "survey1_question4",
         questionType:"rankOrder", 
         questionText:"Rank the following", response:"" 
     },
     { 
         originSurveyId: "survey1",
-        questionId: "survey1.question6",
+        questionId: "survey1_question5",
         questionType:"rateScale", 
         questionText:"Rate how appealing these flavours sound to you", response:"" },
     { 
         originSurveyId: "survey1",
-        questionId: "survey1.question7",
+        questionId: "survey1_question6",
         questionType:"fivePoint", 
-        questionText:"Would you pay a bit more for a premium KitKat?", response:"" },
+        questionText:"How much more would you pay for a premium, $100 product?", response:"" },
 ] 
 
 //The MaterialUI way of modding styles
@@ -110,7 +111,10 @@ const useStyles = makeStyles(theme => ({
     },
     body: {
         flex: "2 2 auto",
-    }
+    },
+    formControl: {
+        margin: theme.spacing(3),
+    },
 }));
 
 function SurveyPage(props) {
@@ -118,17 +122,15 @@ function SurveyPage(props) {
 
     useEffect(() => {    
         //Renders questions to display on component mount
-        questionGenerator(questions); 
+        questionCardGenerator(questions[0], 0); 
 
         return () => {      
             //Do this mutably to wipe clean. Otherwise, reopening the same survey
             //may cause previous answers to reappear
-            setQuestionCards([])
             setAnswers([])
         }; 
     }, []);
 
-    let [questionCards, setQuestionCards] = useState([]);
     //state that is pushed to DOM
     let [ activeQuestionCard, setActiveQuestionCard ] = useState([]);
     //Stores element number of current activeQuestionCard
@@ -147,13 +149,38 @@ function SurveyPage(props) {
      * @param {*} questionId 
      */
     const handleResponse = (event) => {
-        event.preventDefault();
+        event.preventDefault();    
 
-        console.log(`Response received from questionId: ${event.target.questionid}`);
+        if (event.target.name === "manyAnsMultipleChoice"){
+            let regexQuestionId = /survey\d_question\d/;
+            let questionId = (event.target.name).match(regexQuestionId); 
+            console.log(`regex returns ${questionId}`);
+    
+            let regexResponse = /resp_\d/;
+            let response = (event.target.name).match(regexResponse); 
+            console.log(`regex returns ${response}`);
 
-        //Refers to question in survey data retrieved
-        const targetIndex = answers.findIndex(item => item.questionId === event.target.questionId);
-        setAnswers(answers[targetIndex].answer = event.target.value);
+            //Refers to question in survey data retrieved
+            const targetIndex = answers.findIndex(item => item.questionId === event.target.name);
+            
+            //Need some way to account for answers being added/removed
+            answers.splice(
+                targetIndex, 
+                1, 
+                { questionId: event.target.name, answer:event.target.value }
+            )      
+        } else {
+            //Refers to question in survey data retrieved
+            const targetIndex = answers.findIndex(item => item.questionId === event.target.name);
+            
+            //Removes existing object containing "answer" for question of questionId,
+            //to replace with new "answer"
+            answers.splice(
+                targetIndex, 
+                1, 
+                { questionId: event.target.name, answer:event.target.value }
+            )
+        }
     }
     /**
      * Processes responses given to each question
@@ -190,114 +217,192 @@ function SurveyPage(props) {
      * Returns "answers" gathered to responseCounter of each question
      * @param {global} event
      */
-    const questionGenerator = (questionData) => {
-        let questionArray = Array(questionData.length).fill().map((item, i) => {
-            if (questionData[i].questionType === "trueFalse") {
-                return (
-                    <Card key={`questionCard_${questionData.questionId}`} id={questionData.questionId}>
-                        <CardHeader
-                            title = {questionData[i].questionText}
-                        />
-                        <CardContent>
-                            <Button variant="contained" size="small" color="primary" >
-                                EXIT
-                            </Button>
-                            <RadioGroup
-                                name='answerRadio'
-                                value={answers[i]}
-                                questionid={questionData[i].questionId}
-                                onChange={handleResponse}
-                            >
-                                <FormControlLabel value={true} control={<Radio/>} label="YES"/>
-                                <FormControlLabel value={false} control={<Radio />} label="NO"/>
-                            </RadioGroup>
-                            {/**"Previous" button set to automatically disable if at first card */}
-                            <Button 
-                                variant="contained" size="small" color="primary" 
-                                onClick={() => {changeQuestionCard(activeQuestionCardId-1)}}
-                                disabled={activeQuestionCardId === 0 ? true : false}
-                            >
-                                PREVIOUS
-                            </Button>
-                            {/**"Next" button set to automatically disable if at last card */}
-                            <Button 
-                                variant="contained" size="small" color="primary" 
-                                onClick={() => {changeQuestionCard(activeQuestionCardId+1)}}
-                                disabled={activeQuestionCardId === questions.length ? true : false}
-                            >
-                                NEXT
-                            </Button>
-                        </CardContent>
-                    </Card>
-                );
-            } else if (questionData[i].questionType === "oneAnsMultipleChoice") {
-                const responseKeys = Object.keys(questionData[i].responseText);
-                const responseValues = Object.values(questionData[i].responseText);
+    const questionCardGenerator = (questionData, questionCardId) => {
+        let questionCard = [];
+        const id = questionCardId;
 
-                return (
-                    <Card key={`questionCard_${questionData.questionId}`} id={`questionCard_${i}`}>
-                        <CardHeader
-                            title = {questionData[i].questionText}
-                        />
-                        <CardContent>
-                            <Button variant="contained" size="small" color="primary" >
-                                EXIT
-                            </Button>
-                            
-                            <RadioGroup
-                                name='answerRadio'
-                                value={answers[i]}
-                                questionid={questionData[i].questionId}
-                                onChange={handleResponse}
-                            >
+        /** 
+        //Refers to question in survey data retrieved
+        const indexNumOfValue = answers.findIndex(item => item.questionId === questionData.questionId);
+        console.log(`indexNumOfValue = ${indexNumOfValue}`)
+        */
+        
+        if (questionData.questionType === "trueFalse") {
+            questionCard = [
+                <Card key={`questionCard_${id}`} id={questionData.questionId}>
+                    <CardHeader
+                        title = {questionData.questionText}
+                    />
+                    <CardContent>
+                        <Button variant="contained" size="small" color="primary" >
+                            EXIT
+                        </Button>
+                        <RadioGroup
+                            name={questionData.questionId}
+                            value={answers.answer /*It finds the right index on its own!!*/}
+                            onChange={handleResponse}
+                        >
+                            <FormControlLabel value="true" control={<Radio/>} label="YES"/>
+                            <FormControlLabel value="false" control={<Radio />} label="NO"/>
+                        </RadioGroup>
+                        {/**"Previous" button set to automatically disable if at first card */}
+                        <Button 
+                            variant="contained" size="small" color="primary" 
+                            onClick={() => {changeQuestionCard(activeQuestionCardId -= 1)}}
+                            disabled={activeQuestionCardId === 0 ? true : false}
+                        >
+                            PREVIOUS
+                        </Button>
+                        {/**"Next" button set to automatically disable if at last card */}
+                        <Button 
+                            variant="contained" size="small" color="primary" 
+                            onClick={() => {changeQuestionCard(activeQuestionCardId += 1)}}
+                            disabled={activeQuestionCardId === questions.length ? true : false}
+                        >
+                            NEXT
+                        </Button>
+                    </CardContent>
+                </Card>
+            ]; //using return() causes this JSX to return as {JSX}. Using return[] will cause JSX to return as [{JSX}]
+        } else if (questionData.questionType === "oneAnsMultipleChoice") {
+            const responseKeys = Object.keys(questionData.responseText);
+            const responseValues = Object.values(questionData.responseText);
+
+            questionCard = [
+                <Card key={`questionCard_${id}`} id={questionData.questionId}>
+                    <CardHeader
+                        title = {questionData.questionText}
+                    />
+                    <CardContent>
+                        <Button variant="contained" size="small" color="primary" >
+                            EXIT
+                        </Button>
+                        
+                        <RadioGroup
+                            name={questionData.questionId /**Retrieved by handleResponse() to insert correctly into answers[]*/}
+                            value={answers.answer}
+                            onChange={handleResponse}
+                        >
+                            {Array(responseKeys.length).fill().map(function(item, i) {
+                                return(
+                                    //Note that map() starts from zero!
+                                    <FormControlLabel 
+                                        value={responseKeys[i]} 
+                                        control={<Radio/>} 
+                                        label={responseValues[i]}
+                                    />
+                                )
+                            })}
+                        </RadioGroup>
+                        {/**"Previous" button set to automatically disable if at first card */}
+                        <Button 
+                            variant="contained" size="small" color="primary" 
+                            onClick={() => {changeQuestionCard(activeQuestionCardId -= 1)}}
+                            disabled={activeQuestionCardId === 0 ? true : false}
+                        >
+                            PREVIOUS
+                        </Button>
+                        {/**"Next" button set to automatically disable if at last card */}
+                        <Button 
+                            variant="contained" size="small" color="primary" 
+                            onClick={() => {changeQuestionCard(activeQuestionCardId += 1)}}
+                            disabled={activeQuestionCardId === questions.length ? true : false}
+                        >
+                            NEXT
+                        </Button>
+                    </CardContent>
+                </Card>
+            ];
+        } else if (questionData.questionType === "manyAnsMultipleChoice") {
+            const responseKeys = Object.keys(questionData.responseText);
+            const responseValues = Object.values(questionData.responseText);
+
+            questionCard = [
+                <Card key={`questionCard_${id}`} id={questionData.questionId}>
+                    <CardHeader
+                        title = {questionData.questionText}
+                    />
+                    <CardContent>
+                        <Button variant="contained" size="small" color="primary" >
+                            EXIT
+                        </Button>
+                        
+                        <FormControl component="fieldset" className={classes.formControl}>
+                            <FormGroup> 
                                 {Array(responseKeys.length).fill().map(function(item, i) {
                                     return(
                                         //Note that map() starts from zero!
-                                        <FormControlLabel 
-                                            value={responseKeys[i]} 
-                                            control={<Radio/>} 
+                                        <FormControlLabel
+                                            control={<Checkbox 
+                                                checked={answers.answer} 
+                                                onChange={handleResponse} 
+                                                name={`${questionData.questionId}.${responseKeys[i]}`} 
+                                            />}
                                             label={responseValues[i]}
                                         />
                                     )
                                 })}
-                            </RadioGroup>
-                            {/**"Previous" button set to automatically disable if at first card */}
-                            <Button 
-                                variant="contained" size="small" color="primary" 
-                                onClick={() => {changeQuestionCard(activeQuestionCardId-1)}}
-                                disabled={activeQuestionCardId === 0 ? true : false}
-                            >
-                                PREVIOUS
-                            </Button>
-                            {/**"Next" button set to automatically disable if at last card */}
-                            <Button 
-                                variant="contained" size="small" color="primary" 
-                                onClick={() => {changeQuestionCard(activeQuestionCardId+1)}}
-                                disabled={activeQuestionCardId === questions.length ? true : false}
-                            >
-                                NEXT
-                            </Button>
-                        </CardContent>
-                    </Card>
-                );
-            } else {
-                return ""
-            }
-        });
+                            </FormGroup>
+                        </FormControl>
+                        {/**"Previous" button set to automatically disable if at first card */}
+                        <Button 
+                            variant="contained" size="small" color="primary" 
+                            onClick={() => {changeQuestionCard(activeQuestionCardId -= 1)}}
+                            disabled={activeQuestionCardId === 0 ? true : false}
+                        >
+                            PREVIOUS
+                        </Button>
+                        {/**"Next" button set to automatically disable if at last card */}
+                        <Button 
+                            variant="contained" size="small" color="primary" 
+                            onClick={() => {changeQuestionCard(activeQuestionCardId += 1)}}
+                            disabled={activeQuestionCardId === questions.length ? true : false}
+                        >
+                            NEXT
+                        </Button>
+                    </CardContent>
+                </Card>
+            ];
+        } else { //Cannot define a "" here, must be able to move back/forwards. Otherwise, there's nothing to go on when invalid data is received
+            questionCard = [
+                <Card key={`questionCard_${id}`} >
+                    <CardHeader
+                        title = "Error: Card failed to render"
+                    />
+                     {/**"Previous" button set to automatically disable if at first card */}
+                     <Button 
+                        variant="contained" size="small" color="primary" 
+                        onClick={() => {changeQuestionCard(activeQuestionCardId -= 1)}}
+                        disabled={activeQuestionCardId === 0 ? true : false}
+                    >
+                        PREVIOUS
+                    </Button>
+                    {/**"Next" button set to automatically disable if at last card */}
+                    <Button 
+                        variant="contained" size="small" color="primary" 
+                        onClick={() => {changeQuestionCard(activeQuestionCardId += 1)}}
+                        disabled={activeQuestionCardId === questions.length ? true : false}
+                    >
+                        NEXT
+                    </Button>
+                </Card>
+            ];
+        };
+
+        console.log(`Generated questionCard: `);
+        console.log(questionCard);
+        console.log(`Key of generated questionCard: ${questionCard[0].key}`);
 
         //Must set mutably to remove last recorded response?
-        console.log(`Generated questionCards: `);
-        console.log(questionArray);
-        setQuestionCards(questionCards.concat(questionArray));
-
-        //This function runs on componentDidMount, so it pushes to 1st question immediately
-        setActiveQuestionCard( questionArray[0] );
-        setActiveQuestionCardId(0);
+        setActiveQuestionCard( questionCard );
+        setActiveQuestionCardId( questionCardId );//notes which obj in questions[] is rendered
     }
     const changeQuestionCard = (cardId) => {
         console.log(`id of replacement card: ${cardId}`)
-        setActiveQuestionCard(questionCards[cardId]);
-        setActiveQuestionCardId(cardId);
+        console.log(`Data for rendering new card:`)
+        console.log(questions[cardId])
+        
+        questionCardGenerator(questions[cardId], cardId)
     }  
     return (
         <div className={classes.RespondentPage}>
@@ -325,7 +430,6 @@ function SurveyPage(props) {
                 <Button onClick={() => {console.log(activeQuestionCard)}}>Chk "activeQuestionCard"</Button>
                 <Button onClick={() => {console.log(activeQuestionCardId)}}>Chk "activeQuestionCardId"</Button>
                 <Button onClick={() => {console.log(answers)}}>Chk "answers"</Button>
-                <Button onClick={() => {console.log(questionCards)}}>Chk "questionCards"</Button>
             </Container>
         </div>
     );

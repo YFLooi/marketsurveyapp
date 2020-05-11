@@ -193,6 +193,7 @@ function CarouselRender (props) {
             </Card>
         ]
 
+        console.log(newDetailsCardArray);
         detailsCard.splice(0, detailsCard.length);
         detailsCard = [ ...detailsCard, ...newDetailsCardArray ]
 
