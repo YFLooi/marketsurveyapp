@@ -51,20 +51,35 @@ const questions = [
         originSurveyId: "survey1",
         questionId: "survey1_question4",
         questionType:"rankOrder", 
-        questionText:"Rank the following", response:"" 
+        questionText:"Which of these do you notice first on the packaging?",
+        questionImg: "https://images-na.ssl-images-amazon.com/images/I/A1TEMXMYo2L._AC_SL1500_.jpg",
+        responseText: { resp_0: "Green-gold colour", resp_1: "KitKat logo", resp_2: "'Matcha' wording", resp_3: "Background graphics" }, 
+        responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0, resp_6: 0 } 
     },
     { 
         originSurveyId: "survey1",
         questionId: "survey1_question5",
         questionType:"rateScale", 
-        questionText:"Rate how appealing these flavours sound to you", response:"" },
+        questionText:"Rate how much these statements relate to you", 
+        responseText: { 
+            resp_0: "Adzuki", 
+            resp_1: "Exotic Tokyo", 
+            resp_2: "Golden Citrus", 
+            resp_3: "Kobe Pudding", 
+            resp_4: "Passion Fruit",
+            resp_5: "Passion Fruit"
+        }, 
+        responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0, resp_6: 0 } 
+    },
     { 
         originSurveyId: "survey1",
         questionId: "survey1_question6",
         questionType:"fivePoint", 
-        questionText:"How much more would you pay for a premium, $100 product?", response:"" },
+        questionText:"Would you pay more for a premium KitKat?",
+        responseText: { resp_0: "Extremely unlikely", resp_1: "Unlikely", resp_2: "It depends", resp_3: "Likely", resp_4: "Very likely" }, 
+        responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0, resp_6: 0 } 
+     },
 ] 
-
 
 //The MaterialUI way of modding styles
 const useStyles = makeStyles(theme => ({
@@ -118,6 +133,10 @@ const useStyles = makeStyles(theme => ({
     formControl: {
         margin: theme.spacing(3),
     },
+    cardContent: {
+        display: "flex",
+        flexDirection: "column"
+    }
 }));
 
 function SurveyPage(props) {
@@ -143,8 +162,22 @@ function SurveyPage(props) {
     //Stores answer(s) selected for each card 
     //Entries not visible in console.log, but visible to questionCard-s
     let answersSelected = {};
-    //Stores for submit later. Visible in console log, but invisble to questionCard-s
-    let [ answersForSubmit, setAnswersForSubmit ] = useState({});
+    //Stores for submit later. Visible in console log, but invisble to non-radio? questionCard-s
+    let [ answersForSubmit, setAnswersForSubmit ] = useState(param =>{
+        let newObj = {};
+        for(let i =0; i<questions.length; ++i){
+            if (
+                questions[i].questionType === "trueFalse" || 
+                questions[i].questionType === "oneAnsMultipleChoice" 
+            ){
+                newObj[questions[i].questionId] = "";
+            } else if (questions[i].questionType === "manyAnsMultipleChoice" ){
+                newObj[questions[i].questionId] = [];
+            }
+        }
+        
+        return newObj;
+    });
 
     //For testing
     let [ ansChk, setAnsChk ] = useState({ ans:"" });
@@ -156,8 +189,8 @@ function SurveyPage(props) {
      * @param {*} name
      * @param {*} value
      */
-    const handleResponse = (name, value) => {
-        if(name === "ansChk"){
+    const handleResponse = (name, value, questionType) => {
+        if(questionType === "ansChk"){
             /** 
             setAnsChk(value);
             */
@@ -168,51 +201,58 @@ function SurveyPage(props) {
                 ...ansChk,
                 ans: value
             }));
-        } else if (name === "manyAnsMultipleChoice"){
-            let regexQuestionId = /survey\d_question\d/;
-            let questionId = (name).match(regexQuestionId); 
-            console.log(`regex returns ${questionId}`);
-    
-            let regexResponse = /resp_\d/;
-            let response = (name).match(regexResponse); 
-            console.log(`regex returns ${response}`);
-
-            //Refers to question in survey data retrieved
-            const targetIndex = answersForSubmit.findIndex(item => item.questionId === name);
-            //Refers to question in survey data retrieved
-            const chkAnswers = answersForSubmit[targetIndex].answer.findIndex(item => item === response);
-            
-            //Sample name attribute: `survey1_question5.resp_0`
-            //The logic below accounts for new answers being added, and existing answers being removed
-            if (chkAnswers !== -1){
-                //Adds new answer to start of answer[]
-                answersForSubmit[targetIndex].answer.splice(0, 0, response)
-            } else {
-                //Removes existing answer. Happens when box is unchecked
-                answersForSubmit[targetIndex].answer.splice(chkAnswers, 1)
-            }     
-        } else {
+        } else if (
+            //These types only have one answer
+            questionType === "trueFalse" ||
+            questionType === "oneAnsMultipleChoice"    
+        ){
             console.log(`Incoming value: ${value}, for ${name}`);
             console.log(`Current values in answersForSubmit[]: ${answersForSubmit[name]}`);
 
             const source = { [name]: value };
             const target = answersSelected;
-            //Mutable method: 
-            //answersSelected[name] = value;
-            //Immutable method:
             answersSelected = Object.assign(target, source);
 
             setAnswersForSubmit(answersForSubmit => ({
                 ...answersForSubmit,
                 [name]: value
             }));
+        } else if (
+            //These types have >1 answer
+            questionType === "manyAnsMultipleChoice"
+        ){
+            let newAnswerArray = answersForSubmit[name];
+            //Refers to question in survey data retrieved
+            const targetIndex = answersForSubmit[name].findIndex(item => item === value);
+
+            console.log(`location of entered response: ${targetIndex}`);
+            //The logic below accounts for new answers being added, and existing answers being removed
+            if (targetIndex === -1){
+                //Adds new answer to start of array
+                console.log(`New response to add: ${value}`);
+                newAnswerArray.splice(0, 0, value);
+            } else {
+                //Removes existing answer. Happens when box is unchecked
+                newAnswerArray.splice(targetIndex, 1);
+            }   
+
+            console.log(`Update for manyAnsMultipleChoice question:`);
+            console.log(newAnswerArray);
+            const source = { [name]: newAnswerArray };
+            const target = answersSelected;
+            answersSelected = Object.assign(target, source);
+
+            setAnswersForSubmit(answersForSubmit => ({
+                ...answersForSubmit,
+                [name]: newAnswerArray
+            }));
         }
 
-        //React will not trigger shouldComponentUpdate on these loop-rendered questionCards
+         //React will not trigger shouldComponentUpdate on these loop-rendered questionCards
         //I need to trigger the re-render manually. 
         //This also means I cannot use state to store the responses made for these cards
         questionCardGenerator(questions[activeQuestionCardId], activeQuestionCardId);  
-    }
+    } 
     const handleSubmit = () => {
         const questionIds = Object.keys(answersForSubmit);
         const responses = Object.values(answersForSubmit);
@@ -253,7 +293,10 @@ function SurveyPage(props) {
     const questionCardGenerator = (questionData, questionCardId) => {
         let questionCard = [];
  
-        if (questionData.questionType === "trueFalse") {
+        if (
+            questionData.questionType === "trueFalse" ||
+            questionData.questionType === "oneAnsMultipleChoice"
+        ) {
             //Need to keep responseKeys and responseValues local. Otherwise, JS throws an error if questionData = undefined
             //This happens even with an if-else catch for "undefined"
             const responseKeys = Object.keys(questionData.responseText);
@@ -264,20 +307,28 @@ function SurveyPage(props) {
                     <CardHeader
                         title = {questionData.questionText}
                     />
-                    <CardContent>
+                    <CardContent classes={{ root: classes.cardContent}}>
                         <Button variant="contained" size="small" color="primary" >
                             EXIT
                         </Button>
                         {Array(responseKeys.length).fill().map(function(item, i) {
+                            let answerRecorded = false;
+                            
+                            //Won't work with the hook-hosted answersForSubmit
+                            if(answersSelected[questionData.questionId] === responseKeys[i]){
+                                answerRecorded = true;
+                                console.log(`answer recorded? ${answerRecorded}`)
+                            } 
                             return(
                                 <FormControlLabel
                                     label={responseValues[i]}
                                     control={ 
                                         <Radio
-                                            checked={answersSelected[questionData.questionId] === String(responseKeys[i])}
-                                            onChange={() => {handleResponse(questionData.questionId, responseKeys[i])}}
-                                            name={`${questionData.questionId}_${i}`} //keep to organise. no actual use here
+                                            checked={answerRecorded}
+                                            onChange={() => {handleResponse(questionData.questionId, responseKeys[i], "oneAnsMultipleChoice")}}
+                                            name={`${questionData.questionId}`} //keep to organise. no actual use here
                                             inputProps={{ 'aria-label': `${questionData.questionId}, question ${i}` }}
+                                            key={`${questionData.questionId}_${i}`}
                                         />
                                     }
                                 />
@@ -302,6 +353,64 @@ function SurveyPage(props) {
                     </CardContent>
                 </Card>
             ]; //using return() causes this JSX to return as {JSX}. Using return[] will cause JSX to return as [{JSX}]
+        } else if (questionData.questionType === "manyAnsMultipleChoice") {
+            //Need to keep responseKeys and responseValues local. Otherwise, JS throws an error if questionData = undefined
+            //This happens even with an if-else catch for "undefined"
+            const responseKeys = Object.keys(questionData.responseText);
+            const responseValues = Object.values(questionData.responseText);
+        
+            questionCard = [
+                <Card id={questionData.questionId} key={`${questionData.questionId}`}>
+                    <CardHeader
+                        title = {questionData.questionText}
+                    />
+                    <CardContent>
+                        <Button variant="contained" size="small" color="primary" >
+                            EXIT
+                        </Button>
+                        
+                        {Array(responseKeys.length).fill().map(function(item, i) {
+                            let answerRecorded = false;
+                            const targetIndex = answersForSubmit[questionData.questionId].findIndex(item => item === responseKeys[i]);
+
+                            if(targetIndex !== -1){
+                                answerRecorded = true;
+                            }
+                            return(
+                                <FormControlLabel
+                                    label={responseValues[i]}
+                                    control={ 
+                                        <Checkbox
+                                            checked={answerRecorded}
+                                            onChange={() => {handleResponse(questionData.questionId, responseKeys[i], "manyAnsMultipleChoice")}}
+                                            name={`${questionData.questionId}`} //keep to organise. no actual use here
+                                            inputProps={{ 'aria-label': `${questionData.questionId}, question ${i}` }}
+                                            key={`${questionData.questionId}_${i}`}
+                                        />
+                                    }
+                                />
+                            )
+                        })}
+                        {/**"Previous" button set to automatically disable if at first card */}
+                        <Button 
+                            variant="contained" size="small" color="primary" 
+                            onClick={() => {changeQuestionCard(activeQuestionCardId -= 1)}}
+                            disabled={activeQuestionCardId === 0 ? true : false}
+                        >
+                            PREVIOUS
+                        </Button>
+                        {/**"Next" button set to automatically disable if at last card */}
+                        <Button 
+                            variant="contained" size="small" color="primary" 
+                            onClick={() => {changeQuestionCard(activeQuestionCardId += 1)}}
+                            disabled={activeQuestionCardId === questions.length ? true : false}
+                        >
+                            NEXT
+                        </Button>
+                    </CardContent>
+                </Card>
+            ];
+        
         } else { //Cannot define a "" here, must be able to move back/forwards. Otherwise, there's nothing to go on when invalid data is received
             questionCard = [
                 <Card key={`errorCard.${questionCardId}`}>
@@ -377,7 +486,7 @@ function SurveyPage(props) {
                     control={ 
                         <Radio
                             checked={ansChk["ans"] === 'AND'}
-                            onChange={() => {handleResponse("ansChk", "AND")}}
+                            onChange={() => {handleResponse("ansChk", "AND", "ansChk")}}
                             name="ansChk" //keep to organise. no actual use here
                             inputProps={{ 'aria-label': 'AND' }} //merely for accessibility
                         />
@@ -388,7 +497,7 @@ function SurveyPage(props) {
                     control={ 
                         <Radio
                             checked={ansChk.ans === 'OR'}
-                            onChange={() => {handleResponse("ansChk", "OR")}}
+                            onChange={() => {handleResponse("ansChk", "OR", "ansChk")}}
                             name="ansChk" //keep to organise. no actual use here
                             inputProps={{ 'aria-label': 'OR' }}
                         />
@@ -400,4 +509,3 @@ function SurveyPage(props) {
 }
 
 export default withRouter(SurveyPage);
-
