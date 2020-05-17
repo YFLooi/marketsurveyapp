@@ -20,14 +20,16 @@ const questions = [
         questionId: "survey1_question0",
         questionType:"trueFalse", 
         questionText:"Do you know Nestle?", 
-        responseCounter:{ true: 10, false: 5 } 
+        responseText: { resp_0: "YES", resp_1: "NO" },
+        responseCounter:{ resp_0: 0, resp_1: 0 } //Stored on server. For questionType=trueFalse, resp_0 always = TRUE, resp_1 always = FALSE
     },
     { 
         originSurveyId: "survey1",
         questionId: "survey1_question1",
         questionType:"trueFalse", 
         questionText:"Do you know KitKat?", 
-        responseCounter:{ true: 5, false: 10 }
+        responseText: { resp_0: "YES", resp_1: "NO" },
+        responseCounter:{ resp_0: 0, resp_1: 0 }
     },
     {   
         originSurveyId: "survey1",
@@ -62,6 +64,7 @@ const questions = [
         questionType:"fivePoint", 
         questionText:"How much more would you pay for a premium, $100 product?", response:"" },
 ] 
+
 
 //The MaterialUI way of modding styles
 const useStyles = makeStyles(theme => ({
@@ -127,7 +130,8 @@ function SurveyPage(props) {
         return () => {      
             //Do this mutably to wipe clean. Otherwise, reopening the same survey
             //may cause previous answers to reappear
-            setAnswers([])
+            answersSelected = {}
+            setAnswersForSubmit({});
         }; 
     }, []);
 
@@ -135,69 +139,96 @@ function SurveyPage(props) {
     let [ activeQuestionCard, setActiveQuestionCard ] = useState([]);
     //Stores element number of current activeQuestionCard
     let [ activeQuestionCardId, setActiveQuestionCardId ] = useState(0);
-    //Allows reponses to persist after moving to next question. Erased on exiting survey
-    let [answers, setAnswers] = useState(Array(questions.length).fill().map((item, i) => {
-        return { 
-            questionId: `${questions[i].questionId}`,
-            answer: ""
-        }
-    }))
-    
-    /**
-     * Assigns selected answer to storage in state
-     * @param {*} event 
-     * @param {*} questionId 
-     */
-    const handleResponse = (event) => {
-        event.preventDefault();    
 
-        if (event.target.name === "manyAnsMultipleChoice"){
+    //Stores answer(s) selected for each card 
+    //Entries not visible in console.log, but visible to questionCard-s
+    let answersSelected = {};
+    //Stores for submit later. Visible in console log, but invisble to questionCard-s
+    let [ answersForSubmit, setAnswersForSubmit ] = useState({});
+
+    //For testing
+    let [ ansChk, setAnsChk ] = useState({ ans:"" });
+
+    /**
+     * Assigns selected answer to storage in answersSelected{} and hook.answersForSubmit
+     * Avoid using "event" global here like many tutorials do. It tends to bug when 
+     * updating state that is an object (event.target.xx = null)
+     * @param {*} name
+     * @param {*} value
+     */
+    const handleResponse = (name, value) => {
+        if(name === "ansChk"){
+            /** 
+            setAnsChk(value);
+            */
+            console.log(`Incoming value to update hook.ansChk: ${value}`);
+            console.log(`Current value of hook.ansChk: ${ansChk.ans}`)
+
+            setAnsChk(ansChk => ({
+                ...ansChk,
+                ans: value
+            }));
+        } else if (name === "manyAnsMultipleChoice"){
             let regexQuestionId = /survey\d_question\d/;
-            let questionId = (event.target.name).match(regexQuestionId); 
+            let questionId = (name).match(regexQuestionId); 
             console.log(`regex returns ${questionId}`);
     
             let regexResponse = /resp_\d/;
-            let response = (event.target.name).match(regexResponse); 
+            let response = (name).match(regexResponse); 
             console.log(`regex returns ${response}`);
 
             //Refers to question in survey data retrieved
-            const targetIndex = answers.findIndex(item => item.questionId === event.target.name);
-            
-            //Need some way to account for answers being added/removed
-            answers.splice(
-                targetIndex, 
-                1, 
-                { questionId: event.target.name, answer:event.target.value }
-            )      
-        } else {
+            const targetIndex = answersForSubmit.findIndex(item => item.questionId === name);
             //Refers to question in survey data retrieved
-            const targetIndex = answers.findIndex(item => item.questionId === event.target.name);
+            const chkAnswers = answersForSubmit[targetIndex].answer.findIndex(item => item === response);
             
-            //Removes existing object containing "answer" for question of questionId,
-            //to replace with new "answer"
-            answers.splice(
-                targetIndex, 
-                1, 
-                { questionId: event.target.name, answer:event.target.value }
-            )
-        }
-    }
-    /**
-     * Processes responses given to each question
-     * @param {*} questionId 
-     * @param {*} questionType 
-     */
-    const handleSubmit = (event) => {
-        event.preventDefault();
+            //Sample name attribute: `survey1_question5.resp_0`
+            //The logic below accounts for new answers being added, and existing answers being removed
+            if (chkAnswers !== -1){
+                //Adds new answer to start of answer[]
+                answersForSubmit[targetIndex].answer.splice(0, 0, response)
+            } else {
+                //Removes existing answer. Happens when box is unchecked
+                answersForSubmit[targetIndex].answer.splice(chkAnswers, 1)
+            }     
+        } else {
+            console.log(`Incoming value: ${value}, for ${name}`);
+            console.log(`Current values in answersForSubmit[]: ${answersForSubmit[name]}`);
 
+            const source = { [name]: value };
+            const target = answersSelected;
+            //Mutable method: 
+            //answersSelected[name] = value;
+            //Immutable method:
+            answersSelected = Object.assign(target, source);
+
+            setAnswersForSubmit(answersForSubmit => ({
+                ...answersForSubmit,
+                [name]: value
+            }));
+        }
+
+        //React will not trigger shouldComponentUpdate on these loop-rendered questionCards
+        //I need to trigger the re-render manually. 
+        //This also means I cannot use state to store the responses made for these cards
+        questionCardGenerator(questions[activeQuestionCardId], activeQuestionCardId);  
+    }
+    const handleSubmit = () => {
+        const questionIds = Object.keys(answersForSubmit);
+        const responses = Object.values(answersForSubmit);
+
+        console.log(`Questions answered: ${questionIds}`);
+        console.log(`Responses received: ${responses}`);
+
+        /** 
         const questionId = event.target.questionId;
         const questionType = event.target.questionType;
         console.log(`Survey submit made of questionId-s ${questionId}, of 
         of question-Types ${questionType}`);
-
+    
         //Refers to question in survey data retrieved
         const targetIndex = answers.findIndex(item => item.questionId === questionId);
-
+    
         if (questionType === "trueFalse") {
             if (event.target.value === true){
                 //using questionId accounts for scenario if respondent goes back to change given answer
@@ -211,25 +242,25 @@ function SurveyPage(props) {
         if (questionType === "oneAnsMultipleChoice") {
             questions[targetIndex].responseCounter[event.target.value] += 1;
         }
+        */
         
     }
-    /** 
-     * Returns "answers" gathered to responseCounter of each question
-     * @param {global} event
+    /**
+     * Processes responses given to each question
+     * @param {*} questionId 
+     * @param {*} questionType 
      */
     const questionCardGenerator = (questionData, questionCardId) => {
         let questionCard = [];
-        const id = questionCardId;
-
-        /** 
-        //Refers to question in survey data retrieved
-        const indexNumOfValue = answers.findIndex(item => item.questionId === questionData.questionId);
-        console.log(`indexNumOfValue = ${indexNumOfValue}`)
-        */
-        
+ 
         if (questionData.questionType === "trueFalse") {
+            //Need to keep responseKeys and responseValues local. Otherwise, JS throws an error if questionData = undefined
+            //This happens even with an if-else catch for "undefined"
+            const responseKeys = Object.keys(questionData.responseText);
+            const responseValues = Object.values(questionData.responseText);
+
             questionCard = [
-                <Card key={`questionCard_${id}`} id={questionData.questionId}>
+                <Card id={questionData.questionId} key={`${questionData.questionId}`}>
                     <CardHeader
                         title = {questionData.questionText}
                     />
@@ -237,14 +268,21 @@ function SurveyPage(props) {
                         <Button variant="contained" size="small" color="primary" >
                             EXIT
                         </Button>
-                        <RadioGroup
-                            name={questionData.questionId}
-                            value={answers.answer /*It finds the right index on its own!!*/}
-                            onChange={handleResponse}
-                        >
-                            <FormControlLabel value="true" control={<Radio/>} label="YES"/>
-                            <FormControlLabel value="false" control={<Radio />} label="NO"/>
-                        </RadioGroup>
+                        {Array(responseKeys.length).fill().map(function(item, i) {
+                            return(
+                                <FormControlLabel
+                                    label={responseValues[i]}
+                                    control={ 
+                                        <Radio
+                                            checked={answersSelected[questionData.questionId] === String(responseKeys[i])}
+                                            onChange={() => {handleResponse(questionData.questionId, responseKeys[i])}}
+                                            name={`${questionData.questionId}_${i}`} //keep to organise. no actual use here
+                                            inputProps={{ 'aria-label': `${questionData.questionId}, question ${i}` }}
+                                        />
+                                    }
+                                />
+                            )
+                        })}
                         {/**"Previous" button set to automatically disable if at first card */}
                         <Button 
                             variant="contained" size="small" color="primary" 
@@ -264,108 +302,9 @@ function SurveyPage(props) {
                     </CardContent>
                 </Card>
             ]; //using return() causes this JSX to return as {JSX}. Using return[] will cause JSX to return as [{JSX}]
-        } else if (questionData.questionType === "oneAnsMultipleChoice") {
-            const responseKeys = Object.keys(questionData.responseText);
-            const responseValues = Object.values(questionData.responseText);
-
-            questionCard = [
-                <Card key={`questionCard_${id}`} id={questionData.questionId}>
-                    <CardHeader
-                        title = {questionData.questionText}
-                    />
-                    <CardContent>
-                        <Button variant="contained" size="small" color="primary" >
-                            EXIT
-                        </Button>
-                        
-                        <RadioGroup
-                            name={questionData.questionId /**Retrieved by handleResponse() to insert correctly into answers[]*/}
-                            value={answers.answer}
-                            onChange={handleResponse}
-                        >
-                            {Array(responseKeys.length).fill().map(function(item, i) {
-                                return(
-                                    //Note that map() starts from zero!
-                                    <FormControlLabel 
-                                        value={responseKeys[i]} 
-                                        control={<Radio/>} 
-                                        label={responseValues[i]}
-                                    />
-                                )
-                            })}
-                        </RadioGroup>
-                        {/**"Previous" button set to automatically disable if at first card */}
-                        <Button 
-                            variant="contained" size="small" color="primary" 
-                            onClick={() => {changeQuestionCard(activeQuestionCardId -= 1)}}
-                            disabled={activeQuestionCardId === 0 ? true : false}
-                        >
-                            PREVIOUS
-                        </Button>
-                        {/**"Next" button set to automatically disable if at last card */}
-                        <Button 
-                            variant="contained" size="small" color="primary" 
-                            onClick={() => {changeQuestionCard(activeQuestionCardId += 1)}}
-                            disabled={activeQuestionCardId === questions.length ? true : false}
-                        >
-                            NEXT
-                        </Button>
-                    </CardContent>
-                </Card>
-            ];
-        } else if (questionData.questionType === "manyAnsMultipleChoice") {
-            const responseKeys = Object.keys(questionData.responseText);
-            const responseValues = Object.values(questionData.responseText);
-
-            questionCard = [
-                <Card key={`questionCard_${id}`} id={questionData.questionId}>
-                    <CardHeader
-                        title = {questionData.questionText}
-                    />
-                    <CardContent>
-                        <Button variant="contained" size="small" color="primary" >
-                            EXIT
-                        </Button>
-                        
-                        <FormControl component="fieldset" className={classes.formControl}>
-                            <FormGroup> 
-                                {Array(responseKeys.length).fill().map(function(item, i) {
-                                    return(
-                                        //Note that map() starts from zero!
-                                        <FormControlLabel
-                                            control={<Checkbox 
-                                                checked={answers.answer} 
-                                                onChange={handleResponse} 
-                                                name={`${questionData.questionId}.${responseKeys[i]}`} 
-                                            />}
-                                            label={responseValues[i]}
-                                        />
-                                    )
-                                })}
-                            </FormGroup>
-                        </FormControl>
-                        {/**"Previous" button set to automatically disable if at first card */}
-                        <Button 
-                            variant="contained" size="small" color="primary" 
-                            onClick={() => {changeQuestionCard(activeQuestionCardId -= 1)}}
-                            disabled={activeQuestionCardId === 0 ? true : false}
-                        >
-                            PREVIOUS
-                        </Button>
-                        {/**"Next" button set to automatically disable if at last card */}
-                        <Button 
-                            variant="contained" size="small" color="primary" 
-                            onClick={() => {changeQuestionCard(activeQuestionCardId += 1)}}
-                            disabled={activeQuestionCardId === questions.length ? true : false}
-                        >
-                            NEXT
-                        </Button>
-                    </CardContent>
-                </Card>
-            ];
         } else { //Cannot define a "" here, must be able to move back/forwards. Otherwise, there's nothing to go on when invalid data is received
             questionCard = [
-                <Card key={`questionCard_${id}`} >
+                <Card key={`errorCard.${questionCardId}`}>
                     <CardHeader
                         title = "Error: Card failed to render"
                     />
@@ -389,19 +328,15 @@ function SurveyPage(props) {
             ];
         };
 
-        console.log(`Generated questionCard: `);
-        console.log(questionCard);
-        console.log(`Key of generated questionCard: ${questionCard[0].key}`);
-
-        //Must set mutably to remove last recorded response?
         setActiveQuestionCard( questionCard );
         setActiveQuestionCardId( questionCardId );//notes which obj in questions[] is rendered
     }
+    /**
+     * Uses cardId passed by Previous and Next buttons to get data in questions[] for
+     * rendering new card
+     * @param {*} cardId 
+     */
     const changeQuestionCard = (cardId) => {
-        console.log(`id of replacement card: ${cardId}`)
-        console.log(`Data for rendering new card:`)
-        console.log(questions[cardId])
-        
         questionCardGenerator(questions[cardId], cardId)
     }  
     return (
@@ -426,13 +361,43 @@ function SurveyPage(props) {
                 {activeQuestionCard} {/**Must use state here: When state updates, the update is pushed to all calls of that state*/}
             </Container>
             <Container>
+                <Button variant="contained" color="primary" onClick={() => {handleSubmit()}}>Submit responses</Button>
+            </Container>
+            <Container>
                 <Button onClick={() => {console.log(questions)}}>Chk "questions"</Button>
                 <Button onClick={() => {console.log(activeQuestionCard)}}>Chk "activeQuestionCard"</Button>
                 <Button onClick={() => {console.log(activeQuestionCardId)}}>Chk "activeQuestionCardId"</Button>
-                <Button onClick={() => {console.log(answers)}}>Chk "answers"</Button>
+                <Button onClick={() => {console.log(answersSelected)}}>Chk "answersSelected"</Button>
+                <Button onClick={() => {console.log(answersForSubmit)}}>Chk "answersForSubmit"</Button>
+                <Button onClick={() => {console.log(ansChk)}}>Chk "ansChk"</Button>
+            </Container>
+            <Container>
+                <FormControlLabel
+                    label="AND"
+                    control={ 
+                        <Radio
+                            checked={ansChk["ans"] === 'AND'}
+                            onChange={() => {handleResponse("ansChk", "AND")}}
+                            name="ansChk" //keep to organise. no actual use here
+                            inputProps={{ 'aria-label': 'AND' }} //merely for accessibility
+                        />
+                    }
+                />
+                <FormControlLabel
+                    label="OR"
+                    control={ 
+                        <Radio
+                            checked={ansChk.ans === 'OR'}
+                            onChange={() => {handleResponse("ansChk", "OR")}}
+                            name="ansChk" //keep to organise. no actual use here
+                            inputProps={{ 'aria-label': 'OR' }}
+                        />
+                    }
+                />
             </Container>
         </div>
     );
 }
 
 export default withRouter(SurveyPage);
+
