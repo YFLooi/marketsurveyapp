@@ -4,7 +4,9 @@ import {
     withRouter
 } from "react-router-dom";
 import { GoogleSignIn } from "../GoogleSignIn/GoogleSignIn.js";
+import DragNDrop from "./DragNDrop.js";
 
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { makeStyles} from '@material-ui/core/styles';
 import { Box, Button, Container, Grid, Typography } from "@material-ui/core";
 import { RadioGroup, Radio, FormControl, FormLabel, FormGroup, FormControlLabel, Checkbox, IconButton } from "@material-ui/core";
@@ -62,14 +64,14 @@ const questions = [
         questionType:"rateScale", 
         questionText:"Rate how much these statements relate to you", 
         responseText: { 
-            resp_0: "Adzuki", 
-            resp_1: "Exotic Tokyo", 
-            resp_2: "Golden Citrus", 
-            resp_3: "Kobe Pudding", 
-            resp_4: "Passion Fruit",
-            resp_5: "Passion Fruit"
+            resp_0: "Break time is KitKat time", 
+            resp_1: "KitKats are made for sharing", 
+            resp_2: "Gift season is KitKat season", 
+            resp_3: "KitKats are exclusive items", 
+            resp_4: "Rare KitKat flavours are best released seasonally",
+            resp_5: "KitKat flavours should be unique to certain regions"
         }, 
-        responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0, resp_6: 0 } 
+        responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0 } 
     },
     { 
         originSurveyId: "survey1",
@@ -80,7 +82,6 @@ const questions = [
         responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0, resp_6: 0 } 
      },
 ] 
-
 //The MaterialUI way of modding styles
 const useStyles = makeStyles(theme => ({
     menuBar: {
@@ -139,6 +140,43 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
+const grid = 8;
+// fake data generator
+const getItems = count => {
+  Array.from({ length: count }, (v, k) => k).map(k => ({
+    id: `item-${k}`,
+    content: `item ${k}`
+  }));
+}
+// a little function to help us with reordering the result
+const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+  
+    return result;
+};
+
+const getItemStyle = (isDragging, draggableStyle) => ({
+    // some basic styles to make the items look a bit nicer
+    userSelect: "none",
+    padding: grid * 2,
+    margin: `0 0 ${grid}px 0`,
+  
+    // change background colour if dragging
+    background: isDragging ? "lightgreen" : "grey",
+  
+    // styles we need to apply on draggables
+    ...draggableStyle
+});  
+const getListStyle = isDraggingOver => ({
+    background: isDraggingOver ? "lightblue" : "lightgrey",
+    padding: grid,
+    width: 250
+});
+
+
+
 function SurveyPage(props) {
     const classes = useStyles();
 
@@ -181,6 +219,24 @@ function SurveyPage(props) {
 
     //For testing
     let [ ansChk, setAnsChk ] = useState({ ans:"" });
+    //For dragNSort
+    let [ items, setItems ] = useState({ items: getItems(10) });
+    const onDragEnd = (result) => {
+        // dropped outside the list
+        if (!result.destination) {
+          return;
+        }
+    
+        const items = reorder(
+          this.state.items,
+          result.source.index,
+          result.destination.index
+        );
+    
+        this.setState({
+          items
+        });
+    }
 
     /**
      * Assigns selected answer to storage in answersSelected{} and hook.answersForSubmit
@@ -503,6 +559,9 @@ function SurveyPage(props) {
                         />
                     }
                 />
+            </Container>
+            <Container>
+                <DragNDrop/>
             </Container>
         </div>
     );
