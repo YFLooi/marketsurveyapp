@@ -29,17 +29,23 @@ const getListStyle = isDraggingOver => ({
     width: 250
 });
 
+//props available: data, questionResponse
 function DragNDrop(props) {
     //For dragNSort
     let [ items, setItems ] = useState([]);
 
-    useEffect(() => {    
-        const newArray = Array(10).fill().map(function(item, i) {
-            return {
-                id: `item-${i}`,
-                content: `item ${i}`
-            }
+    useEffect(() => {   
+        const questionData = props.data;
+        const responseKeys = Object.keys(questionData.responseText);
+        const responseValues = Object.values(questionData.responseText);
+        const newArray = Array(responseKeys.length).fill().map(
+            function(item, i) {
+                return {
+                    id: responseKeys[i],
+                    content: responseValues[i]
+                }
         })
+
         setItems([ ...newArray ])
     }, []);
 
@@ -49,8 +55,6 @@ function DragNDrop(props) {
             return;
         }
         
-        console.log(`new arrangement after reorder: `);
-        console.log(items);
         const newItems = reorder(
             items,
             result.source.index,

@@ -19,6 +19,16 @@ import logo from "../logo.png";
 const questions = [
     { 
         originSurveyId: "survey1",
+        questionId: "survey1_question4",
+        questionType:"rankOrder", 
+        questionText:"Which of these do you notice first on the packaging?",
+        questionImg: "https://images-na.ssl-images-amazon.com/images/I/A1TEMXMYo2L._AC_SL1500_.jpg",
+        questionImgAlt: "Matcha-flavoured KitKat packaging",
+        responseText: { resp_0: "Green-gold colour", resp_1: "KitKat logo", resp_2: "'Matcha' wording", resp_3: "Background graphics" }, 
+        responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0, resp_6: 0 } 
+    },
+    { 
+        originSurveyId: "survey1",
         questionId: "survey1_question0",
         questionType:"trueFalse", 
         questionText:"Do you know Nestle?", 
@@ -47,15 +57,6 @@ const questions = [
         questionType:"manyAnsMultipleChoice", 
         questionText:"Which of the following flavours sound tasty to you?", 
         responseText: { resp_0: "Adzuki", resp_1: "Exotic Tokyo", resp_2: "Golden Citrus", resp_3: "Kobe Pudding", resp_4: "Passion Fruit", resp_5: "Soy Sauce", resp_6: "Wasabi" }, 
-        responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0, resp_6: 0 } 
-    },
-    { 
-        originSurveyId: "survey1",
-        questionId: "survey1_question4",
-        questionType:"rankOrder", 
-        questionText:"Which of these do you notice first on the packaging?",
-        questionImg: "https://images-na.ssl-images-amazon.com/images/I/A1TEMXMYo2L._AC_SL1500_.jpg",
-        responseText: { resp_0: "Green-gold colour", resp_1: "KitKat logo", resp_2: "'Matcha' wording", resp_3: "Background graphics" }, 
         responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0, resp_6: 0 } 
     },
     { 
@@ -137,45 +138,12 @@ const useStyles = makeStyles(theme => ({
     cardContent: {
         display: "flex",
         flexDirection: "column"
+    },
+    coverImg_rankOrder: {
+        width: 100,
+        height: 100
     }
 }));
-
-const grid = 8;
-// fake data generator
-const getItems = count => {
-  Array.from({ length: count }, (v, k) => k).map(k => ({
-    id: `item-${k}`,
-    content: `item ${k}`
-  }));
-}
-// a little function to help us with reordering the result
-const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-  
-    return result;
-};
-
-const getItemStyle = (isDragging, draggableStyle) => ({
-    // some basic styles to make the items look a bit nicer
-    userSelect: "none",
-    padding: grid * 2,
-    margin: `0 0 ${grid}px 0`,
-  
-    // change background colour if dragging
-    background: isDragging ? "lightgreen" : "grey",
-  
-    // styles we need to apply on draggables
-    ...draggableStyle
-});  
-const getListStyle = isDraggingOver => ({
-    background: isDraggingOver ? "lightblue" : "lightgrey",
-    padding: grid,
-    width: 250
-});
-
-
 
 function SurveyPage(props) {
     const classes = useStyles();
@@ -200,7 +168,7 @@ function SurveyPage(props) {
     //Stores answer(s) selected for each card 
     //Entries not visible in console.log, but visible to questionCard-s
     let answersSelected = {};
-    //Stores for submit later. Visible in console log, but invisble to non-radio? questionCard-s
+    //Stores for submit later. Visible in console log, but invisble to radio questionCard-s
     let [ answersForSubmit, setAnswersForSubmit ] = useState(param =>{
         let newObj = {};
         for(let i =0; i<questions.length; ++i){
@@ -217,27 +185,6 @@ function SurveyPage(props) {
         return newObj;
     });
 
-    //For testing
-    let [ ansChk, setAnsChk ] = useState({ ans:"" });
-    //For dragNSort
-    let [ items, setItems ] = useState({ items: getItems(10) });
-    const onDragEnd = (result) => {
-        // dropped outside the list
-        if (!result.destination) {
-          return;
-        }
-    
-        const items = reorder(
-          this.state.items,
-          result.source.index,
-          result.destination.index
-        );
-    
-        this.setState({
-          items
-        });
-    }
-
     /**
      * Assigns selected answer to storage in answersSelected{} and hook.answersForSubmit
      * Avoid using "event" global here like many tutorials do. It tends to bug when 
@@ -246,18 +193,7 @@ function SurveyPage(props) {
      * @param {*} value
      */
     const handleResponse = (name, value, questionType) => {
-        if(questionType === "ansChk"){
-            /** 
-            setAnsChk(value);
-            */
-            console.log(`Incoming value to update hook.ansChk: ${value}`);
-            console.log(`Current value of hook.ansChk: ${ansChk.ans}`)
-
-            setAnsChk(ansChk => ({
-                ...ansChk,
-                ans: value
-            }));
-        } else if (
+        if (
             //These types only have one answer
             questionType === "trueFalse" ||
             questionType === "oneAnsMultipleChoice"    
@@ -302,9 +238,14 @@ function SurveyPage(props) {
                 ...answersForSubmit,
                 [name]: newAnswerArray
             }));
+        } else if (
+            //These types have >1 answer
+            questionType === "rankOrder"
+        ){ 
+            console.log(`Data received?`)
         }
 
-         //React will not trigger shouldComponentUpdate on these loop-rendered questionCards
+        //React will not trigger shouldComponentUpdate on these loop-rendered questionCards
         //I need to trigger the re-render manually. 
         //This also means I cannot use state to store the responses made for these cards
         questionCardGenerator(questions[activeQuestionCardId], activeQuestionCardId);  
@@ -348,16 +289,14 @@ function SurveyPage(props) {
      */
     const questionCardGenerator = (questionData, questionCardId) => {
         let questionCard = [];
- 
+
+        const responseKeys = Object.keys(questionData.responseText);
+        const responseValues = Object.values(questionData.responseText);
+
         if (
             questionData.questionType === "trueFalse" ||
             questionData.questionType === "oneAnsMultipleChoice"
         ) {
-            //Need to keep responseKeys and responseValues local. Otherwise, JS throws an error if questionData = undefined
-            //This happens even with an if-else catch for "undefined"
-            const responseKeys = Object.keys(questionData.responseText);
-            const responseValues = Object.values(questionData.responseText);
-
             questionCard = [
                 <Card id={questionData.questionId} key={`${questionData.questionId}`}>
                     <CardHeader
@@ -410,11 +349,6 @@ function SurveyPage(props) {
                 </Card>
             ]; //using return() causes this JSX to return as {JSX}. Using return[] will cause JSX to return as [{JSX}]
         } else if (questionData.questionType === "manyAnsMultipleChoice") {
-            //Need to keep responseKeys and responseValues local. Otherwise, JS throws an error if questionData = undefined
-            //This happens even with an if-else catch for "undefined"
-            const responseKeys = Object.keys(questionData.responseText);
-            const responseValues = Object.values(questionData.responseText);
-        
             questionCard = [
                 <Card id={questionData.questionId} key={`${questionData.questionId}`}>
                     <CardHeader
@@ -467,7 +401,42 @@ function SurveyPage(props) {
                 </Card>
             ];
         
-        } else { //Cannot define a "" here, must be able to move back/forwards. Otherwise, there's nothing to go on when invalid data is received
+        } else if (questionData.questionType === "rankOrder") {
+            questionCard = [  
+                <Card id={questionData.questionId} key={`${questionData.questionId}`}>
+                    <CardHeader
+                        title = {questionData.questionText}
+                    />
+                    <CardContent classes={{ root: classes.cardContent}}>
+                        <Button variant="contained" size="small" color="primary" >
+                            EXIT
+                        </Button>
+                        <CardMedia
+                            className={classes.coverImg_rankOrder}
+                            image={questionData.questionImg}
+                            title={questionData.questionImgAlt}
+                        />
+                        <DragNDrop data={questionData} handleResponse={handleResponse}/>
+                        {/**"Previous" button set to automatically disable if at first card */}
+                        <Button 
+                            variant="contained" size="small" color="primary" 
+                            onClick={() => {changeQuestionCard(activeQuestionCardId -= 1)}}
+                            disabled={activeQuestionCardId === 0 ? true : false}
+                        >
+                            PREVIOUS
+                        </Button>
+                        {/**"Next" button set to automatically disable if at last card */}
+                        <Button 
+                            variant="contained" size="small" color="primary" 
+                            onClick={() => {changeQuestionCard(activeQuestionCardId += 1)}}
+                            disabled={activeQuestionCardId === questions.length ? true : false}
+                        >
+                            NEXT
+                        </Button>
+                    </CardContent>
+                </Card>
+            ]
+        }else { //Cannot define a "" here, must be able to move back/forwards. Otherwise, there's nothing to go on when invalid data is received
             questionCard = [
                 <Card key={`errorCard.${questionCardId}`}>
                     <CardHeader
@@ -534,35 +503,7 @@ function SurveyPage(props) {
                 <Button onClick={() => {console.log(activeQuestionCardId)}}>Chk "activeQuestionCardId"</Button>
                 <Button onClick={() => {console.log(answersSelected)}}>Chk "answersSelected"</Button>
                 <Button onClick={() => {console.log(answersForSubmit)}}>Chk "answersForSubmit"</Button>
-                <Button onClick={() => {console.log(ansChk)}}>Chk "ansChk"</Button>
-            </Container>
-            <Container>
-                <FormControlLabel
-                    label="AND"
-                    control={ 
-                        <Radio
-                            checked={ansChk["ans"] === 'AND'}
-                            onChange={() => {handleResponse("ansChk", "AND", "ansChk")}}
-                            name="ansChk" //keep to organise. no actual use here
-                            inputProps={{ 'aria-label': 'AND' }} //merely for accessibility
-                        />
-                    }
-                />
-                <FormControlLabel
-                    label="OR"
-                    control={ 
-                        <Radio
-                            checked={ansChk.ans === 'OR'}
-                            onChange={() => {handleResponse("ansChk", "OR", "ansChk")}}
-                            name="ansChk" //keep to organise. no actual use here
-                            inputProps={{ 'aria-label': 'OR' }}
-                        />
-                    }
-                />
-            </Container>
-            <Container>
-                <DragNDrop/>
-            </Container>
+            </Container>        
         </div>
     );
 }
