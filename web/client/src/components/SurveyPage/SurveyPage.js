@@ -4,7 +4,8 @@ import {
     withRouter
 } from "react-router-dom";
 import { GoogleSignIn } from "../GoogleSignIn/GoogleSignIn.js";
-import DragNDrop from "./DragNDrop.js";
+import RankOrder from "./RankOrder.js";
+import RateScale from "./RateScale.js";
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { makeStyles} from '@material-ui/core/styles';
@@ -19,19 +20,10 @@ import logo from "../logo.png";
 const questions = [
     { 
         originSurveyId: "survey1",
-        questionId: "survey1_question4",
-        questionType:"rankOrder", 
-        questionText:"Which of these do you notice first on the packaging?",
-        questionImg: "https://images-na.ssl-images-amazon.com/images/I/A1TEMXMYo2L._AC_SL1500_.jpg",
-        questionImgAlt: "Matcha-flavoured KitKat packaging",
-        responseText: { resp_0: "Green-gold colour", resp_1: "KitKat logo", resp_2: "'Matcha' wording", resp_3: "Background graphics" }, 
-        responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0, resp_6: 0 } 
-    },
-    { 
-        originSurveyId: "survey1",
         questionId: "survey1_question0",
         questionType:"trueFalse", 
         questionText:"Do you know Nestle?", 
+        questionImg: "",
         responseText: { resp_0: "YES", resp_1: "NO" },
         responseCounter:{ resp_0: 0, resp_1: 0 } //Stored on server. For questionType=trueFalse, resp_0 always = TRUE, resp_1 always = FALSE
     },
@@ -40,6 +32,7 @@ const questions = [
         questionId: "survey1_question1",
         questionType:"trueFalse", 
         questionText:"Do you know KitKat?", 
+        questionImg: "",
         responseText: { resp_0: "YES", resp_1: "NO" },
         responseCounter:{ resp_0: 0, resp_1: 0 }
     },
@@ -48,6 +41,7 @@ const questions = [
         questionId: "survey1_question2",
         questionType:"oneAnsMultipleChoice", 
         questionText:"Which age group are you in?", 
+        questionImg: "",
         responseText: { resp_0: "10-18", resp_1: "19-30", resp_2: "31-50", resp_3: "50+" }, 
         responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0 } 
     },
@@ -56,7 +50,19 @@ const questions = [
         questionId: "survey1_question3",
         questionType:"manyAnsMultipleChoice", 
         questionText:"Which of the following flavours sound tasty to you?", 
+        questionImg: "",
         responseText: { resp_0: "Adzuki", resp_1: "Exotic Tokyo", resp_2: "Golden Citrus", resp_3: "Kobe Pudding", resp_4: "Passion Fruit", resp_5: "Soy Sauce", resp_6: "Wasabi" }, 
+        responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0, resp_6: 0 } 
+    },
+    { 
+        originSurveyId: "survey1",
+        questionId: "survey1_question4",
+        questionType:"rankOrder", 
+        questionText:"Which of these do you notice first on the packaging?",
+        questionImg: "",
+        questionImg: "https://images-na.ssl-images-amazon.com/images/I/A1TEMXMYo2L._AC_SL1500_.jpg",
+        questionImgAlt: "Matcha-flavoured KitKat packaging",
+        responseText: { resp_0: "Green-gold colour", resp_1: "KitKat logo", resp_2: "'Matcha' wording", resp_3: "Background graphics" }, 
         responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0, resp_6: 0 } 
     },
     { 
@@ -64,6 +70,7 @@ const questions = [
         questionId: "survey1_question5",
         questionType:"rateScale", 
         questionText:"Rate how much these statements relate to you", 
+        questionImg: "",
         responseText: { 
             resp_0: "Break time is KitKat time", 
             resp_1: "KitKats are made for sharing", 
@@ -79,6 +86,7 @@ const questions = [
         questionId: "survey1_question6",
         questionType:"fivePoint", 
         questionText:"Would you pay more for a premium KitKat?",
+        questionImg: "",
         responseText: { resp_0: "Extremely unlikely", resp_1: "Unlikely", resp_2: "It depends", resp_3: "Likely", resp_4: "Very likely" }, 
         responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0, resp_6: 0 } 
      },
@@ -179,6 +187,9 @@ function SurveyPage(props) {
                 newObj[questions[i].questionId] = "";
             } else if (questions[i].questionType === "manyAnsMultipleChoice" ){
                 newObj[questions[i].questionId] = [];
+            } else if (questions[i].questionType === "rankOrder" ){
+                //DragNDrop.js will provide the required ranks
+                newObj[questions[i].questionId] = {};
             }
         }
         
@@ -201,6 +212,8 @@ function SurveyPage(props) {
             console.log(`Incoming value: ${value}, for ${name}`);
             console.log(`Current values in answersForSubmit[]: ${answersForSubmit[name]}`);
 
+            //Sets object which stores which answer is selected/unselected
+            //This object is visible to radio/checkboxes but NOT console.log
             const source = { [name]: value };
             const target = answersSelected;
             answersSelected = Object.assign(target, source);
@@ -210,7 +223,7 @@ function SurveyPage(props) {
                 [name]: value
             }));
         } else if (
-            //These types have >1 answer
+            //These types have >1 answer but not all answers need to be selected
             questionType === "manyAnsMultipleChoice"
         ){
             let newAnswerArray = answersForSubmit[name];
@@ -239,10 +252,17 @@ function SurveyPage(props) {
                 [name]: newAnswerArray
             }));
         } else if (
-            //These types have >1 answer
+            //These types have >1 answer and all answers must be selected
             questionType === "rankOrder"
         ){ 
-            console.log(`Data received?`)
+            console.log(`Incoming value:`);
+            console.log(value)
+            console.log(`for ${name}`)
+
+            setAnswersForSubmit(answersForSubmit => ({
+                ...answersForSubmit,
+                [name]: value
+            }));
         }
 
         //React will not trigger shouldComponentUpdate on these loop-rendered questionCards
@@ -281,6 +301,29 @@ function SurveyPage(props) {
         }
         */
         
+        /**
+        Mock data store generator for rankOrder questions
+        Output object is:
+        {
+            rank_0: {resp_0 = 0, resp_1 = 0 ...}
+            rank_1: {resp_0 = 0, resp_1 = 0 ...}
+            ...
+        }
+
+        let rankObj = {};
+        const items = Object.keys(questions[i].responseText);
+        const numberOfItems = Object.keys(questions[i].responseText).length;
+
+        //Number of ranks = number of possible responses
+        for (let i=0; i<numberOfItems; i++){
+            rankObj[`rank_${i}`] = {}
+
+            //Number of items per rank = number of possible responses
+            for (let j=0; j<numberOfItems; j++){
+                rankObj[`rank_${i}`][items[j]] = 0
+            }
+        }
+         */
     }
     /**
      * Processes responses given to each question
@@ -416,7 +459,7 @@ function SurveyPage(props) {
                             image={questionData.questionImg}
                             title={questionData.questionImgAlt}
                         />
-                        <DragNDrop data={questionData} handleResponse={handleResponse}/>
+                        <RankOrder data={questionData} answersForSubmit={answersForSubmit} handleResponse={handleResponse}/>
                         {/**"Previous" button set to automatically disable if at first card */}
                         <Button 
                             variant="contained" size="small" color="primary" 
@@ -436,7 +479,42 @@ function SurveyPage(props) {
                     </CardContent>
                 </Card>
             ]
-        }else { //Cannot define a "" here, must be able to move back/forwards. Otherwise, there's nothing to go on when invalid data is received
+        } else if (questionData.questionType === "rateScale") { 
+            questionCard = [  
+                <Card id={questionData.questionId} key={`${questionData.questionId}`}>
+                    <CardHeader
+                        title = {questionData.questionText}
+                    />
+                    <CardContent classes={{ root: classes.cardContent}}>
+                        <Button variant="contained" size="small" color="primary" >
+                            EXIT
+                        </Button>
+                        <CardMedia
+                            className={classes.coverImg_rankOrder}
+                            image={questionData.questionImg}
+                            title={questionData.questionImgAlt}
+                        />
+                        <RateScale data={questionData} answersForSubmit={answersForSubmit} handleResponse={handleResponse}/>
+                        {/**"Previous" button set to automatically disable if at first card */}
+                        <Button 
+                            variant="contained" size="small" color="primary" 
+                            onClick={() => {changeQuestionCard(activeQuestionCardId -= 1)}}
+                            disabled={activeQuestionCardId === 0 ? true : false}
+                        >
+                            PREVIOUS
+                        </Button>
+                        {/**"Next" button set to automatically disable if at last card */}
+                        <Button 
+                            variant="contained" size="small" color="primary" 
+                            onClick={() => {changeQuestionCard(activeQuestionCardId += 1)}}
+                            disabled={activeQuestionCardId === questions.length ? true : false}
+                        >
+                            NEXT
+                        </Button>
+                    </CardContent>
+                </Card>
+            ]
+        } else { //Cannot define a "" here, must be able to move back/forwards. Otherwise, there's nothing to go on when invalid data is received
             questionCard = [
                 <Card key={`errorCard.${questionCardId}`}>
                     <CardHeader
