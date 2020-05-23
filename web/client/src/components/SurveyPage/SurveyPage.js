@@ -20,6 +20,22 @@ import logo from "../logo.png";
 const questions = [
     { 
         originSurveyId: "survey1",
+        questionId: "survey1_question5",
+        questionType:"rateScale", 
+        questionText:"Rate how much these statements relate to you", 
+        questionImg: "",
+        responseText: { 
+            resp_0: "Break time is KitKat time", 
+            resp_1: "KitKats are made for sharing", 
+            resp_2: "Gift season is KitKat season", 
+            resp_3: "KitKats are exclusive items", 
+            resp_4: "Rare KitKat flavours are best released seasonally",
+            resp_5: "KitKat flavours should be unique to certain regions"
+        }, 
+        responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0 } 
+    },
+    { 
+        originSurveyId: "survey1",
         questionId: "survey1_question0",
         questionType:"trueFalse", 
         questionText:"Do you know Nestle?", 
@@ -65,22 +81,7 @@ const questions = [
         responseText: { resp_0: "Green-gold colour", resp_1: "KitKat logo", resp_2: "'Matcha' wording", resp_3: "Background graphics" }, 
         responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0, resp_6: 0 } 
     },
-    { 
-        originSurveyId: "survey1",
-        questionId: "survey1_question5",
-        questionType:"rateScale", 
-        questionText:"Rate how much these statements relate to you", 
-        questionImg: "",
-        responseText: { 
-            resp_0: "Break time is KitKat time", 
-            resp_1: "KitKats are made for sharing", 
-            resp_2: "Gift season is KitKat season", 
-            resp_3: "KitKats are exclusive items", 
-            resp_4: "Rare KitKat flavours are best released seasonally",
-            resp_5: "KitKat flavours should be unique to certain regions"
-        }, 
-        responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0 } 
-    },
+  
     { 
         originSurveyId: "survey1",
         questionId: "survey1_question6",
@@ -187,7 +188,10 @@ function SurveyPage(props) {
                 newObj[questions[i].questionId] = "";
             } else if (questions[i].questionType === "manyAnsMultipleChoice" ){
                 newObj[questions[i].questionId] = [];
-            } else if (questions[i].questionType === "rankOrder" ){
+            } else if (
+                questions[i].questionType === "rankOrder" ||
+                questions[i].questionType === "rateScale"
+            ){
                 //DragNDrop.js will provide the required ranks
                 newObj[questions[i].questionId] = {};
             }
@@ -253,7 +257,8 @@ function SurveyPage(props) {
             }));
         } else if (
             //These types have >1 answer and all answers must be selected
-            questionType === "rankOrder"
+            questionType === "rankOrder" ||
+            questionType === "rateScale" 
         ){ 
             console.log(`Incoming value:`);
             console.log(value)
@@ -489,11 +494,6 @@ function SurveyPage(props) {
                         <Button variant="contained" size="small" color="primary" >
                             EXIT
                         </Button>
-                        <CardMedia
-                            className={classes.coverImg_rankOrder}
-                            image={questionData.questionImg}
-                            title={questionData.questionImgAlt}
-                        />
                         <RateScale data={questionData} answersForSubmit={answersForSubmit} handleResponse={handleResponse}/>
                         {/**"Previous" button set to automatically disable if at first card */}
                         <Button 
