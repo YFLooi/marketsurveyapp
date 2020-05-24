@@ -6,6 +6,9 @@ import {
 import { GoogleSignIn } from "../GoogleSignIn/GoogleSignIn.js";
 import RankOrder from "./RankOrder.js";
 import RateScale from "./RateScale.js";
+import FivePoint from "./FivePoint.js";
+import SingleAnswer from "./SingleAnswer.js";
+import ManyAnswers from "./ManyAnswers.js";
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { makeStyles} from '@material-ui/core/styles';
@@ -20,26 +23,11 @@ import logo from "../logo.png";
 const questions = [
     { 
         originSurveyId: "survey1",
-        questionId: "survey1_question5",
-        questionType:"rateScale", 
-        questionText:"Rate how much these statements relate to you", 
-        questionImg: "",
-        responseText: { 
-            resp_0: "Break time is KitKat time", 
-            resp_1: "KitKats are made for sharing", 
-            resp_2: "Gift season is KitKat season", 
-            resp_3: "KitKats are exclusive items", 
-            resp_4: "Rare KitKat flavours are best released seasonally",
-            resp_5: "KitKat flavours should be unique to certain regions"
-        }, 
-        responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0 } 
-    },
-    { 
-        originSurveyId: "survey1",
         questionId: "survey1_question0",
         questionType:"trueFalse", 
         questionText:"Do you know Nestle?", 
         questionImg: "",
+        questionImgAlt: "",
         responseText: { resp_0: "YES", resp_1: "NO" },
         responseCounter:{ resp_0: 0, resp_1: 0 } //Stored on server. For questionType=trueFalse, resp_0 always = TRUE, resp_1 always = FALSE
     },
@@ -49,6 +37,7 @@ const questions = [
         questionType:"trueFalse", 
         questionText:"Do you know KitKat?", 
         questionImg: "",
+        questionImgAlt: "",
         responseText: { resp_0: "YES", resp_1: "NO" },
         responseCounter:{ resp_0: 0, resp_1: 0 }
     },
@@ -58,6 +47,7 @@ const questions = [
         questionType:"oneAnsMultipleChoice", 
         questionText:"Which age group are you in?", 
         questionImg: "",
+        questionImgAlt: "",
         responseText: { resp_0: "10-18", resp_1: "19-30", resp_2: "31-50", resp_3: "50+" }, 
         responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0 } 
     },
@@ -67,6 +57,7 @@ const questions = [
         questionType:"manyAnsMultipleChoice", 
         questionText:"Which of the following flavours sound tasty to you?", 
         questionImg: "",
+        questionImgAlt: "",
         responseText: { resp_0: "Adzuki", resp_1: "Exotic Tokyo", resp_2: "Golden Citrus", resp_3: "Kobe Pudding", resp_4: "Passion Fruit", resp_5: "Soy Sauce", resp_6: "Wasabi" }, 
         responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0, resp_6: 0 } 
     },
@@ -75,22 +66,50 @@ const questions = [
         questionId: "survey1_question4",
         questionType:"rankOrder", 
         questionText:"Which of these do you notice first on the packaging?",
-        questionImg: "",
         questionImg: "https://images-na.ssl-images-amazon.com/images/I/A1TEMXMYo2L._AC_SL1500_.jpg",
         questionImgAlt: "Matcha-flavoured KitKat packaging",
         responseText: { resp_0: "Green-gold colour", resp_1: "KitKat logo", resp_2: "'Matcha' wording", resp_3: "Background graphics" }, 
-        responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0, resp_6: 0 } 
+        responseCounter:{ 
+            rank_0: { resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0 }, 
+            rank_1: { resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0 }, 
+            rank_2: { resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0 }, 
+            rank_3: { resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0 }
+        } 
     },
-  
+    { 
+        originSurveyId: "survey1",
+        questionId: "survey1_question5",
+        questionType:"rateScale", 
+        questionText:"Rate how much these statements relate to you", 
+        questionImg: "",
+        questionImgAlt: "",
+        responseText: { 
+            resp_0: "Break time is KitKat time", 
+            resp_1: "KitKats are made for sharing", 
+            resp_2: "Gift season is KitKat season", 
+            resp_3: "KitKats are exclusive items", 
+            resp_4: "Rare KitKat flavours are best released seasonally",
+            resp_5: "KitKat flavours should be unique to certain regions"
+        }, 
+        responseCounter:{ 
+            resp_0: { rank_0: 0, rank_1: 0, rank_2: 0, rank_3: 0, rank_4: 0 }, 
+            resp_1: { rank_0: 0, rank_1: 0, rank_2: 0, rank_3: 0, rank_4: 0 }, 
+            resp_2: { rank_0: 0, rank_1: 0, rank_2: 0, rank_3: 0, rank_4: 0 }, 
+            resp_3: { rank_0: 0, rank_1: 0, rank_2: 0, rank_3: 0, rank_4: 0 }, 
+            resp_4: { rank_0: 0, rank_1: 0, rank_2: 0, rank_3: 0, rank_4: 0 }, 
+            resp_5: { rank_0: 0, rank_1: 0, rank_2: 0, rank_3: 0, rank_4: 0 }
+        }
+    },
     { 
         originSurveyId: "survey1",
         questionId: "survey1_question6",
         questionType:"fivePoint", 
         questionText:"Would you pay more for a premium KitKat?",
         questionImg: "",
+        questionImgAlt: "",
         responseText: { resp_0: "Extremely unlikely", resp_1: "Unlikely", resp_2: "It depends", resp_3: "Likely", resp_4: "Very likely" }, 
         responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0, resp_6: 0 } 
-     },
+    },
 ] 
 //The MaterialUI way of modding styles
 const useStyles = makeStyles(theme => ({
@@ -351,32 +370,12 @@ function SurveyPage(props) {
                         title = {questionData.questionText}
                     />
                     <CardContent classes={{ root: classes.cardContent}}>
-                        <Button variant="contained" size="small" color="primary" >
-                            EXIT
-                        </Button>
-                        {Array(responseKeys.length).fill().map(function(item, i) {
-                            let answerRecorded = false;
-                            
-                            //Won't work with the hook-hosted answersForSubmit
-                            if(answersSelected[questionData.questionId] === responseKeys[i]){
-                                answerRecorded = true;
-                                console.log(`answer recorded? ${answerRecorded}`)
-                            } 
-                            return(
-                                <FormControlLabel
-                                    label={responseValues[i]}
-                                    control={ 
-                                        <Radio
-                                            checked={answerRecorded}
-                                            onChange={() => {handleResponse(questionData.questionId, responseKeys[i], "oneAnsMultipleChoice")}}
-                                            name={`${questionData.questionId}`} //keep to organise. no actual use here
-                                            inputProps={{ 'aria-label': `${questionData.questionId}, question ${i}` }}
-                                            key={`${questionData.questionId}_${i}`}
-                                        />
-                                    }
-                                />
-                            )
-                        })}
+                        <SingleAnswer 
+                            data={questionData} 
+                            answersForSubmit={answersForSubmit} 
+                            answersSelected={answersSelected} 
+                            handleResponse={handleResponse}
+                        />
                         {/**"Previous" button set to automatically disable if at first card */}
                         <Button 
                             variant="contained" size="small" color="primary" 
@@ -393,6 +392,9 @@ function SurveyPage(props) {
                         >
                             NEXT
                         </Button>
+                        <Button variant="contained" size="small" color="primary" >
+                            EXIT
+                        </Button>
                     </CardContent>
                 </Card>
             ]; //using return() causes this JSX to return as {JSX}. Using return[] will cause JSX to return as [{JSX}]
@@ -407,28 +409,12 @@ function SurveyPage(props) {
                             EXIT
                         </Button>
                         
-                        {Array(responseKeys.length).fill().map(function(item, i) {
-                            let answerRecorded = false;
-                            const targetIndex = answersForSubmit[questionData.questionId].findIndex(item => item === responseKeys[i]);
-
-                            if(targetIndex !== -1){
-                                answerRecorded = true;
-                            }
-                            return(
-                                <FormControlLabel
-                                    label={responseValues[i]}
-                                    control={ 
-                                        <Checkbox
-                                            checked={answerRecorded}
-                                            onChange={() => {handleResponse(questionData.questionId, responseKeys[i], "manyAnsMultipleChoice")}}
-                                            name={`${questionData.questionId}`} //keep to organise. no actual use here
-                                            inputProps={{ 'aria-label': `${questionData.questionId}, question ${i}` }}
-                                            key={`${questionData.questionId}_${i}`}
-                                        />
-                                    }
-                                />
-                            )
-                        })}
+                        <ManyAnswers
+                            data={questionData} 
+                            answersForSubmit={answersForSubmit} 
+                            answersSelected={answersSelected} 
+                            handleResponse={handleResponse}
+                        />
                         {/**"Previous" button set to automatically disable if at first card */}
                         <Button 
                             variant="contained" size="small" color="primary" 
@@ -495,6 +481,36 @@ function SurveyPage(props) {
                             EXIT
                         </Button>
                         <RateScale data={questionData} answersForSubmit={answersForSubmit} handleResponse={handleResponse}/>
+                        {/**"Previous" button set to automatically disable if at first card */}
+                        <Button 
+                            variant="contained" size="small" color="primary" 
+                            onClick={() => {changeQuestionCard(activeQuestionCardId -= 1)}}
+                            disabled={activeQuestionCardId === 0 ? true : false}
+                        >
+                            PREVIOUS
+                        </Button>
+                        {/**"Next" button set to automatically disable if at last card */}
+                        <Button 
+                            variant="contained" size="small" color="primary" 
+                            onClick={() => {changeQuestionCard(activeQuestionCardId += 1)}}
+                            disabled={activeQuestionCardId === questions.length ? true : false}
+                        >
+                            NEXT
+                        </Button>
+                    </CardContent>
+                </Card>
+            ]
+        } else if (questionData.questionType === "fivePoint") { 
+            questionCard = [  
+                <Card id={questionData.questionId} key={`${questionData.questionId}`}>
+                    <CardHeader
+                        title = {questionData.questionText}
+                    />
+                    <CardContent classes={{ root: classes.cardContent}}>
+                        <Button variant="contained" size="small" color="primary" >
+                            EXIT
+                        </Button>
+                        <FivePoint data={questionData} answersForSubmit={answersForSubmit} answersSelected={answersSelected} handleResponse={handleResponse}/>
                         {/**"Previous" button set to automatically disable if at first card */}
                         <Button 
                             variant="contained" size="small" color="primary" 
