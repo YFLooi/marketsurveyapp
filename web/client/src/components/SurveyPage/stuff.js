@@ -21,41 +21,36 @@ const answerSectionRender = (questionType) => {
                 handleResponse={handleResponse}
             />
         ]
-    } else if (questionData.questionType === "manyAnsMultipleChoice") {
+    } else if (questionData.questionType === "rankOrder") {
         answerSection = [
-            <ManyAnswers
+            <RankOrder 
+                data={questionData} 
+                answersForSubmit={answersForSubmit} 
+                handleResponse={handleResponse}
+            />
+        ]
+    } else if (questionData.questionType === "rateScale") {
+        answerSection = [
+            <RateScale 
+                data={questionData} 
+                answersForSubmit={answersForSubmit} 
+                handleResponse={handleResponse}
+            />
+        ]
+    } else if (questionData.questionType === "fivePoint") {
+        answerSection = [
+            <FivePoint 
                 data={questionData} 
                 answersForSubmit={answersForSubmit} 
                 answersSelected={answersSelected} 
                 handleResponse={handleResponse}
             />
         ]
-    } else if (questionData.questionType === "manyAnsMultipleChoice") {
+    } else {
         answerSection = [
-            <ManyAnswers
-                data={questionData} 
-                answersForSubmit={answersForSubmit} 
-                answersSelected={answersSelected} 
-                handleResponse={handleResponse}
-            />
-        ]
-    } else if (questionData.questionType === "manyAnsMultipleChoice") {
-        answerSection = [
-            <ManyAnswers
-                data={questionData} 
-                answersForSubmit={answersForSubmit} 
-                answersSelected={answersSelected} 
-                handleResponse={handleResponse}
-            />
-        ]
-    } else if (questionData.questionType === "manyAnsMultipleChoice") {
-        answerSection = [
-            <ManyAnswers
-                data={questionData} 
-                answersForSubmit={answersForSubmit} 
-                answersSelected={answersSelected} 
-                handleResponse={handleResponse}
-            />
+            <CardHeader
+            title = "Error: Card failed to render"
+        />
         ]
     }
     
@@ -86,7 +81,7 @@ questionCard = [
                 /* Necessary: Cannot have img src="" */
                 cardMediaRender(questionData) 
             }
-            
+
             {answerSectionRender(questionData.questionType)}
             
             {/**Box for buttons */}
@@ -114,128 +109,3 @@ questionCard = [
         </CardContent>
     </Card>
 ]
-
-
-
-} else if (questionData.questionType === "rankOrder") {
-    questionCard = [  
-        <Card id={questionData.questionId} key={`${questionData.questionId}`}>
-            <CardHeader
-                title = {questionData.questionText}
-            />
-            <CardContent classes={{ root: classes.cardContent}}>
-                <Button variant="contained" size="small" color="primary" >
-                    EXIT
-                </Button>
-                <CardMedia
-                    className={classes.coverImg_rankOrder}
-                    image={questionData.questionImg}
-                    title={questionData.questionImgAlt}
-                />
-                <RankOrder data={questionData} answersForSubmit={answersForSubmit} handleResponse={handleResponse}/>
-                {/**"Previous" button set to automatically disable if at first card */}
-                <Button 
-                    variant="contained" size="small" color="primary" 
-                    onClick={() => {changeQuestionCard(activeQuestionCardId -= 1)}}
-                    disabled={activeQuestionCardId === 0 ? true : false}
-                >
-                    PREVIOUS
-                </Button>
-                {/**"Next" button set to automatically disable if at last card */}
-                <Button 
-                    variant="contained" size="small" color="primary" 
-                    onClick={() => {changeQuestionCard(activeQuestionCardId += 1)}}
-                    disabled={activeQuestionCardId === questions.length ? true : false}
-                >
-                    NEXT
-                </Button>
-            </CardContent>
-        </Card>
-    ]
-} else if (questionData.questionType === "rateScale") { 
-    questionCard = [  
-        <Card id={questionData.questionId} key={`${questionData.questionId}`}>
-            <CardHeader
-                title = {questionData.questionText}
-            />
-            <CardContent classes={{ root: classes.cardContent}}>
-                <Button variant="contained" size="small" color="primary" >
-                    EXIT
-                </Button>
-                <RateScale data={questionData} answersForSubmit={answersForSubmit} handleResponse={handleResponse}/>
-                {/**"Previous" button set to automatically disable if at first card */}
-                <Button 
-                    variant="contained" size="small" color="primary" 
-                    onClick={() => {changeQuestionCard(activeQuestionCardId -= 1)}}
-                    disabled={activeQuestionCardId === 0 ? true : false}
-                >
-                    PREVIOUS
-                </Button>
-                {/**"Next" button set to automatically disable if at last card */}
-                <Button 
-                    variant="contained" size="small" color="primary" 
-                    onClick={() => {changeQuestionCard(activeQuestionCardId += 1)}}
-                    disabled={activeQuestionCardId === questions.length ? true : false}
-                >
-                    NEXT
-                </Button>
-            </CardContent>
-        </Card>
-    ]
-} else if (questionData.questionType === "fivePoint") { 
-    questionCard = [  
-        <Card id={questionData.questionId} key={`${questionData.questionId}`}>
-            <CardHeader
-                title = {questionData.questionText}
-            />
-            <CardContent classes={{ root: classes.cardContent}}>
-                <Button variant="contained" size="small" color="primary" >
-                    EXIT
-                </Button>
-                <FivePoint data={questionData} answersForSubmit={answersForSubmit} answersSelected={answersSelected} handleResponse={handleResponse}/>
-                {/**"Previous" button set to automatically disable if at first card */}
-                <Button 
-                    variant="contained" size="small" color="primary" 
-                    onClick={() => {changeQuestionCard(activeQuestionCardId -= 1)}}
-                    disabled={activeQuestionCardId === 0 ? true : false}
-                >
-                    PREVIOUS
-                </Button>
-                {/**"Next" button set to automatically disable if at last card */}
-                <Button 
-                    variant="contained" size="small" color="primary" 
-                    onClick={() => {changeQuestionCard(activeQuestionCardId += 1)}}
-                    disabled={activeQuestionCardId === questions.length ? true : false}
-                >
-                    NEXT
-                </Button>
-            </CardContent>
-        </Card>
-    ]
-} else { //Cannot define a "" here, must be able to move back/forwards. Otherwise, there's nothing to go on when invalid data is received
-    questionCard = [
-        <Card key={`errorCard.${questionCardId}`}>
-            <CardHeader
-                title = "Error: Card failed to render"
-            />
-             {/**"Previous" button set to automatically disable if at first card */}
-             <Button 
-                variant="contained" size="small" color="primary" 
-                onClick={() => {changeQuestionCard(activeQuestionCardId -= 1)}}
-                disabled={activeQuestionCardId === 0 ? true : false}
-            >
-                PREVIOUS
-            </Button>
-            {/**"Next" button set to automatically disable if at last card */}
-            <Button 
-                variant="contained" size="small" color="primary" 
-                onClick={() => {changeQuestionCard(activeQuestionCardId += 1)}}
-                disabled={activeQuestionCardId === questions.length ? true : false}
-            >
-                NEXT
-            </Button>
-        </Card>
-    ];
-};
-
-
