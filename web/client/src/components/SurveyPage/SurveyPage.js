@@ -4,6 +4,7 @@ import {
     withRouter
 } from "react-router-dom";
 import { GoogleSignIn } from "../GoogleSignIn/GoogleSignIn.js";
+import ProgressBar from "./ProgressBar.js";
 import RankOrder from "./RankOrder.js";
 import RateScale from "./RateScale.js";
 import FivePoint from "./FivePoint.js";
@@ -22,7 +23,7 @@ import logo from "../logo.png";
 
 const questions = [
     { 
-        originSurveyId: "survey1",
+        surveyId: "survey1",
         questionId: "survey1_question0",
         questionType:"trueFalse", 
         questionText:"Do you know Nestle?", 
@@ -32,7 +33,7 @@ const questions = [
         responseCounter:{ resp_0: 0, resp_1: 0 } //Stored on server. For questionType=trueFalse, resp_0 always = TRUE, resp_1 always = FALSE
     },
     { 
-        originSurveyId: "survey1",
+        surveyId: "survey1",
         questionId: "survey1_question1",
         questionType:"trueFalse", 
         questionText:"Do you know KitKat?", 
@@ -42,7 +43,7 @@ const questions = [
         responseCounter:{ resp_0: 0, resp_1: 0 }
     },
     {   
-        originSurveyId: "survey1",
+        surveyId: "survey1",
         questionId: "survey1_question2",
         questionType:"oneAnsMultipleChoice", 
         questionText:"Which age group are you in?", 
@@ -52,7 +53,7 @@ const questions = [
         responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0 } 
     },
     { 
-        originSurveyId: "survey1",
+        surveyId: "survey1",
         questionId: "survey1_question3",
         questionType:"manyAnsMultipleChoice", 
         questionText:"Which of the following flavours sound tasty to you?", 
@@ -62,7 +63,7 @@ const questions = [
         responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0, resp_6: 0 } 
     },
     { 
-        originSurveyId: "survey1",
+        surveyId: "survey1",
         questionId: "survey1_question4",
         questionType:"rankOrder", 
         questionText:"Which of these do you notice first on the packaging?",
@@ -77,7 +78,7 @@ const questions = [
         } 
     },
     { 
-        originSurveyId: "survey1",
+        surveyId: "survey1",
         questionId: "survey1_question5",
         questionType:"rateScale", 
         questionText:"Rate how much these statements relate to you", 
@@ -101,14 +102,14 @@ const questions = [
         }
     },
     { 
-        originSurveyId: "survey1",
+        surveyId: "survey1",
         questionId: "survey1_question6",
         questionType:"fivePoint", 
         questionText:"Would you pay more for a premium KitKat?",
         questionImg: "",
         questionImgAlt: "",
         responseText: { resp_0: "Extremely unlikely", resp_1: "Unlikely", resp_2: "It depends", resp_3: "Likely", resp_4: "Very likely" }, 
-        responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0, resp_5: 0, resp_6: 0 } 
+        responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0 } 
     },
 ] 
 //The MaterialUI way of modding styles
@@ -199,6 +200,7 @@ function SurveyPage(props) {
     //Stores for submit later. Visible in console log, but invisble to radio questionCard-s
     let [ answersForSubmit, setAnswersForSubmit ] = useState(param =>{
         let newObj = {};
+        
         for(let i =0; i<questions.length; ++i){
             if (
                 questions[i].questionType === "trueFalse" || 
@@ -226,7 +228,7 @@ function SurveyPage(props) {
      */
     const questionCardGenerator = (questionData, questionCardId) => {
         let questionCard = [
-            <Card id={questionData.questionId} key={`${questionData.questionId}`}>
+            <Card key={`${questionData.questionId}_${questionCardId}`}>
                 <CardHeader
                     title = {questionData.questionText}
                 />
@@ -265,7 +267,6 @@ function SurveyPage(props) {
         setActiveQuestionCardId( questionCardId );//notes which obj in questions[] is rendered
     }
     const cardMediaRender = (questionData) => {
-        console.log(`link to image: ${questionData.questionImg}`)
         if (questionData.questionImg == ""){
             return null;
         } else {
@@ -422,59 +423,86 @@ function SurveyPage(props) {
         questionCardGenerator(questions[activeQuestionCardId], activeQuestionCardId);  
     } 
     const handleSubmit = () => {
+        //Obtained from server at moment of submit for most recent numbers
+        //Likely just questionId, questionType, and responseCounter
+        const questionsCopy = questions;
+        const fetchedQuestions = Array(questions.length).fill().map((item, i) => {
+            const newObj = Object.create({});
+            
+            newObj["originSurveyId"] = questions[i]["surveyId"];
+            newObj["questionId"] = questions[i]["questionId"];
+            newObj["questionType"] = questions[i]["questionType"];
+
+            //Why is this giving an extra "":NaN property??
+            //Ignore for now. Assume this wont happen on an actual retrival from db
+            newObj["responseCounter"] = questions[i]["responseCounter"]; 
+
+            return newObj;
+        }) 
+
         const questionIds = Object.keys(answersForSubmit);
-        const responses = Object.values(answersForSubmit);
-
-        console.log(`Questions answered: ${questionIds}`);
-        console.log(`Responses received: ${responses}`);
         
-        /** 
-        const questionId = event.target.questionId;
-        const questionType = event.target.questionType;
-        console.log(`Survey submit made of questionId-s ${questionId}, of 
-        of question-Types ${questionType}`);
-    
-        //Refers to question in survey data retrieved
-        const targetIndex = answers.findIndex(item => item.questionId === questionId);
-    
-        if (questionType === "trueFalse") {
-            if (event.target.value === true){
-                //using questionId accounts for scenario if respondent goes back to change given answer
-                questions[targetIndex].responseCounter[`true`] += 1;
-            }
-            if (event.target.value === false){
-                //using questionId accounts for scenario if respondent goes back to change given answer
-                questions[targetIndex].responseCounter[`false`] += 1;
+        //Probably matters when submitting to db??
+        let surveyIdExtractor = /survey\d/i;
+        const surveyId = questionIds[0].match(surveyIdExtractor);
+        console.log(`Submit made for questions from surveyId ${surveyId}`);
+
+        for(let i=0; i<questionIds.length; ++i){
+            const targetQuestion = fetchedQuestions.findIndex(item => item.questionId === questionIds[i]);
+            const questionType = fetchedQuestions[targetQuestion].questionType
+            
+            //Submitting a blank answersForSubmit here will not increment any
+            //of the responseCounter-s. All the loops will not run because
+            //recordedResponses.length will be = 0
+            if (
+                questionType === "trueFalse" || 
+                questionType === "oneAnsMultipleChoice" ||
+                questionType === "fivePoint"    
+            ){
+                fetchedQuestions[targetQuestion].responseCounter[
+                    //Pull up the response recorded for that question of that questionId
+                    //Response recorded = Name of key in responseCounter
+                    answersForSubmit[questionIds[i]]
+                ] += 1;  
+            } else if (questionType === "manyAnsMultipleChoice") {
+                //Responses to this questionType are recorded in an array               
+                const recordedResponses = answersForSubmit[questionIds[i]];
+
+                for(let j=0; j<recordedResponses.length; ++j){
+                    fetchedQuestions[targetQuestion].responseCounter[
+                        //loop will +1 each responseCounter key that is = recordedResponses 
+                        recordedResponses[j]
+                    ] += 1;
+                } 
+            } else if (questionType === "rankOrder") {
+                //Responses to this questionType are recorded in an object 
+                const recordedResponseKeys = Object.keys(answersForSubmit[questionIds[i]]);
+                const recordedResponseValues = Object.values(answersForSubmit[questionIds[i]]);
+
+                for(let j=0; j<recordedResponseKeys.length; ++j){
+                    fetchedQuestions[targetQuestion].responseCounter[ recordedResponseKeys[j] ][
+                        //loop will +1 each responseCounter key. Key = rank_x, value = resp_x 
+                        recordedResponseValues[j]
+                    ] += 1;
+                } 
+            } else if (questionType === "rateScale") {
+                //Responses to this questionType are recorded in an object 
+                const recordedResponseKeys = Object.keys(answersForSubmit[questionIds[i]]);
+                const recordedResponseValues = Object.values(answersForSubmit[questionIds[i]]);
+
+                for(let j=0; j<recordedResponseKeys.length; ++j){
+                    fetchedQuestions[targetQuestion].responseCounter[ recordedResponseKeys[j] ][
+                        //loop will +1 each responseCounter key. Key = resp_x, value = rank, starting from '1'
+                        `rank_${recordedResponseValues[j]-1}`
+                    ] += 1;
+                }
             }
         }
-        if (questionType === "oneAnsMultipleChoice") {
-            questions[targetIndex].responseCounter[event.target.value] += 1;
-        }
-        */
         
-        /**
-        Mock data store generator for rankOrder questions
-        Output object is:
-        {
-            rank_0: {resp_0 = 0, resp_1 = 0 ...}
-            rank_1: {resp_0 = 0, resp_1 = 0 ...}
-            ...
-        }
+        console.log(`New response counts to update server:`)
+        console.log(fetchedQuestions)
 
-        let rankObj = {};
-        const items = Object.keys(questions[i].responseText);
-        const numberOfItems = Object.keys(questions[i].responseText).length;
-
-        //Number of ranks = number of possible responses
-        for (let i=0; i<numberOfItems; i++){
-            rankObj[`rank_${i}`] = {}
-
-            //Number of items per rank = number of possible responses
-            for (let j=0; j<numberOfItems; j++){
-                rankObj[`rank_${i}`][items[j]] = 0
-            }
-        }
-         */
+        //Something here to return answers to db...
     }
 
     return (
@@ -492,8 +520,11 @@ function SurveyPage(props) {
             </div>
            
             <Container classes={{root: classes.header}}>
-                <Typography variant="h3" align="left">Welcome back survey</Typography>
-                <Typography variant="h3" align="left">Progress: </Typography>
+                <Typography variant="h3" align="left">Welcome to this survey</Typography>
+            </Container>
+            <Container>
+                <Typography variant="h4" align="left">Progress: </Typography>
+                <ProgressBar activeQuestionCardId={activeQuestionCardId} questions={questions}/>
             </Container>
             <Container classes={{root: classes.bodyBox}}>
                 {activeQuestionCard} {/**Must use state here: When state updates, the update is pushed to all calls of that state*/}

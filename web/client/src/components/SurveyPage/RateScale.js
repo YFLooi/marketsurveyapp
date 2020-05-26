@@ -68,6 +68,8 @@ function RateScale(props) {
 
     let newValue = ""; //Using hook state causes error "setX is not a function"
     let [ recordedValues, setRecordedValues ] = useState(param => {
+        //Should generate its own. hook state is read by Slider before useEffect
+        //can kick in
         let newObj = {};
         for (let i=0; i<responseKeys.length; i++){
             newObj[responseKeys[i]] = 3; //Sets default slider value on page load
@@ -75,6 +77,18 @@ function RateScale(props) {
 
         return newObj;
     });
+
+    useEffect(() => {      
+        //Generates initial ranking 
+        //Allows for the rare exception where the preset ranking = respondent's answer
+        //Problem with this approach: Will overwrite prior answers. Define answers on init? Or submit on "Next card"?
+        let initialRanking = {};
+        for(let i=0; i<responseKeys.length; i++){
+            initialRanking[responseKeys[i]] = "3";
+        };
+        //Sets answersForSubmit to contain the initial ranking
+        props.handleResponse(questionData.questionId, initialRanking, "rankOrder");
+    }, []);
 
     const handleChangeValue = (event, receivedValue) => {
         console.log(`New value received: ${receivedValue}`)
