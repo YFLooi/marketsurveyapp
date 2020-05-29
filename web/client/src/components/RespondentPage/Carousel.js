@@ -106,8 +106,10 @@ function CarouselRender (props) {
 
         if (slidesToShow >1) {
             setSlidesToShow(slidesToShow);
+            generateGalleryItems(props.renderData); //trigger Carousel re-render with new no. of slides to show
         } else {
             setSlidesToShow(1)   //Ensures at least 1 slide visible
+            generateGalleryItems(props.renderData); //trigger Caorusel re-render with new no. of slides to show
         }
     }
     const renderDetailsCard = (surveyId) => {
