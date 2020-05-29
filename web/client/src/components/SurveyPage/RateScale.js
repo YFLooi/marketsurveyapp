@@ -53,6 +53,10 @@ const marks = [
       }
 ];
 
+//Used to check if this card was rendered before
+let firstRender = true;
+let recordedValuesCopy = {};
+
 //Sets value in pop-up balloon
 function valuetext(value) {
     return `${value}`;
@@ -67,32 +71,39 @@ function RateScale(props) {
     const responseValues = Object.values(questionData.responseText)
 
     let newValue = ""; //Using hook state causes error "setX is not a function"
+    
     let [ recordedValues, setRecordedValues ] = useState(param => {
         //Should generate its own. hook state is read by Slider before useEffect
         //can kick in
-        let newObj = {};
-        for (let i=0; i<responseKeys.length; i++){
-            newObj[responseKeys[i]] = 3; //Sets default slider value on page load
-        }
+        if(firstRender === true){
+            let newObj = {};
+            for (let i=0; i<responseKeys.length; i++){
+                newObj[responseKeys[i]] = 3; //Sets default slider value on page load
+            }
 
-        return newObj;
+            recordedValuesCopy = newObj;
+            return newObj;
+        } else {
+            return recordedValuesCopy
+        }
     });
 
     useEffect(() => {      
         //Generates initial ranking 
         //Allows for the rare exception where the preset ranking = respondent's answer
-        //Problem with this approach: Will overwrite prior answers. Define answers on init? Or submit on "Next card"?
-        let initialRanking = {};
-        for(let i=0; i<responseKeys.length; i++){
-            initialRanking[responseKeys[i]] = "3";
-        };
-        //Sets answersForSubmit to contain the initial ranking
-        props.handleResponse(questionData.questionId, initialRanking, "rankOrder");
+        //If{} catch prevents overwrite of recorded answers when moving back and forth between questionCards
+        console.log(`First render: ${firstRender}`);
+        if(firstRender === true){
+            //Sets answersForSubmit to contain the initial ranking
+            props.handleResponse(questionData.questionId, recordedValues, "rankOrder");
+
+            //Sets firstRender to false after this if{} is run
+            firstRender = !firstRender;
+        }
     }, []);
 
     const handleChangeValue = (event, receivedValue) => {
         console.log(`New value received: ${receivedValue}`)
-        //setNewValue(  );
         newValue = receivedValue
     }
     const handleChangeCommit = (name) => {
@@ -106,7 +117,6 @@ function RateScale(props) {
 
         //Must do this instead of get from hook state. Otherwise,
         //value passed to handleResponse is the one before update by setRecordedValues
-        const recordedValuesCopy = recordedValues;
         recordedValuesCopy[name] = newValue
         //Sets answersForSubmit to new ranking
         props.handleResponse(props.data.questionId, recordedValuesCopy, "rankOrder");
@@ -146,6 +156,7 @@ function RateScale(props) {
             })}
            
             <button onClick={() => {console.log(recordedValues)}}>Chk value store object</button>
+            <button onClick={() => {console.log(recordedValuesCopy)}}>Chk recordedValuesCopy</button>
         </React.Fragment>
     );
 }

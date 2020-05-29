@@ -24,38 +24,54 @@ const getItemStyle = (isDragging, draggableStyle) => ({
     ...draggableStyle
 });  
 const getListStyle = isDraggingOver => ({
+    //sets list background colour
     background: isDraggingOver ? "lightblue" : "lightgrey",
+
     padding: grid,
     width: 250
 });
+
+let firstRender = true;
+let itemsCopy = [];
 
 //props available: data, questionResponse
 function RankOrder(props) {
     //For dragNSort
     let [ items, setItems ] = useState([]);
 
-    useEffect(() => {   
-        const questionData = props.data;
-        const responseKeys = Object.keys(questionData.responseText);
-        const responseValues = Object.values(questionData.responseText);
-        const dragNDropData = Array(responseKeys.length).fill().map(
-            function(item, i) {
-                return {
-                    id: responseKeys[i],
-                    content: responseValues[i]
-                }
-        })
-        
-        //Generates initial ranking 
-        //Allows for the rare exception where the preset ranking = respondent's answer
-        let initialRanking = {};
-        for(let i=0; i<responseKeys.length; i++){
-            initialRanking[`rank_${i}`] = responseKeys[i]
-        };
-        //Sets answersForSubmit to contain the initial ranking
-        props.handleResponse(questionData.questionId, initialRanking, "rankOrder");
+    useEffect(() => {    
+        //If{} catch here prevents overwrite of recorded answers when moving back and forth between questionCards
+        console.log(`First render: ${firstRender}`);
+        if(firstRender === true){
+            const questionData = props.data;
+            const responseKeys = Object.keys(questionData.responseText);
+            const responseValues = Object.values(questionData.responseText);
+            const dragNDropData = Array(responseKeys.length).fill().map(
+                function(item, i) {
+                    return {
+                        id: responseKeys[i],
+                        content: responseValues[i]
+                    }
+            })
 
-        setItems([ ...dragNDropData ])
+            //Generates initial ranking 
+            //Allows for the rare exception where the preset ranking = respondent's answer
+            let initialRanking = {};
+            for(let i=0; i<responseKeys.length; i++){
+                initialRanking[`rank_${i}`] = responseKeys[i]
+            };
+            //Sets answersForSubmit to contain the initial ranking
+            props.handleResponse(questionData.questionId, initialRanking, "rankOrder");
+
+            //Sets firstRender to false after this if{} is run
+            firstRender = !firstRender;
+
+            setItems([ ...dragNDropData ]);
+            itemsCopy = [ ...dragNDropData ];
+        } else {
+            setItems([ ...itemsCopy ]);
+        }
+        
     }, []);
 
     const onDragEnd = (result) => {
@@ -71,6 +87,7 @@ function RankOrder(props) {
         );
 
         //Generates object of new ranking
+        //Rank = Element number in newItems array
         let newRanking = {};
         for(let i=0; i<newItems.length; i++){
             newRanking[`rank_${i}`] = newItems[i].id
@@ -78,8 +95,8 @@ function RankOrder(props) {
         //Sets answersForSubmit to new ranking
         props.handleResponse(props.data.questionId, newRanking, "rankOrder");
             
-        //props.handleResponse(questionData.questionId, newArray, "rankOrder")
         setItems([ ...newItems ]);
+        itemsCopy = [ ...newItems ]; //Copy to re-render same ranking if moved to next questionCard
     }
 
     // Normally you would want to split things out into separate components.
@@ -117,6 +134,7 @@ function RankOrder(props) {
                 </Droppable>
             </DragDropContext>
             <button onClick={() => {console.log(items)}}>Chk items array</button>
+            <button onClick={() => {console.log(itemsCopy)}}>Chk reordered responses</button>
         </React.Fragment>
     );
 }
