@@ -111,6 +111,16 @@ const questions = [
         responseText: { resp_0: "Extremely unlikely", resp_1: "Unlikely", resp_2: "It depends", resp_3: "Likely", resp_4: "Very likely" }, 
         responseCounter:{ resp_0: 0, resp_1: 0, resp_2: 0, resp_3: 0, resp_4: 0 } 
     },
+    { 
+        surveyId: "survey1",
+        questionId: "survey1_closingCard",
+        questionType:"closingCard", 
+        questionText:"Thank you for your time",
+        questionImg: "",
+        questionImgAlt: "",
+        responseText: { resp_0: "1x $10 Starbucks voucher" }, 
+        responseCounter:{  } 
+    },
 ] 
 //The MaterialUI way of modding styles
 const useStyles = makeStyles(theme => ({
@@ -236,29 +246,6 @@ function SurveyPage(props) {
                     {/** Necessary: Cannot have img src="" */}
                     {cardMediaRender(questionData)}
                     {answerSectionRender(questionData, questionData.questionType)}
-                    
-                    {/**Box for buttons */}
-                    <Container>
-                        {/**"Previous" button set to automatically disable if at first card */}
-                        <Button 
-                            variant="contained" size="small" color="primary" 
-                            onClick={() => {changeQuestionCard(activeQuestionCardId -= 1)}}
-                            disabled={activeQuestionCardId === 0 ? true : false}
-                        >
-                            PREVIOUS
-                        </Button>
-                        {/**"Next" button set to automatically disable if at last card */}
-                        <Button 
-                            variant="contained" size="small" color="primary" 
-                            onClick={() => {changeQuestionCard(activeQuestionCardId += 1)}}
-                            disabled={activeQuestionCardId === (questions.length -1) ? true : false}
-                        >
-                            NEXT
-                        </Button>
-                        <Button variant="contained" size="small" color="primary" >
-                            EXIT
-                        </Button>
-                    </Container>
                 </CardContent>
             </Card>
         ];
@@ -327,11 +314,19 @@ function SurveyPage(props) {
                     handleResponse={handleResponse}
                 />
             ]
-        } else {
+        } else if (questionData.questionType === "closingCard") {
             answerSection = [
-                <CardHeader
-                title = "Error: Card failed to render"
-            />
+                <React.Fragment>
+                    <Typography variant="body1">Rewards earned: {questionData.responseText.resp_0}</Typography>
+
+                    {/**Submit only at end to prevent double-counting from >1 submission per respondent*/}
+                    <Button variant="contained" color="primary" onClick={() => {handleSubmit()}}>Submit responses</Button>
+                </React.Fragment>
+            ]
+        } else {
+            //Catch. Triggers when questionType in store does not match any listed above
+            answerSection = [
+                <Typography variant="body1">Error: Card failed to render</Typography>
             ]
         }
         
@@ -529,8 +524,26 @@ function SurveyPage(props) {
             <Container classes={{root: classes.bodyBox}}>
                 {activeQuestionCard} {/**Must use state here: When state updates, the update is pushed to all calls of that state*/}
             </Container>
-            <Container>
-                <Button variant="contained" color="primary" onClick={() => {handleSubmit()}}>Submit responses</Button>
+            <Container> {/**Box for buttons */}
+                {/**"Previous" button set to automatically disable if at first card */}
+                <Button 
+                    variant="contained" size="small" color="primary" 
+                    onClick={() => {changeQuestionCard(activeQuestionCardId -= 1)}}
+                    disabled={activeQuestionCardId === 0 ? true : false}
+                >
+                    PREVIOUS
+                </Button>
+                {/**"Next" button set to automatically disable if at last card */}
+                <Button 
+                    variant="contained" size="small" color="primary" 
+                    onClick={() => {changeQuestionCard(activeQuestionCardId += 1)}}
+                    disabled={activeQuestionCardId === (questions.length-1) ? true : false}
+                >
+                    NEXT
+                </Button>
+                <Button variant="contained" size="small" color="primary" >
+                    EXIT
+                </Button>
             </Container>
             <Container>
                 <Button onClick={() => {console.log(questions)}}>Chk "questions"</Button>
@@ -538,6 +551,7 @@ function SurveyPage(props) {
                 <Button onClick={() => {console.log(activeQuestionCardId)}}>Chk "activeQuestionCardId"</Button>
                 <Button onClick={() => {console.log(answersSelected)}}>Chk "answersSelected"</Button>
                 <Button onClick={() => {console.log(answersForSubmit)}}>Chk "answersForSubmit"</Button>
+                <Button variant="contained" color="primary" onClick={() => {handleSubmit()}}>Test submit of responses</Button>
             </Container>        
         </div>
     );

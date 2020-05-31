@@ -29,7 +29,8 @@ function ProgressBar(props) {
         //activeQuestionCardId ranges from 0 to 9. 
         //Thus, to get 100% (10 out of 10), must add in a "closing" card
         setPercentage(property => {
-            return Math.round(activeQuestionCardId*100 /numberOfQuestions);
+            console.log(`activeQuestionCardId: ${activeQuestionCardId}`)
+            return Math.round(activeQuestionCardId*100 /(numberOfQuestions-1));
         }); 
 
     }, [props.activeQuestionCardId]);
