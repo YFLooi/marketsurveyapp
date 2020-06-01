@@ -10,11 +10,12 @@ import RateScale from "./RateScale.js";
 import FivePoint from "./FivePoint.js";
 import SingleAnswer from "./SingleAnswer.js";
 import ManyAnswers from "./ManyAnswers.js";
+import ClosingCard from "./ClosingCard.js";
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { makeStyles} from '@material-ui/core/styles';
 import { Box, Button, Container, Grid, Typography } from "@material-ui/core";
-import { RadioGroup, Radio, FormControl, FormLabel, FormGroup, FormControlLabel, Checkbox, IconButton } from "@material-ui/core";
+import { RadioGroup, Radio, FormControl, FormLabel, FormGroup, FormControlLabel, Checkbox, IconButton, TextField } from "@material-ui/core";
 import { Card, CardHeader, CardActionArea, CardActions, CardContent, CardMedia } from "@material-ui/core/";
 //Material UI icon imports
 import { Menu, Home, Settings, AccountBox, ShoppingCart, Explore, FavoriteOutlined } from '@material-ui/icons';
@@ -118,7 +119,7 @@ const questions = [
         questionText:"Thank you for your time",
         questionImg: "",
         questionImgAlt: "",
-        responseText: { resp_0: "1x $10 Starbucks voucher" }, 
+        responseText: { resp_0:"", resp_1: "1x $10 Starbucks voucher" }, 
         responseCounter:{  } 
     },
 ] 
@@ -316,12 +317,13 @@ function SurveyPage(props) {
             ]
         } else if (questionData.questionType === "closingCard") {
             answerSection = [
-                <React.Fragment>
-                    <Typography variant="body1">Rewards earned: {questionData.responseText.resp_0}</Typography>
-
-                    {/**Submit only at end to prevent double-counting from >1 submission per respondent*/}
-                    <Button variant="contained" color="primary" onClick={() => {handleSubmit()}}>Submit responses</Button>
-                </React.Fragment>
+                <ClosingCard
+                    data={questionData} 
+                    answersForSubmit={answersForSubmit} 
+                    answersSelected={answersSelected} 
+                    handleResponse={handleResponse}
+                    handleSubmit={handleSubmit}
+                />
             ]
         } else {
             //Catch. Triggers when questionType in store does not match any listed above
