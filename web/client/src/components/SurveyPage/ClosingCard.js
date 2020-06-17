@@ -16,12 +16,15 @@ function ClosingCard(props) {
     
     return(
         <React.Fragment>
-            <Typography variant="body1">Rewards earned: {questionData.responseText.resp_1}</Typography>
+            <Typography variant="body1">Rewards earned: {props.data.responseText['resp_1']}</Typography>
 
             <form className={classes.root} noValidate autoComplete="off">
-                <TextField label="Feedback" variant="outlined" name="" value="" onChange={[props.handleResponse()]} />
+                
+                {/*Need to set: onChange= props.handleResponse(name, value, questionType*/}
+                <TextField label="Feedback" variant="outlined" name="" 
+                value=""  />
                 {/**Submit only at end to prevent double-counting from >1 submission per respondent*/}
-                <Button variant="contained" color="primary" onClick={() => {handleSubmit()}}>Submit responses</Button>
+                <Button variant="contained" color="primary" onClick={() => {props.handleSubmit()}}>Submit responses</Button>
             </form>
         </React.Fragment>
     )

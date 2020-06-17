@@ -78,7 +78,7 @@ function RateScale(props) {
         if(firstRender === true){
             let newObj = {};
             for (let i=0; i<responseKeys.length; i++){
-                newObj[responseKeys[i]] = 0; //Sets default slider value on page load
+                newObj[responseKeys[i]] = 1; //Sets default slider value on page load
             }
 
             recordedValuesCopy = newObj;
