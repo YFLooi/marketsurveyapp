@@ -1,259 +1,132 @@
-import React from "react";
+import React, { useRef } from "react";
 import { makeStyles} from '@material-ui/core/styles';
 import { 
     Button, Grid, Paper, Typography, Container, Box
 } from "@material-ui/core";
-import contentHeaderBackground from "./icons/header5.jpg";
-import contentBodyLeftBackground from "./icons/marketeerImage4.jpg";
-import contentBodyRightBackground from "./icons/respondantImage2.jpg";
-
-/**For the social media icons */
+import { styleObject } from "./MainPageStyleObject";
+//For the social media icons 
 import "./MainPage.css";
-/**For the menuBar */
+//For the menuBar 
 import logo from "../logo.png";
 import { GoogleSignIn } from "../GoogleSignIn/GoogleSignIn.js";
+import chartIcon from "./icons/chart.jpg";
+import checklistIcon from "./icons/checklist.jpg";
+import meetingImage from "./icons/marketeerImage4.jpg";
+import checklistImage from "./icons/respondantImage2.jpg";
 
-const useStyles = makeStyles(theme => ({ 
-    MainPage: {
-        minHeight: "100%",
-        width: "100%",
-        display: "flex", /**Allows children to use flex-grow to fill white space */
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "flex-start"
-    },
-    menuBar: {
-        width: "100%",    
-        maxHeight: 65,
-        background: "linear-gradient(to left, #00b7ff, #87d7f7)",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "10px 50px"
-    },
-    menuBarLogo: {
-        width:90,
-        cursor:"pointer"
-    },
-    /*left and right leaves extra space*/
-    menuBarLeft: {
-        minWidth: "50%",
-        display: "flex",
-        justifyContent: "flex-start",
-        alignItems: "center",
-        paddingLeft: 20
-    },
-    menuBarRight: {
-        minWidth: "30%",
-        display: "flex",
-        justifyContent: "flex-end",
-        alignItems: "center",
-        paddingRight: 20
-    },
-    header: {
-        textAlign: "center",
-        minHeight: "95vh",
-        color: "white",
-        padding: 5,
-        flex: "1 1 auto", /**Header allowed 1/4 of all available height */
+const useStyles = makeStyles(theme => (styleObject));
 
-        backgroundImage: `url(${contentHeaderBackground})`,
-        backgroundPositionX: "50%",
-        backgroundPositionY: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundAttachment: "scroll",
-        backgroundSize: "430%",
-        overflowX: "hidden",
-        overflowY: "hidden"
-    },
-    headerStartButton: {
-        background: "linear-gradient(to left, #87d7f7, #00b7ff)"
-    },
-    contentBox: {
-        minHeight: "100vh",
-        minWidth: "100%",
-        flex: "3 3 auto", /**Content box allowed 3/4 of all available height */
-        margin: "0 0",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "space-around",
-        paddingTop: 10,
-        paddingBottom: 10
-    },
-    contentBody: {
-        backgroundColor: "gray",
-        width: "100%",
-        maxHeight: "30%",
-        flex: "2 2 60%",
+export default function MainPage(props) {
+  const classes = useStyles();
+  const userFunnel = useRef(null);
+  const contentBody = useRef(null);
 
-        display: "flex",
-        flexDirection: "row",
-        flexWrap: "wrap",
-        justifyContent: "space-evenly"
-    },
-    contentBodyLeft: {
-        minHeight: 190,
-        transitionDuration: "0.4s",
-        margin: 10,
-        flex: "1 1 auto",
-
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "middle",
-        
-        backgroundImage: `url(${contentBodyLeftBackground})`,
-        backgroundPositionX: "50%",
-        backgroundPositionY: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundAttachment: "scroll",
-        backgroundSize: "230%",
-        overflowX: "hidden",
-        overflowY: "hidden",
-    },
-    contentBodyLeftContent: {
-        height: "85%",
-        width: "85%",
-        margin: "0 0", /**Container will attempt to horizontally center itself using margins*/
-        
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "space-evenly",
-        textAlign: "center",
-
-        border: "4px solid white",
-        padding: 10,
-        color: "white",
-        backgroundColor: "rgba(0,0,0, 0.4)", /* Black w/opacity/see-through */
-        "&:hover": {
-            backgroundColor: "rgba(0,0,0, 0.6)", /* Black w/opacity/see-through */
-        }
-    },
-    contentBodyRight: {
-        minHeight: 190,
-        transitionDuration: "0.4s",
-        margin: 10,
-        flex: "1 1 auto",
-
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-        
-        backgroundImage: `url(${contentBodyRightBackground})`,
-        backgroundPositionX: "45%",
-        backgroundPositionY: "35%",
-        backgroundRepeat: "no-repeat",
-        backgroundAttachment: "scroll",
-        backgroundSize: "300%",
-        overflowX: "hidden",
-        overflowY: "hidden",
-    },
-    contentBodyRightContent: {
-        height: "85%",
-        width: "85%",
-        margin: "0 0", /**Container will attempt to horizontally center itself using margins*/
-
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "space-evenly",
-        textAlign: "middle",
-
-        border: "4px solid white",
-        padding: 10,
-        color: "white",
-        backgroundColor: "rgba(0,0,0, 0.4)", /* Black w/opacity/see-through */
-        "&:hover": {
-            backgroundColor: "rgba(0,0,0, 0.6)", /* Black w/opacity/see-through */
-        }
-    },
-    mediaLinks: {
-        flex: "1 1 auto",
-        width: "100%",
-        maxHeight: "50%",
-        margin: 10,
-
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
+  const toggleShowHide = (id) => {
+    if(id == "userFunnel" && userFunnel.current.style.display == "none"){
+      userFunnel.current.style.display = "flex"
+    } else if(id == "userFunnel" && userFunnel.current.style.display == "flex") {
+      userFunnel.current.style.display = "none"
     }
-}))
-
-function MainPage(props) {
-    const classes = useStyles();
+  }
+  const scrollToContentBody = () => {
+    contentBody.current.scrollIntoView({
+      behavior: "smooth", 
+      block: "start"
+    });
+  }
     
-    return (
-        <div className={classes.MainPage}>
-            <div className={classes.menuBar}>
-                <div className={classes.menuBarLeft} onClick={() => {props.history.push('/')}}>
-                    <img src={logo} className={classes.menuBarLogo} alt="logo" />
-                </div>
-                <div onClick={() => {props.history.push('/RespondentPage')}}><u>RespPg</u></div>&nbsp;&nbsp;
-                <div onClick={() => {props.history.push('/MarketeerPage')}}><u>MrktPg</u></div>&nbsp;&nbsp;
-                <div onClick={() => {props.history.push('/SurveyPage')}}><u>SvyPg</u></div>&nbsp;&nbsp;
-                <div className={classes.menuBarRight}>
-                    <GoogleSignIn/>
-                </div>
-            </div>
-            <Grid container spacing={0} justify="center" alignItems="center" classes={{root: classes.header}}>
-                <Grid item xs={12}>
-                    <Typography variant="h2" align="center"><b>Know your audience</b></Typography>
-                    <br/>
-                    <br/>
-                    <Typography variant="h4" align="center">SAVE.ai gets market data fast and at low cost</Typography>
-                    <br/>
-                    <Button variant="contained" classes={{root: classes.headerStartButton}}>
-                        Get started >
-                    </Button>
-                </Grid>
-            </Grid>
-            <Container classes={{root: classes.contentBox}}>
-                <Grid container spacing={0} classes={{root: classes.contentBody}}>
-                    {/**Note: Use of Grid prevents left and right contentBodies from beign equal width */}
-                    <Grid item xs={12} sm={6} md={6} classes={{root: classes.contentBodyLeft}}>
-                        {/**Items with Grid-item should be wrapped in Container*/}
-                        <Container classes={{root: classes.contentBodyLeftContent}}>
-                            <Typography variant="h5" align="center">About our services</Typography>
-                            <Typography variant="body1" align="center">Gain real market insights fast from a curated panel</Typography>
-                            <Button variant="contained" color="primary" id="contentButtonLeft">
-                                More..
-                            </Button>
-                        </Container>
-                    </Grid>
-                
-                    <Grid item xs={12} sm={6} md={6} classes={{root: classes.contentBodyRight}}>
-                        {/**Items with Grid-item should be wrapped in Container*/}
-                        <Container classes={{root: classes.contentBodyRightContent}}>
-                            <Typography variant="h5" align="center">Participate and get paid</Typography>
-                            <Typography variant="body1" align="center">We reward survey participants!</Typography>
-                            <Button variant="contained" color="secondary" id="contentButtonRight">
-                                More..
-                            </Button>
-                        </Container>
-                    </Grid>
-                </Grid>
-                <Grid container spacing={0} classes={{root: classes.mediaLinks}}>
-                    <Grid item xs={12}>
-                        <Typography variant="h6" align="center">
-                            Contact us today: <br/>
-                            <div className="fa fa-facebook"></div> 
-                            <div className="fa fa-linkedin"></div> 
-                            <div className="fa fa-envelope-o"></div>
-                        </Typography>                    
-                    </Grid>
-                </Grid>
-            </Container>
-            
-            
+  return (
+    <div className={classes.MainPage}>
+      <div className={classes.menuBar}>
+        <div className={classes.menuBarLeft} onClick={() => {props.history.push('/')}}>
+          <img src={logo} className={classes.menuBarLogo} alt="logo" />
         </div>
-    );
-}
+        <div className={classes.menuBarRight}>
+          <GoogleSignIn/>
+        </div>
+      </div>
+        
+      <Grid container spacing={0} justify="center" alignItems="center" classes={{root: classes.header}}>
+        <Grid item xs={12}>
+          <Typography variant="h2" align="center"><b>Know your audience</b></Typography>
+          <br/>
+          <br/>
+          <Typography variant="h4" align="center">SAVE.ai gets market data fast and at low cost</Typography>
+          <br/>
+          <Button variant="contained" classes={{root: classes.headerStartButton}} onClick={()=>{scrollToContentBody();}}>
+            Get started
+          </Button>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <Button variant="contained" classes={{root: classes.headerStartButton}} onClick={()=>{toggleShowHide("userFunnel")}}>
+            Already joined?
+          </Button>
+        </Grid>
+      </Grid>
+      
+      <div id="userFunnel" ref={userFunnel} className={classes.userFunnel} style={{display: "none"}}>
+        <div className={classes.userFunnel_background}></div>
+        <div className={classes.userFunnel_closeButton} onClick={()=>{toggleShowHide("userFunnel");}}>
+          Close X
+        </div>
+        <div className={classes.userFunnel_contentBody}>
+          <div className={classes.userFunnel_contentBody_card}>
+            <div className={classes.userFunnel_contentBody_cardImage} style={{backgroundImage: `url(${chartIcon})`}}/>
+            <Typography variant="h5" align="center">Marketeers</Typography>
+            <Typography variant="body1" align="center">Access survey feedback and campaign statistics</Typography>
+            <Button variant="contained" color="primary" id="contentButtonLeft" onClick={() => {props.history.push('/MarketeerPage')}}>
+              Access
+            </Button>
+          </div>
+          <div className={classes.userFunnel_contentBody_card}>
+            <div className={classes.userFunnel_contentBody_cardImage} style={{backgroundImage: `url(${checklistIcon})`}}/>
+            <Typography variant="h5" align="center">Survey Respondents</Typography>
+            <Typography variant="body1" align="center">Track your rewards and new surveys</Typography>
+            <Button variant="contained" color="secondary" id="contentButtonLeft" onClick={() => {props.history.push('/RespondentPage')}}>
+              Access
+            </Button>
+          </div>
+        </div>
+      </div>
 
-export { MainPage };
+      <div ref={contentBody}></div>
+      <div className={classes.contentCard} style={{backgroundImage: `url(${meetingImage})`}}>
+        <div className={classes.contentCard_body}>
+          <Typography variant="h3" align="center">About our services</Typography>
+          <br/>
+          <Typography variant="body1" align="center">
+            Gain real market insights fast from a curated panel of consumers
+          </Typography>
+          <br/>
+          <Button variant="contained" color="primary" id="contentButtonLeft">
+            More..
+          </Button>
+        </div>
+      </div>
+      <div className={classes.contentCard} style={{backgroundImage: `url(${checklistImage})`}}>
+        <div className={classes.contentCard_body}>
+          <Typography variant="h3" align="center" classes={{root: classes.contentCard_text}}>Participate and get paid</Typography>
+          <br/>
+          <Typography classes={{root: classes.contentCard_text}} variant="body1" align="center">
+            Earn money and rewards for each completed survey  
+          </Typography>
+          <br/>
+          <Button variant="contained" color="secondary" id="contentButtonRight">
+            More..
+          </Button>
+        </div>
+      </div>
+
+      <div className={classes.mediaLinks}>
+        <Typography variant="h3" align="center">
+          Contact us today
+        </Typography>     
+        <br/>       
+        <div className={classes.mediaLinks_mediaIcons}>
+          <div className="fa fa-facebook"></div> 
+          <div className="fa fa-linkedin"></div> 
+          <div className="fa fa-envelope-o"></div>    
+        </div>    
+      </div>
+    </div>
+  );
+}

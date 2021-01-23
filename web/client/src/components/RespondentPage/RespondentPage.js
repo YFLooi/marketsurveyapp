@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import {
-    //Allows us to connect to <Hashrouter/> from a child component
-    withRouter
+  //Allows us to connect to <Hashrouter/> from a child component
+  withRouter
 } from "react-router-dom";
 import { GoogleSignIn } from "../GoogleSignIn/GoogleSignIn.js";
 import CarouselRender from './Carousel.js';

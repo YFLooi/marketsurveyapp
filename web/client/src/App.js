@@ -7,7 +7,7 @@ import {
 
 /**Component imports */
 import Chatbot from "./components/Chatbot/Chatbot.js";
-import { MainPage } from "./components/MainPage/MainPage.js";
+import MainPage from "./components/MainPage/MainPage.js";
 import { TestPage } from "./components/TestPage/TestPage.js";
 import MarketeerPage from "./components/MarketeerPage/MarketeerPage.js";
 import RespondentPage from "./components/RespondentPage/RespondentPage.js";
@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
         maxHeight: 40,
         padding: 5,
         width: "100%",
-        background: "linear-gradient(to left, #00b7ff, #87d7f7)",
+        background: "linear-gradient(to right, #b5e8fc, #87d7f7, #00b7ff)",
         textAlign: "right"
     },
     AppFooterText: {
@@ -54,15 +54,15 @@ function App(props) {
                         <Route 
                             exact path="/"
                             component={MainPage}
-                        />}
+                        />
                         <Route 
                             path="/TestPage"
                             component={TestPage}
-                        />}
+                        />
                         <Route 
                             path="/MarketeerPage"
                             component={MarketeerPage}
-                        />}
+                        />
                         <Route 
                             path="/RespondentPage"
                             component={RespondentPage}

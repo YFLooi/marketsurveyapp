@@ -3,6 +3,10 @@ import Carousel, { Dots } from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
 import "./Carousel.css";
 import { Grid, Container, Card, CardHeader, CardActionArea, CardActions, CardContent, CardMedia, Typography, Button } from "@material-ui/core/";
+import {
+  //Allows us to connect to <Hashrouter/> from a child component
+  withRouter
+} from "react-router-dom";
 
 import { makeStyles} from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => ({
@@ -154,7 +158,7 @@ function CarouselRender (props) {
                         {surveys[targetIndex].disclosures}<br/><br/>
                     </Typography>
                     <Button variant="contained" size="small" color="primary" onClick={() => {changeDetailsCard(detailsCard[1]);}}>
-                        NEXT
+                        Start survey
                     </Button>
                     <Button variant="contained" size="small" color="primary" onClick={() => {hideDetailsCard();}}>
                         Close
@@ -183,7 +187,7 @@ function CarouselRender (props) {
                             forfeit rewards for accounts deemed fraudulent<br/><br/>
                             Your participation in this survey will be kept anonymous.<br/><br/>
                         </Typography>
-                        <Button variant="contained">I ACCEPT</Button> <Button variant="contained">I DECLINE</Button><br/><br/>
+                        <Button variant="contained" onClick={() => {props.history.push('/SurveyPage')}}>I ACCEPT</Button> <Button variant="contained">I DECLINE</Button><br/><br/>
                     </Container>
                     <Button variant="contained" size="small" color="secondary" onClick={() => {changeDetailsCard(detailsCard[0]);}}>
                         PREVIOUS
@@ -245,4 +249,4 @@ function CarouselRender (props) {
     ) 
 }
 
-export default CarouselRender;
+export default withRouter(CarouselRender);

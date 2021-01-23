@@ -10,7 +10,6 @@ const useStyles = makeStyles(theme => ({
         height: 70,
         bottom: "4%",
         right: "4%",
-        zIndex: 20,
 
         borderRadius: 70,
         border: "1px solid lightgray",
