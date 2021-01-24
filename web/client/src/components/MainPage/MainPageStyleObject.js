@@ -12,7 +12,7 @@ export const styleObject = {
   },
   menuBar: {
     width: "100%",    
-    maxHeight: "5vh",
+    height: "7.5vh",
     background: "linear-gradient(to right, #b5e8fc, #87d7f7, #00b7ff)",
     display: "flex",
     justifyContent: "space-between",
@@ -20,19 +20,21 @@ export const styleObject = {
     padding: "10px 50px"
   },
   menuBarLogo: {
-    width:90,
+    width: 110,
     cursor:"pointer"
   },
   /*left and right leaves extra space*/
   menuBarLeft: {
-    flex: "1 1",
+    flex: "1 0",
+    height: "7.5vh",
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
     paddingLeft: 20
   },
   menuBarRight: {
-    flex: "2 2",
+    flex: "2 0",
+    height: "7.5vh",
     display: "flex",
     justifyContent: "flex-end",
     alignItems: "center",
@@ -89,7 +91,7 @@ export const styleObject = {
     height: "75%",
     width: "80%",
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
     flexWrap: "wrap",
     justifyContent: "space-evenly",
     alignItems: "center",
