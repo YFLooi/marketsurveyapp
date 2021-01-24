@@ -1,0 +1,38 @@
+.CarouselRender {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    min-height: 20vh;
+}
+.CarouselPlaceholder {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    
+    width: 100%;
+    min-height: 100px;
+
+    background-image: url('./icons/loadingimg.gif');
+   
+    /*0 for align left , 50% for align centre*/
+    background-position-x: 50%; /*0 for align left , 50% for align centre*/
+    background-position-y: center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-size: 70% 100%;
+}
+.CarouselBody {
+    width: 85vw; 
+    max-height: 100%;
+}
+.BrainhubCarousel__arrows{
+    margin: 5px;
+}
+
+/*Individual <li> in <ul> with the dots*/
+.BrainhubCarousel__dots {   
+    margin: 10px;
+}

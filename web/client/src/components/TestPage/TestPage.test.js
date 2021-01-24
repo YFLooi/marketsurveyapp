@@ -1,28 +1,33 @@
 //For Enzyme
 import React from 'react';
-import ReactDOM from 'react-dom'
+import { render } from '@testing-library/react';
 import { configure, shallow, mount } from 'enzyme';
-import { MainPage, productTestFunction, arrayTestFunction } from './MainPage.js';
-//For Jest to get the target vanilla JS functions
-//const mainPage = require('./MainPage.js'); 
+//producTestFunction and arrayTestFunction are vanilla JS functions
+import { TestPage, productTestFunction, arrayTestFunction } from './TestPage.js';
 
 //Enzyme-only tests. Checks the render and render output of a component
 describe('componentRenderTest', () => {
     it('should render in ReactDOM without crashing', () => {
         const div = document.createElement('div');
-        ReactDOM.render(<MainPage/>, div);
+        render(<TestPage/>, div);
     })
+});
+
+describe('renders learn react link', () => {
+    const { getByText } = render(<TestPage/>);
+    const linkElement = getByText(/learn react/i);
+    expect(linkElement).toBeInTheDocument();
 });
 
 describe('componentRenderTest', () => {
     it('should shallow render with Enzyme without crashing', () => {
-        mount(<MainPage/>);
+        mount(<TestPage/>);
     })
 });
 describe('componentRenderTest', () => {
-    const component = shallow(<MainPage />);
-    const componentWrapper = component.find('.App')
-    it('should have a wrapper with className="App"', () => {
+    const component = shallow(<TestPage />);
+    const componentWrapper = component.find('.MainPage')
+    it('should have a wrapper with className="MainPage"', () => {
         expect(componentWrapper.length).toEqual(1);
     });
 });
