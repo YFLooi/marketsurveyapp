@@ -4,9 +4,9 @@
   "description": "PSQL-Express API to record survey and user data",
   "main": "server.js",
   "dependencies": {
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.20.1",
     "dotenv": "^8.0.0",
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "express-promise-router": "^3.0.3",
     "nodemon": "^2.0.7",
     "path": "^0.12.7",
